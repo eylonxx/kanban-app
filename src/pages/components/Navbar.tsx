@@ -1,15 +1,23 @@
 import React from "react";
 import LogoLight from "../../assets/logo-light.svg";
 
-const Navbar = () => {
+interface NavbarProps {
+  open: boolean;
+}
+
+const Navbar = ({ open }: NavbarProps) => {
   return (
-    <div className="flex h-24 w-screen items-center justify-between bg-darkGrey">
-      <div className="flex h-full w-48 items-center justify-center border-r-2 border-r-darkLines">
-        <a className="text-3xl font-bold normal-case">
+    <div className="flex h-24 w-screen items-center bg-darkGrey shadow-md">
+      <div
+        className={`${
+          open ? "border-b-0" : "border-b-2"
+        } rounded-non box-border flex h-full w-48 items-center justify-center border-r-2  border-b-darkLines border-r-darkLines `}
+      >
+        <div className={`${open ? "h-[30px]" : "h-[28px]"}`}>
           <LogoLight />
-        </a>
+        </div>
       </div>
-      <div className="flex-none ">
+      <div className="flex h-24 flex-1 items-center justify-end border-b-2 border-b-darkLines">
         <button className="btn-ghost btn-square btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
