@@ -7,7 +7,7 @@ const Home: React.FC = () => {
 
   return (
     <Layout>
-      <div className="flex">
+      <div className="w-full">
         <p className="text-white text-center text-2xl">
           {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
         </p>

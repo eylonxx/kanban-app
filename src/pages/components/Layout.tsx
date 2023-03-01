@@ -14,8 +14,8 @@ export default function Layout({ children }: LayoutProps) {
       </div>
       <div className="relative flex flex-grow">
         <aside
-          className={`w-0 overflow-hidden bg-darkGrey  transition-all ${
-            open ? "sm:w-48" : ""
+          className={`w-0 overflow-hidden border-r-2 border-r-darkLines bg-darkGrey transition-all ${
+            open ? "sm:w-48" : "border-r-0"
           }`}
         >
           <ul>
@@ -34,7 +34,7 @@ export default function Layout({ children }: LayoutProps) {
             open
           </button>
         )}
-        <main className="flex-1 border">{children}</main>
+        <main className="grow bg-veryDarkGrey">{children}</main>
       </div>
     </div>
   );
