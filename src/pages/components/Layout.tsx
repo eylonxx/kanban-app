@@ -8,11 +8,13 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const [open, setOpen] = useState(true);
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <div className="min-w-screen flex">
+    <div className="flex min-h-screen flex-col">
+      <div className=" flex items-center justify-between bg-darkGrey">
+        <Navbar />
+      </div>
+      <div className="relative flex flex-grow">
         <aside
-          className={`w-0 overflow-hidden  transition-all ${
+          className={`w-0 overflow-hidden bg-darkGrey  transition-all ${
             open ? "sm:w-48" : ""
           }`}
         >
