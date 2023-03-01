@@ -11,7 +11,7 @@ const Navbar = ({ open }: NavbarProps) => {
       <div
         className={`${
           open ? "border-b-0" : "border-b-2"
-        } rounded-non box-border flex h-full w-48 items-center justify-center border-r-2  border-b-darkLines border-r-darkLines `}
+        } rounded-non box-border flex h-full w-72 items-center justify-center border-r-2  border-b-darkLines border-r-darkLines `}
       >
         <div className={`${open ? "h-[30px]" : "h-[28px]"}`}>
           <LogoLight />

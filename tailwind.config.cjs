@@ -17,6 +17,7 @@ const config = {
       mediumGrey: "#828fa3",
       lightLines: "#e4ebfa",
       lightGrey: "#f4f7fd",
+      white:'#fff',
       red: "#ea5555",
       redHover: "#ff9898",
     },
