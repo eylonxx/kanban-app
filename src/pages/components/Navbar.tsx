@@ -1,12 +1,15 @@
 import React from "react";
+import LogoLight from "../../assets/logo-light.svg";
 
 const Navbar = () => {
   return (
-    <div className="navbar bg-darkGrey">
-      <div className="flex-1">
-        <a className="btn-ghost btn text-xl normal-case">kanban</a>
+    <div className="flex h-24 w-screen items-center justify-between bg-darkGrey">
+      <div className="flex h-full w-48 items-center justify-center border-r-2 border-r-darkLines">
+        <a className="text-3xl font-bold normal-case">
+          <LogoLight />
+        </a>
       </div>
-      <div className="flex-none">
+      <div className="flex-none ">
         <button className="btn-ghost btn-square btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
