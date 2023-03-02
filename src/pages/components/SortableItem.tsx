@@ -26,8 +26,14 @@ interface SortableItem {
 }
 
 export default function SortableItem({ id }: SortableItem) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -35,7 +41,13 @@ export default function SortableItem({ id }: SortableItem) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div
+      ref={setNodeRef}
+      className={`${isDragging ? "opacity-30" : "opacity-100"}`}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       <Task id={id} />
     </div>
   );
