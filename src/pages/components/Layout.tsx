@@ -6,11 +6,7 @@ import IconBoardPurple from "../../assets/icon-board-purple.svg";
 interface LayoutProps {
   children: React.ReactNode;
 }
-interface Board {
-  key: number;
-  name: string;
-  tasks: number;
-}
+
 const boards = [
   { key: 1, name: "Platform Launch", tasks: 8 },
   { key: 2, name: "test", tasks: 6 },
