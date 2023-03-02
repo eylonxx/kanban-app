@@ -3,6 +3,9 @@ import Navbar from "./Navbar";
 import IconBoard from "../../assets/icon-board.svg";
 import IconBoardWhite from "../../assets/icon-board-white.svg";
 import IconBoardPurple from "../../assets/icon-board-purple.svg";
+import HideSidebar from "../../assets/icon-hide-sidebar.svg";
+import HideSidebarActive from "../../assets/icon-hide-sidebar-active.svg";
+
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -24,14 +27,14 @@ export default function Layout({ children }: LayoutProps) {
       </div>
       <div className="relative flex flex-grow">
         <aside
-          className={`w-0 overflow-hidden border-r-darkLines bg-darkGrey transition-all duration-500 ${
+          className={`flex w-0 flex-col overflow-hidden border-r-darkLines bg-darkGrey transition-all duration-500 ${
             open ? "border-r-2 pr-8 sm:w-72" : "border-r-0 pr-0"
           }`}
         >
-          <div className={`my-5 flex flex-shrink-0 pl-4`}>
-            <span className="m-0 flex-shrink-0 p-0 text-xs font-bold uppercase tracking-widest text-mediumGrey">
+          <div className={`my-5 flex flex-shrink-0 pl-8`}>
+            <p className="m-0 flex-shrink-0 p-0 text-xs font-bold uppercase tracking-widest text-mediumGrey">
               all boards ({boards.length})
-            </span>
+            </p>
           </div>
           <ul>
             {boards.map((board) => {
@@ -44,8 +47,8 @@ export default function Layout({ children }: LayoutProps) {
                   className={`${
                     selectedBoard === board.key
                       ? "rounded-r-full bg-mainPurple text-white"
-                      : ""
-                  } flex h-12 cursor-pointer items-center gap-4 pl-4`}
+                      : "text-mediumGrey"
+                  } flex h-12 cursor-pointer items-center gap-4 pl-8`}
                 >
                   <div className="flex-shrink-0">
                     {selectedBoard === board.key ? (
@@ -62,7 +65,7 @@ export default function Layout({ children }: LayoutProps) {
             })}
             <li>
               <div
-                className={`${"text-mainPurple"} flex h-12 cursor-pointer items-center gap-4 pl-4`}
+                className={`${"text-mainPurple"} flex h-12 cursor-pointer items-center gap-4 pl-8`}
               >
                 <div className="flex-shrink-0">
                   <IconBoardPurple />
@@ -72,12 +75,18 @@ export default function Layout({ children }: LayoutProps) {
                 </p>
               </div>
             </li>
-            <li>
-              <button className="" onClick={() => setOpen(false)}>
-                hide
-              </button>
-            </li>
           </ul>
+          <div className="mb-10 mt-auto flex  items-center pl-8">
+            <button
+              className="hover:text-mainPurpleHover"
+              onClick={() => setOpen(false)}
+            >
+              <HideSidebar />
+            </button>
+            <p className="flex-shrink-0 pl-4 font-bold tracking-wider  text-mediumGrey">
+              Hide Sidebar
+            </p>
+          </div>
         </aside>
         {!open && (
           <button className="absolute bottom-5" onClick={() => setOpen(true)}>
