@@ -7,7 +7,7 @@ interface NavbarProps {
 
 const Navbar = ({ open }: NavbarProps) => {
   return (
-    <div className="flex h-24 w-screen items-center bg-darkGrey shadow-md">
+    <div className="flex h-24 w-screen items-center bg-darkGrey  shadow-lg">
       <div
         className={`${
           open ? "border-b-0" : "border-b-2"

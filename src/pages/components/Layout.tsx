@@ -27,7 +27,7 @@ export default function Layout({ children }: LayoutProps) {
       </div>
       <div className="relative flex flex-grow">
         <aside
-          className={`w-0 overflow-hidden border-r-darkLines bg-darkGrey pr-8  transition-all duration-500 ${
+          className={`w-0 overflow-hidden border-r-darkLines bg-darkGrey pr-8 transition-all duration-500 ${
             open ? "border-r-2 sm:w-72" : "border-r-0 pr-0"
           }`}
         >

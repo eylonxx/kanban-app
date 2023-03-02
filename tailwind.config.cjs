@@ -3,6 +3,9 @@ const config = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      boxShadow: {
+        'right':'10px 0px 24px -8px rgba(0,0,0,0.6)',
+      },
       transitionProperty: {
         width: "width",
       },
