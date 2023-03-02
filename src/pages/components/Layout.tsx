@@ -44,18 +44,22 @@ export default function Layout({ children }: LayoutProps) {
                     setSelectedBoard(board.key);
                   }}
                   key={board.key}
-                  className={`${
+                  className={`
+                  flex h-12 cursor-pointer items-center gap-4 pl-8
+                  ${
                     selectedBoard === board.key
                       ? "rounded-r-full bg-mainPurple text-white"
-                      : "text-mediumGrey"
-                  } flex h-12 cursor-pointer items-center gap-4 pl-8`}
+                      : "rounded-r-full text-mediumGrey hover:bg-white hover:text-mainPurple "
+                  }`}
                 >
-                  <div className="flex-shrink-0">
-                    {selectedBoard === board.key ? (
-                      <IconBoardWhite />
-                    ) : (
-                      <IconBoard />
-                    )}
+                  <div
+                    className={`${
+                      selectedBoard === board.key
+                        ? "text-white"
+                        : "hover:text-mainPurple"
+                    } flex-shrink-0`}
+                  >
+                    <IconBoard />
                   </div>
                   <p className="flex-shrink-0 font-bold tracking-wide">
                     {board.name}
