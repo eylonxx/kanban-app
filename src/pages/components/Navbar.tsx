@@ -1,5 +1,6 @@
 import React from "react";
 import LogoLight from "../../assets/logo-light.svg";
+import ButtonLg from "./ButtonLg";
 
 interface NavbarProps {
   open: boolean;
@@ -18,6 +19,12 @@ const Navbar = ({ open }: NavbarProps) => {
         </div>
       </div>
       <div className="flex h-24 flex-1 items-center justify-end border-b-2 border-b-darkLines">
+        <ButtonLg
+          text="+ Add New Task"
+          width="24"
+          height="10"
+          variant="mainPurple"
+        />
         <button className="btn-ghost btn-square btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
