@@ -4,7 +4,7 @@ import IconBoard from "../../assets/icon-board.svg";
 import IconBoardWhite from "../../assets/icon-board-white.svg";
 import IconBoardPurple from "../../assets/icon-board-purple.svg";
 import HideSidebar from "../../assets/icon-hide-sidebar.svg";
-import HideSidebarActive from "../../assets/icon-hide-sidebar-active.svg";
+import ShowSidebar from "../../assets/icon-show-sidebar.svg";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -76,23 +76,26 @@ export default function Layout({ children }: LayoutProps) {
               </div>
             </li>
           </ul>
-          <div className="mb-10 mt-auto flex  items-center pl-8">
-            <button
-              className="hover:text-mainPurpleHover"
-              onClick={() => setOpen(false)}
-            >
+          <div
+            onClick={() => setOpen(false)}
+            className="group mb-10 mt-auto flex h-12 flex-shrink-0 cursor-pointer items-center rounded-r-full pl-8 transition-all hover:bg-white hover:text-mainPurple"
+          >
+            <div>
               <HideSidebar />
-            </button>
-            <p className="flex-shrink-0 pl-4 font-bold tracking-wider  text-mediumGrey">
+            </div>
+            <p className="flex-shrink-0 pl-4 font-bold tracking-wider text-mediumGrey group-hover:text-mainPurple">
               Hide Sidebar
             </p>
           </div>
         </aside>
-        {!open && (
-          <button className="absolute bottom-5" onClick={() => setOpen(true)}>
-            open
-          </button>
-        )}
+        <div
+          className={`${
+            open ? "hidden" : ""
+          } absolute bottom-10 flex h-12 cursor-pointer items-center rounded-r-full bg-mainPurple py-4 px-5 text-white transition-all hover:bg-mainPurpleHover`}
+          onClick={() => setOpen(true)}
+        >
+          <ShowSidebar />
+        </div>
         <main className="grow bg-veryDarkGrey">{children}</main>
       </div>
     </div>
