@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navbar from "./Navbar";
 import IconBoard from "../../assets/icon-board.svg";
 import IconBoardWhite from "../../assets/icon-board-white.svg";
+import IconBoardPurple from "../../assets/icon-board-purple.svg";
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -27,10 +28,15 @@ export default function Layout({ children }: LayoutProps) {
       </div>
       <div className="relative flex flex-grow">
         <aside
-          className={`w-0 overflow-hidden border-r-darkLines bg-darkGrey pr-8 transition-all duration-500 ${
-            open ? "border-r-2 sm:w-72" : "border-r-0 pr-0"
+          className={`w-0 overflow-hidden border-r-darkLines bg-darkGrey transition-all duration-500 ${
+            open ? "border-r-2 pr-8 sm:w-72" : "border-r-0 pr-0"
           }`}
         >
+          <div className={`my-5 flex flex-shrink-0 pl-4`}>
+            <span className="m-0 flex-shrink-0 p-0 text-xs font-bold uppercase tracking-widest text-mediumGrey">
+              all boards ({boards.length})
+            </span>
+          </div>
           <ul>
             {boards.map((board) => {
               return (
@@ -52,10 +58,24 @@ export default function Layout({ children }: LayoutProps) {
                       <IconBoard />
                     )}
                   </div>
-                  <p className="flex-shrink-0">{board.name}</p>
+                  <p className="flex-shrink-0 font-bold tracking-wide">
+                    {board.name}
+                  </p>
                 </div>
               );
             })}
+            <li>
+              <div
+                className={`${"text-mainPurple"} flex h-12 cursor-pointer items-center gap-4 pl-4`}
+              >
+                <div className="flex-shrink-0">
+                  <IconBoardPurple />
+                </div>
+                <p className="flex-shrink-0 font-bold tracking-wide">
+                  + Create New Board
+                </p>
+              </div>
+            </li>
             <li>
               <button className="" onClick={() => setOpen(false)}>
                 hide
