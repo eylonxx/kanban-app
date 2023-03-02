@@ -1,3 +1,4 @@
+import { signOut, useSession } from "next-auth/react";
 import React from "react";
 import LogoLight from "../../assets/logo-light.svg";
 import ButtonLg from "./ButtonLg";
@@ -7,6 +8,8 @@ interface NavbarProps {
 }
 
 const Navbar = ({ open }: NavbarProps) => {
+  const { data: sessionData } = useSession();
+
   return (
     <div className="flex h-24 w-screen items-center bg-darkGrey  shadow-lg">
       <div
@@ -25,6 +28,14 @@ const Navbar = ({ open }: NavbarProps) => {
           height="10"
           variant="mainPurple"
         />
+        <button
+          className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+          onClick={() => {
+            void signOut({ callbackUrl: "/" });
+          }}
+        >
+          Logout
+        </button>
         <button className="btn-ghost btn-square btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
