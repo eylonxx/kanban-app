@@ -6,7 +6,7 @@ export const boardRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.board.findMany({
       where: {
-        userId: ctx.session.user.id,
+        OR: [{ userId: ctx.session.user.id }],
       },
     });
   }),
