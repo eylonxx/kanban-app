@@ -5,7 +5,6 @@ import ShowSidebar from "../../assets/icon-show-sidebar.svg";
 import { type Board } from "@prisma/client";
 import { signOut, useSession } from "next-auth/react";
 import React, { useState } from "react";
-import Layout from "../components/Layout";
 import { api } from "~/utils/api";
 import Navbar from "../components/Navbar";
 import TasksBoard from "../components/TasksBoard";
@@ -111,16 +110,6 @@ const Home: React.FC = () => {
         </main>
       </div>
     </div>
-
-    // <Layout
-    //   selectedBoard={selectedBoard}
-    //   setSelectedBoard={setSelectedBoard}
-    //   boardsLength={boards?.length ?? 0}
-    // >
-    //   <div className="w-full">
-    //     <TasksBoard selectedBoard={selectedBoard} />
-    //   </div>
-    // </Layout>
   );
 };
 

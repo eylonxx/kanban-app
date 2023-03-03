@@ -28,6 +28,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     },
     { enabled: sessionData?.user !== undefined }
   );
+  console.log(tasks);
 
   const [items, setItems] = useState<Record<string, { id: string }[]>>({
     A: [{ id: "1" }, { id: "2" }, { id: "3" }],
