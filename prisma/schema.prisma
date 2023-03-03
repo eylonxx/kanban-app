@@ -65,12 +65,11 @@ model Task {
     updatedAt   DateTime @updatedAt
     title       String
     description String
-    status      Status   @default(TODO)
     subTasks    String[]
     user        User     @relation(fields: [userId], references: [id])
     userId      String
-    board       Board    @relation(fields: [boardId], references: [id])
-    boardId     String
+    column      Column   @relation(fields: [columnId], references: [id])
+    columnId    String
 }
 
 model Board {
@@ -80,7 +79,17 @@ model Board {
     title     String
     user      User     @relation(fields: [userId], references: [id])
     userId    String
-    tasks     Task[]
+    columns   Column[]
+}
+
+model Column {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    title     String
+    board     Board    @relation(fields: [boardId], references: [id])
+    boardId   String
+    Task      Task[]
 }
 
 model VerificationToken {
@@ -89,10 +98,4 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
-}
-
-enum Status {
-    TODO
-    DOING
-    DONE
 }
