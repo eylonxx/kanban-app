@@ -153,7 +153,7 @@ const Board = () => {
           return <Container key={key} id={key} items={value} />;
         })}
 
-        <DragOverlay>{activeId ? <Task id={"2"} /> : null}</DragOverlay>
+        <DragOverlay>{activeId ? <Task id={activeId} /> : null}</DragOverlay>
       </DndContext>
     </div>
   );
