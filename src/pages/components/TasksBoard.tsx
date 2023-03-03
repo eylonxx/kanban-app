@@ -1,20 +1,33 @@
 import {
   DndContext,
-  closestCorners,
-  rectIntersection,
   closestCenter,
   DragOverlay,
-  DragStartEvent,
-  DragEndEvent,
-  DragOverEvent,
+  type DragStartEvent,
+  type DragEndEvent,
+  type DragOverEvent,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
+import { type Board } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
+import { api } from "~/utils/api";
 import Container from "./Container";
 import { Task } from "./SortableItem";
 
-const Board = () => {
+interface TasksBoardProps {
+  selectedBoard: Board | null;
+}
+
+const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
+  const { data: sessionData } = useSession();
+
   const [activeId, setActiveId] = useState<string | null>();
+  const { data: tasks, refetch: refetchTasks } = api.task.getAll.useQuery(
+    {
+      boardId: selectedBoard?.id ?? "",
+    },
+    { enabled: sessionData?.user !== undefined }
+  );
 
   const [items, setItems] = useState<Record<string, { id: string }[]>>({
     A: [{ id: "1" }, { id: "2" }, { id: "3" }],
@@ -159,4 +172,4 @@ const Board = () => {
   );
 };
 
-export default Board;
+export default TasksBoard;

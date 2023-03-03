@@ -5,7 +5,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
 import { env } from "process";
-import Board from "./components/Board";
+import Board from "./components/TasksBoard";
 
 const Main: NextPage = () => {
   return (
