@@ -1,7 +1,7 @@
 import { signOut, useSession } from "next-auth/react";
 import React from "react";
 import LogoLight from "../../assets/logo-light.svg";
-import ButtonLg from "./ButtonLg";
+import Button from "./Button";
 
 interface NavbarProps {
   open: boolean;
@@ -22,7 +22,7 @@ const Navbar = ({ open }: NavbarProps) => {
         </div>
       </div>
       <div className="flex h-24 flex-1 items-center justify-end border-b-2 border-b-darkLines">
-        <ButtonLg
+        <Button
           text="+ Add New Task"
           width="24"
           height="10"

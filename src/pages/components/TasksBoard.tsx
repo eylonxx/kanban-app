@@ -7,12 +7,12 @@ import {
   type DragOverEvent,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import { type Board } from "@prisma/client";
+import { type Column, type Board, type Task } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import Container from "./Container";
-import { Task } from "./SortableItem";
+import { TaskCard } from "./SortableItem";
 
 interface TasksBoardProps {
   selectedBoard: Board | null;
@@ -20,30 +20,62 @@ interface TasksBoardProps {
 
 const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   const { data: sessionData } = useSession();
-
   const [activeId, setActiveId] = useState<string | null>();
+
+  // const [items, setItems] = useState<Record<string, { id: string }[]>>({
+  //   A: [{ id: "1" }, { id: "2" }, { id: "3" }],
+  //   B: [{ id: "4" }, { id: "5" }, { id: "6" }],
+  //   C: [{ id: "7" }, { id: "8" }, { id: "9" }],
+  //   D: [{ id: "10" }, { id: "11" }, { id: "12" }],
+  // });
+
+  const [items, setItems] = useState<Task[]>([]);
+
+  const { data: columns, refetch: refetchColumns } = api.column.getAll.useQuery(
+    { boardId: selectedBoard?.id || "" },
+    {
+      enabled: sessionData?.user !== undefined,
+      // onSuccess: (data) => {},
+    }
+  );
+
   const { data: tasks, refetch: refetchTasks } = api.task.getAll.useQuery(
     {
-      boardId: selectedBoard?.id ?? "",
+      columnIds: columns?.map((column) => column.id) || [],
     },
-    { enabled: sessionData?.user !== undefined }
+    {
+      enabled: sessionData?.user !== undefined,
+      onSuccess: (data) => setItems(data),
+    }
   );
-  console.log(tasks);
 
-  const [items, setItems] = useState<Record<string, { id: string }[]>>({
-    A: [{ id: "1" }, { id: "2" }, { id: "3" }],
-    B: [{ id: "4" }, { id: "5" }, { id: "6" }],
-    C: [{ id: "7" }, { id: "8" }, { id: "9" }],
-    D: [{ id: "10" }, { id: "11" }, { id: "12" }],
+  // console.log(tasks);
+
+  const createColumn = api.column.create.useMutation({
+    onSuccess: () => {
+      void refetchColumns();
+    },
   });
 
+  function getColumnsTasks(columnId: string) {
+    return items.filter((task) => {
+      return task.columnId === columnId;
+    });
+  }
+
   function findContainer(id: string) {
-    if (id in items) {
-      return id;
-    }
-    return Object.keys(items).find((key) =>
-      items[key]?.find((item) => item.id === id)
-    );
+    // if (id in items) {
+    //   return id;
+    // }
+    // return Object.keys(items).find((key) =>
+    //   items[key]?.find((item) => item.id === id)
+    // );
+    const task = items?.find((task) => {
+      return task.columnId === id;
+    });
+    // console.log("taskid:", task, "colid:", task?.columnId);
+
+    return task?.columnId;
   }
 
   function handleDragStart(event: DragStartEvent) {
@@ -100,9 +132,11 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     if (overId == null || overId === "void" || active.id in items) {
       return;
     }
+    console.log(id, overId);
 
     const activeContainer = findContainer(id.toString());
     const overContainer = findContainer(overId.toString());
+    // console.log(activeContainer, overContainer);
 
     if (
       !activeContainer ||
@@ -163,11 +197,19 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        {Object.entries(items).map(([key, value]) => {
-          return <Container key={key} id={key} items={value} />;
+        {columns?.map((column) => {
+          return (
+            <Container
+              key={column.id}
+              id={column.id}
+              items={getColumnsTasks(column.id)}
+            />
+          );
         })}
 
-        <DragOverlay>{activeId ? <Task id={activeId} /> : null}</DragOverlay>
+        <DragOverlay>
+          {activeId ? <TaskCard id={activeId} /> : null}
+        </DragOverlay>
       </DndContext>
     </div>
   );
