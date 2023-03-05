@@ -3,11 +3,13 @@ import {
   closestCenter,
   DragOverlay,
   type DragStartEvent,
-  type DragEndEvent,
   type DragOverEvent,
+  closestCorners,
+  rectIntersection,
 } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
-import { type Column, type Board, type Task } from "@prisma/client";
+import { SortableContext } from "@dnd-kit/sortable";
+import { type Board, type Task } from "@prisma/client";
+import { LexoRank } from "lexorank";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
@@ -21,21 +23,16 @@ interface TasksBoardProps {
 const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   const { data: sessionData } = useSession();
   const [activeId, setActiveId] = useState<string | null>();
-
-  // const [items, setItems] = useState<Record<string, { id: string }[]>>({
-  //   A: [{ id: "1" }, { id: "2" }, { id: "3" }],
-  //   B: [{ id: "4" }, { id: "5" }, { id: "6" }],
-  //   C: [{ id: "7" }, { id: "8" }, { id: "9" }],
-  //   D: [{ id: "10" }, { id: "11" }, { id: "12" }],
-  // });
-
   const [items, setItems] = useState<Task[]>([]);
+  const [columnIds, setColumnIds] = useState<string[]>([]);
 
   const { data: columns, refetch: refetchColumns } = api.column.getAll.useQuery(
     { boardId: selectedBoard?.id || "" },
     {
       enabled: sessionData?.user !== undefined,
-      // onSuccess: (data) => {},
+      onSuccess: (data) => {
+        setColumnIds(data?.map((column) => column.id) || []);
+      },
     }
   );
 
@@ -49,32 +46,23 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     }
   );
 
-  // console.log(tasks);
-
   const createColumn = api.column.create.useMutation({
     onSuccess: () => {
       void refetchColumns();
     },
   });
 
-  function getColumnsTasks(columnId: string) {
-    return items.filter((task) => {
-      return task.columnId === columnId;
-    });
+  const updateTask = api.task.update.useMutation({});
+
+  function getTasksByColumn(columnId: string) {
+    return items
+      .filter((task) => task.columnId === columnId)
+      .sort((a, b) => a.rank.localeCompare(b.rank));
   }
 
   function findContainer(id: string) {
-    // if (id in items) {
-    //   return id;
-    // }
-    // return Object.keys(items).find((key) =>
-    //   items[key]?.find((item) => item.id === id)
-    // );
-    const task = items?.find((task) => {
-      return task.columnId === id;
-    });
-    // console.log("taskid:", task, "colid:", task?.columnId);
-
+    if (columnIds.includes(id)) return id;
+    const task = items?.find((task) => task.id === id);
     return task?.columnId;
   }
 
@@ -84,44 +72,23 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     setActiveId(id as string);
   }
 
-  function handleDragEnd(event: DragEndEvent) {
+  function handleDragEnd(event: DragOverEvent) {
     const { active, over } = event;
     const { id } = active;
-    if (!over) return;
-    const overId = over.id;
-    const activeContainer = findContainer(id.toString());
-    const overContainer = findContainer(overId.toString());
 
-    if (
-      !activeContainer ||
-      !overContainer ||
-      activeContainer !== overContainer
-    ) {
+    const overId = over?.id;
+    if (overId == null || overId === "void") {
       return;
     }
 
-    const activeIndex = items[activeContainer]?.findIndex(
-      (item) => item.id === active.id
-    );
-    const overIndex = items[overContainer]?.findIndex(
-      (item) => item.id === over.id
-    );
+    const activeTask = items.find((task) => task.id === id);
+    if (!activeTask) return;
 
-    if (
-      activeIndex !== undefined &&
-      overIndex !== undefined &&
-      activeIndex !== overIndex
-    ) {
-      setItems((items) => ({
-        ...items,
-        [overContainer]: arrayMove(
-          items[overContainer]!,
-          activeIndex,
-          overIndex
-        ),
-      }));
-    }
-    setActiveId(null);
+    updateTask.mutate({
+      id: id.toString(),
+      newRank: activeTask.rank,
+      newColumnId: activeTask.columnId,
+    });
   }
 
   function handleDragOver(event: DragOverEvent) {
@@ -129,83 +96,73 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     const { id } = active;
 
     const overId = over?.id;
-    if (overId == null || overId === "void" || active.id in items) {
+    if (overId == null || overId === "void" || activeId === overId) {
       return;
     }
-    console.log(id, overId);
 
-    const activeContainer = findContainer(id.toString());
     const overContainer = findContainer(overId.toString());
-    // console.log(activeContainer, overContainer);
-
-    if (
-      !activeContainer ||
-      !overContainer ||
-      activeContainer === overContainer
-    ) {
-      return;
-    }
+    if (!overContainer) return;
 
     setItems((prev) => {
-      const activeItems = prev[activeContainer]!;
-      const overItems = prev[overContainer]!;
+      const activeTask = prev.find((task) => task.id === id);
+      if (!activeTask) return prev;
+      activeTask.columnId = overContainer;
+      const overTasks = getTasksByColumn(overContainer);
+      let newRank;
 
-      // Find the indexes for the items
-      const activeIndex = activeItems?.findIndex(
-        (item) => item.id === active.id
-      );
-      const overIndex = overItems?.findIndex((item) => item.id === overId);
-
-      let newIndex;
-      if (overId in prev) {
-        //if dropped container is empty
-        // We're at the root droppable of a container
-        newIndex = overItems.length + 1;
+      if (columnIds.includes(overId.toString())) {
+        if (overTasks.length === 0) {
+          newRank = LexoRank.middle().toString();
+        } else {
+          newRank = LexoRank.parse(overTasks[overTasks.length - 1]!.rank)
+            .genNext()
+            .toString();
+        }
       } else {
-        const isBelowLastItem =
+        const isBelowTask =
           over &&
           active.rect.current.translated &&
           active.rect.current.translated.top > over.rect.top + over.rect.height;
 
-        // &&
-        // draggingRect.offsetTop > over.rect.offsetTop + over.rect.height;
-
-        const modifier = isBelowLastItem ? 1 : 0;
-
-        newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
+        if (isBelowTask) {
+          newRank = LexoRank.parse(
+            overTasks.find((task) => task.id === overId)!.rank
+          )
+            .genNext()
+            .toString();
+        } else {
+          newRank = LexoRank.parse(
+            overTasks.find((task) => task.id === overId)!.rank
+          )
+            .genPrev()
+            .toString();
+        }
       }
+      activeTask.rank = newRank;
 
-      return {
-        ...prev,
-        [activeContainer]: [
-          ...prev[activeContainer]!.filter((item) => item.id !== active.id),
-        ],
-        [overContainer]: [
-          ...prev[overContainer]!.slice(0, newIndex),
-          items[activeContainer]![activeIndex]!,
-          ...prev[overContainer]!.slice(newIndex, prev[overContainer]!.length),
-        ],
-      };
+      return [...prev];
     });
   }
 
   return (
     <div className="flex flex-row">
       <DndContext
-        collisionDetection={closestCenter}
+        collisionDetection={rectIntersection}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        {columns?.map((column) => {
-          return (
-            <Container
-              key={column.id}
-              id={column.id}
-              items={getColumnsTasks(column.id)}
-            />
-          );
-        })}
+        <SortableContext items={columnIds}>
+          {columns?.map((column) => {
+            return (
+              <Container
+                key={column.id}
+                id={column.id}
+                items={getTasksByColumn(column.id)}
+              />
+            );
+          })}
+        </SortableContext>
 
         <DragOverlay>
           {activeId ? <TaskCard id={activeId} /> : null}

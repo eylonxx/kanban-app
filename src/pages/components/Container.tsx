@@ -1,5 +1,5 @@
 import React from "react";
-import { useDroppable } from "@dnd-kit/core";
+import { DragOverlay, useDroppable } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
