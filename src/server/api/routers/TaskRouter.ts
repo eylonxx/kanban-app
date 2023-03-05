@@ -4,11 +4,11 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const taskRouter = createTRPCRouter({
   getAll: protectedProcedure
-    .input(z.object({ boardId: z.string() }))
+    .input(z.object({ columnIds: z.array(z.string()) }))
     .query(({ ctx, input }) => {
       return ctx.prisma.task.findMany({
         where: {
-          boardId: input.boardId,
+          columnId: { in: input.columnIds },
         },
       });
     }),
