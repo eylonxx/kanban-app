@@ -10,4 +10,14 @@ export const boardRouter = createTRPCRouter({
       },
     });
   }),
+  create: protectedProcedure
+    .input(z.object({ title: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.board.create({
+        data: {
+          title: input.title,
+          userId: ctx.session.user.id,
+        },
+      });
+    }),
 });
