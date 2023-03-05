@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { boardRouter } from "./routers/BoardRouter";
+import { columnRouter } from "./routers/ColumnRouter";
 import { taskRouter } from "./routers/TaskRouter";
 
 /**
@@ -10,6 +11,7 @@ import { taskRouter } from "./routers/TaskRouter";
 export const appRouter = createTRPCRouter({
   board: boardRouter,
   task: taskRouter,
+  column: columnRouter,
 });
 
 // export type definition of API

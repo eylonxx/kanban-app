@@ -2,11 +2,11 @@ import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-interface TaskProps {
+interface TaskCardProps {
   id: string;
 }
 
-export function Task({ id }: TaskProps) {
+export function TaskCard({ id }: TaskCardProps) {
   const style = {
     width: "100%",
     height: 50,
@@ -48,7 +48,7 @@ export default function SortableItem({ id }: SortableItem) {
       {...attributes}
       {...listeners}
     >
-      <Task id={id} />
+      <TaskCard id={id} />
     </div>
   );
 }

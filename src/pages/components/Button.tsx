@@ -1,13 +1,13 @@
 import React from "react";
 
-interface ButtonLgProps {
+interface ButtonProps {
   text: string;
   width: string;
   height: string;
   variant: string;
 }
 
-const ButtonLg = ({ text, width, height, variant }: ButtonLgProps) => {
+const Button = ({ text, width, height, variant }: ButtonProps) => {
   return (
     <button
       className={`h-${height} w-${width} bg-${variant} rounded-full px-8 py-3 text-white`}
@@ -17,4 +17,4 @@ const ButtonLg = ({ text, width, height, variant }: ButtonLgProps) => {
   );
 };
 
-export default ButtonLg;
+export default Button;

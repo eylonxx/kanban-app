@@ -6,6 +6,7 @@ import {
 } from "@dnd-kit/sortable";
 
 import SortableItem from "./SortableItem";
+import { type Task } from "@prisma/client";
 
 const containerStyle = {
   background: "#dadada",
@@ -15,7 +16,7 @@ const containerStyle = {
 };
 
 interface ContainerProps {
-  items: { id: string }[];
+  items: Task[];
   id: string;
 }
 
