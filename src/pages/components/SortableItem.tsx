@@ -8,8 +8,8 @@ interface TaskCardProps {
 
 export function TaskCard({ id }: TaskCardProps) {
   const style = {
-    width: "100%",
-    height: 100,
+    width: 288,
+    height: 88,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -18,7 +18,11 @@ export function TaskCard({ id }: TaskCardProps) {
     background: "white",
   };
 
-  return <div style={style}>{id}</div>;
+  return (
+    <div className="flex h-24 w-64 items-center rounded-md bg-darkGrey  shadow-taskCard">
+      {id}
+    </div>
+  );
 }
 
 interface SortableItem {

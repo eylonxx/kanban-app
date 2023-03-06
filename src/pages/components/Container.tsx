@@ -9,10 +9,7 @@ import SortableItem from "./SortableItem";
 import { type Task } from "@prisma/client";
 
 const containerStyle = {
-  background: "#dadada",
-  padding: 10,
-  margin: 10,
-  flex: 11,
+  width: 280,
 };
 
 interface ContainerProps {
@@ -31,7 +28,11 @@ export default function Container({ items, id }: ContainerProps) {
       items={items.map((item) => item.id)}
       strategy={verticalListSortingStrategy}
     >
-      <div ref={setNodeRef} style={containerStyle}>
+      <div
+        ref={setNodeRef}
+        style={containerStyle}
+        className="flex flex-col items-center gap-3 border py-6"
+      >
         {items.map((item, idx) => (
           <SortableItem key={`${item.id}-${idx}`} id={item.id} />
         ))}

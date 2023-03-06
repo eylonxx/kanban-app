@@ -153,15 +153,17 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
         onDragEnd={handleDragEnd}
       >
         <SortableContext items={columnIds}>
-          {columns?.map((column) => {
-            return (
-              <Container
-                key={column.id}
-                id={column.id}
-                items={getTasksByColumn(column.id)}
-              />
-            );
-          })}
+          <div className="flex gap-4">
+            {columns?.map((column) => {
+              return (
+                <Container
+                  key={column.id}
+                  id={column.id}
+                  items={getTasksByColumn(column.id)}
+                />
+              );
+            })}
+          </div>
         </SortableContext>
 
         <DragOverlay>

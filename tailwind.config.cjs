@@ -4,7 +4,8 @@ const config = {
   theme: {
     extend: {
       boxShadow: {
-        'right':'10px 0px 24px -8px rgba(0,0,0,0.6)',
+        right: "10px 0px 24px -8px rgba(0,0,0,0.6)",
+        taskCard: "0px 4px 4px rgba(0, 0, 0, 0.25)",
       },
       transitionProperty: {
         width: "width",
@@ -20,7 +21,7 @@ const config = {
       mediumGrey: "#828fa3",
       lightLines: "#e4ebfa",
       lightGrey: "#f4f7fd",
-      white:'#fff',
+      white: "#fff",
       red: "#ea5555",
       redHover: "#ff9898",
     },
