@@ -1,35 +1,34 @@
 import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { type Task } from "@prisma/client";
 
 interface TaskCardProps {
   id: string;
+  task: Task | null;
 }
 
-export function TaskCard({ id }: TaskCardProps) {
-  const style = {
-    width: 288,
-    height: 88,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    border: "1px solid black",
-    margin: "10px 0",
-    background: "white",
-  };
-
+export function TaskCard({ id, task }: TaskCardProps) {
   return (
-    <div className="flex h-24 w-64 items-center rounded-md bg-darkGrey  shadow-taskCard">
-      {id}
-    </div>
+    task && (
+      <div className="flex h-24 w-64 flex-col justify-center gap-2 rounded-md bg-darkGrey px-4 font-bold shadow-taskCard">
+        <div>
+          <p className="text-s text-white ">{task.title}</p>
+        </div>
+        <div>
+          <p className="text-xs text-mediumGrey">of {task.subTasks.length}</p>
+        </div>
+      </div>
+    )
   );
 }
 
-interface SortableItem {
+interface SortableItemProps {
   id: string;
+  task: Task;
 }
 
-export default function SortableItem({ id }: SortableItem) {
+export default function SortableItem({ id, task }: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -52,7 +51,7 @@ export default function SortableItem({ id }: SortableItem) {
       {...attributes}
       {...listeners}
     >
-      <TaskCard id={id} />
+      <TaskCard id={id} task={task} />
     </div>
   );
 }

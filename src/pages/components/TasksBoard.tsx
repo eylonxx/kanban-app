@@ -25,6 +25,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   const [activeId, setActiveId] = useState<string | null>();
   const [items, setItems] = useState<Task[]>([]);
   const [columnIds, setColumnIds] = useState<string[]>([]);
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   const { data: columns, refetch: refetchColumns } = api.column.getAll.useQuery(
     { boardId: selectedBoard?.id || "" },
@@ -66,10 +67,16 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     return task?.columnId;
   }
 
+  function getActiveTask(id: string): Task | null {
+    if (!tasks) return null;
+    return tasks.find((task) => task.id === id) || null;
+  }
+
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     const { id } = active;
     setActiveId(id as string);
+    setActiveTask(getActiveTask(id as string));
   }
 
   function handleDragEnd(event: DragOverEvent) {
@@ -167,7 +174,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
         </SortableContext>
 
         <DragOverlay>
-          {activeId ? <TaskCard id={activeId} /> : null}
+          {activeId ? <TaskCard task={activeTask} id={activeId} /> : null}
         </DragOverlay>
       </DndContext>
     </div>

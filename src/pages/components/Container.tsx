@@ -34,7 +34,7 @@ export default function Container({ items, id }: ContainerProps) {
         className="flex flex-col items-center gap-3 border py-6"
       >
         {items.map((item, idx) => (
-          <SortableItem key={`${item.id}-${idx}`} id={item.id} />
+          <SortableItem key={`${item.id}-${idx}`} task={item} id={item.id} />
         ))}
       </div>
     </SortableContext>
