@@ -140,12 +140,16 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
         if (activeContainer === overContainer) {
           newRank = overTask.rank;
           overTask.rank = activeRank;
+          updateTask.mutate({
+            id: overId.toString(),
+            newRank: overTask.rank,
+          });
         } else {
           const overRank = LexoRank.parse(overTask.rank);
-          if (overIndex === 0 || overIndex === overTasks.length - 1) {
-            newRank = isBelowOver
-              ? overRank.genNext().toString()
-              : overRank.genPrev().toString();
+          if (overIndex === 0 && !isBelowOver) {
+            newRank = overRank.genPrev().toString();
+          } else if (overIndex === overTasks.length - 1 && isBelowOver) {
+            newRank = overRank.genNext().toString();
           } else {
             const modifier = isBelowOver ? 1 : -1;
             newRank = overRank

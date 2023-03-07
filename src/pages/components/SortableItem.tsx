@@ -13,7 +13,9 @@ export function TaskCard({ id, task }: TaskCardProps) {
     task && (
       <div className="flex h-24 w-64 flex-col justify-center gap-2 rounded-md bg-darkGrey px-4 font-bold shadow-taskCard">
         <div>
-          <p className="text-s text-white ">{task.title}</p>
+          <p className="text-s text-white ">
+            {task.title} {task.rank}
+          </p>
         </div>
         <div>
           <p className="text-xs text-mediumGrey">of {task.subTasks.length}</p>
