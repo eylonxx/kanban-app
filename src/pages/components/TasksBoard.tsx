@@ -1,11 +1,9 @@
 import {
   DndContext,
-  closestCenter,
   DragOverlay,
   type DragStartEvent,
   type DragOverEvent,
   closestCorners,
-  rectIntersection,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { type Board, type Task } from "@prisma/client";

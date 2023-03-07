@@ -10,6 +10,7 @@ export const taskRouter = createTRPCRouter({
         where: {
           columnId: { in: input.columnIds },
         },
+        include: { subTasks: true },
       });
     }),
   update: protectedProcedure

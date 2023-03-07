@@ -60,17 +60,25 @@ model User {
 }
 
 model Task {
-    id          String   @id @default(cuid())
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    id          String    @id @default(cuid())
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
     title       String
     description String
-    subTasks    String[]
-    user        User     @relation(fields: [userId], references: [id])
+    subTasks    Subtask[]
+    user        User      @relation(fields: [userId], references: [id])
     userId      String
-    column      Column   @relation(fields: [columnId], references: [id])
+    column      Column    @relation(fields: [columnId], references: [id])
     columnId    String
     rank        String
+}
+
+model Subtask {
+    id      String  @id @default(cuid())
+    title   String
+    checked Boolean
+    Task    Task    @relation(fields: [taskId], references: [id])
+    taskId  String
 }
 
 model Board {
