@@ -6,7 +6,7 @@ import { api } from "~/utils/api";
 import Navbar from "../components/Navbar";
 import TasksBoard from "../components/TasksBoard";
 import Sidebar from "../components/Sidebar";
-import NewBoardModal from "../components/NewBoardModal";
+import BoardModal from "../components/BoardModal";
 
 const Home: React.FC = () => {
   const { data: sessionData } = useSession();
@@ -30,9 +30,9 @@ const Home: React.FC = () => {
     },
   });
 
-  // const handleCreateBoard = () => {
-  //   createBoard.mutate({});
-  // };
+  const handleCreateBoard = () => {
+    createBoard.mutate({});
+  };
 
   const boardNames = useMemo(() => {
     return boards?.map((board) => board.title) || [];
@@ -69,7 +69,7 @@ const Home: React.FC = () => {
           <ShowSidebar />
         </div>
         <main className="grow bg-veryDarkGrey">
-          {/* <NewBoardModal createBoard={createBoard} /> */}
+          <BoardModal create={true} createBoard={handleCreateBoard} />
           <TasksBoard selectedBoard={selectedBoard} />
         </main>
       </div>

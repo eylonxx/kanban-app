@@ -2,6 +2,7 @@ import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { type Task } from "@prisma/client";
+
 interface TaskCardProps {
   id: string;
   task: Task | null;
@@ -12,9 +13,7 @@ export function TaskCard({ id, task }: TaskCardProps) {
     task && (
       <div className="flex h-24 w-64 flex-col justify-center gap-2 rounded-md bg-darkGrey px-4 font-bold shadow-taskCard">
         <div>
-          <p className="text-s text-white ">
-            {task.title} {task.rank}
-          </p>
+          <p className="text-s text-white ">{task.title}</p>
         </div>
         <div>
           <p className="text-xs text-mediumGrey">of {task.subTasks.length}</p>

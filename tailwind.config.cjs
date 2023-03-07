@@ -24,6 +24,7 @@ const config = {
       white: "#fff",
       red: "#ea5555",
       redHover: "#ff9898",
+      inputBorder: "#404552",
     },
   },
   plugins: [require("daisyui")],
