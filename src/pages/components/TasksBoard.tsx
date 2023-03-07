@@ -101,8 +101,8 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   function handleDragOver(event: DragOverEvent) {
     const { active, over } = event;
     const { id } = active;
-
     const overId = over?.id;
+
     if (overId == null || overId === "void" || activeId === overId) {
       return;
     }
@@ -113,36 +113,45 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     setItems((prev) => {
       const activeTask = prev.find((task) => task.id === id);
       if (!activeTask) return prev;
+
+      const activeRank = activeTask.rank;
+      const activeContainer = activeTask.columnId;
+
       activeTask.columnId = overContainer;
       const overTasks = getTasksByColumn(overContainer);
-      let newRank;
 
+      let newRank;
       if (columnIds.includes(overId.toString())) {
         if (overTasks.length === 0) {
           newRank = LexoRank.middle().toString();
         } else {
-          newRank = LexoRank.parse(overTasks[overTasks.length - 1]!.rank)
+          newRank = LexoRank.parse(overTasks[overTasks.length - 1].rank)
             .genNext()
             .toString();
         }
       } else {
-        const isBelowTask =
+        const overIndex = overTasks.findIndex((task) => task.id === overId);
+        const overTask = overTasks[overIndex];
+        const isBelowOver =
           over &&
           active.rect.current.translated &&
           active.rect.current.translated.top > over.rect.top + over.rect.height;
 
-        if (isBelowTask) {
-          newRank = LexoRank.parse(
-            overTasks.find((task) => task.id === overId)!.rank
-          )
-            .genNext()
-            .toString();
+        if (activeContainer === overContainer) {
+          newRank = overTask.rank;
+          overTask.rank = activeRank;
         } else {
-          newRank = LexoRank.parse(
-            overTasks.find((task) => task.id === overId)!.rank
-          )
-            .genPrev()
-            .toString();
+          const overRank = LexoRank.parse(overTask.rank);
+          if (overIndex === 0 || overIndex === overTasks.length - 1) {
+            newRank = isBelowOver
+              ? overRank.genNext().toString()
+              : overRank.genPrev().toString();
+          } else {
+            const modifier = isBelowOver ? 1 : -1;
+            newRank = overRank
+              .between(LexoRank.parse(overTasks[overIndex + modifier].rank))
+              .toString();
+          }
         }
       }
       activeTask.rank = newRank;
@@ -154,7 +163,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   return (
     <div className="flex flex-row">
       <DndContext
-        collisionDetection={rectIntersection}
+        collisionDetection={closestCorners}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
