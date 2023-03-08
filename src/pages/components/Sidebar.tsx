@@ -66,7 +66,7 @@ const Sidebar = ({
             <div className="flex-shrink-0">
               <IconBoardPurple />
             </div>
-            <label htmlFor="my-modal-3" className="">
+            <label htmlFor="my-modal-3" className="flex-shrink-0">
               + Create New Board
             </label>
           </div>

@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import IconCross from "../../assets/icon-cross.svg";
-import Button from "./Button";
 
 interface BoardModalProps {
   createBoard: () => void;
@@ -8,9 +7,41 @@ interface BoardModalProps {
 }
 
 const BoardModal = ({ createBoard, create }: BoardModalProps) => {
+  const [boardName, setBoardName] = useState<string>("");
+  const [boardColumns, setBoardColumns] = useState<string[]>(["Todo", "Doing"]);
+  const [errors, setErrors] = useState<string[]>([]);
+
+  const addNewColumn = () => {
+    setBoardColumns((prev) => {
+      if (prev[prev.length - 1] === "") {
+        return prev;
+      } else {
+        return [...prev, ""];
+      }
+    });
+  };
+
+  const handleInputOnChange = (text: string, i: number) => {
+    setBoardColumns((prev) => {
+      prev[i] = text;
+      return [...prev];
+    });
+  };
+
+  const handleCreateBoard = () => {
+    if (!boardName) {
+      setErrors((prev) => [...prev, "boardName"]);
+    }
+  };
+
+  const handleDeleteColumn = (i: number) => {
+    const newState = [...boardColumns];
+    newState.splice(i, 1);
+    setBoardColumns(newState);
+  };
+
   return (
     <>
-      {/* Put this part before </body> tag */}
       <input type="checkbox" id="my-modal-3" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box relative flex max-w-md flex-col gap-4 bg-darkGrey">
@@ -26,6 +57,8 @@ const BoardModal = ({ createBoard, create }: BoardModalProps) => {
           <div className="flex flex-col">
             <p className="mb-2 text-xs font-bold">Board Name</p>
             <input
+              value={boardName}
+              onChange={(e) => setBoardName(e.target.value)}
               type="text"
               placeholder="e.g. Web Design"
               className="h-10 rounded-md border border-inputBorder bg-transparent pl-2 align-middle font-medium outline-none transition-all placeholder:text-inputBorder hover:border-mainPurple focus:border-mainPurple"
@@ -33,24 +66,40 @@ const BoardModal = ({ createBoard, create }: BoardModalProps) => {
           </div>
           <div className="flex flex-col">
             <p className="mb-2 text-xs font-bold">Board Columns</p>
-            <div className="flex gap-4">
-              <input
-                type="text"
-                className="h-10 grow rounded-md border border-inputBorder bg-transparent pl-2 align-middle outline-none transition-all hover:border-mainPurple focus:border-mainPurple"
-              />
-              <button>
-                <IconCross />
-              </button>
+            <div className="flex flex-col gap-3">
+              {boardColumns.map((input, i) => {
+                return (
+                  <div key={i} className="flex gap-4">
+                    <input
+                      type="text"
+                      className=" h-10 grow rounded-md border border-inputBorder bg-transparent pl-2 align-middle outline-none transition-all invalid:border-red hover:border-mainPurple focus:border-mainPurple"
+                      onChange={(e) => handleInputOnChange(e.target.value, i)}
+                      value={input}
+                      required
+                    />
+                    <button onClick={() => handleDeleteColumn(i)}>
+                      <IconCross />
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           <div className="flex flex-col items-center justify-center gap-6">
-            <button className="h-10 w-full rounded-full bg-white font-bold text-mainPurple">
+            <button
+              className="h-10 w-full rounded-full bg-white font-bold text-mainPurple"
+              onClick={addNewColumn}
+            >
               + Add New Column
             </button>
-            <button className="h-10 w-full rounded-full bg-mainPurple font-bold text-white transition-all hover:bg-mainPurpleHover">
+            <label
+              htmlFor="my-modal-3"
+              className="flex h-10 w-full cursor-pointer items-center justify-center rounded-full bg-mainPurple font-bold text-white transition-all hover:bg-mainPurpleHover "
+              onClick={handleCreateBoard}
+            >
               Create New Board
-            </button>
+            </label>
           </div>
         </div>
       </div>
