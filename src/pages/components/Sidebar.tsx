@@ -1,7 +1,6 @@
 import IconBoard from "../../assets/icon-board.svg";
 import IconBoardPurple from "../../assets/icon-board-purple.svg";
 import HideSidebar from "../../assets/icon-hide-sidebar.svg";
-import { type Board } from "@prisma/client";
 import React from "react";
 
 interface SidebarProps {
@@ -10,6 +9,7 @@ interface SidebarProps {
   handleSetOpen: (val: boolean) => void;
   boardNames: string[];
   selectedBoard: string;
+  setOpenModal: (val: boolean) => void;
 }
 
 const Sidebar = ({
@@ -18,6 +18,7 @@ const Sidebar = ({
   boardNames,
   handleSetOpen,
   selectedBoard,
+  setOpenModal,
 }: SidebarProps) => {
   return (
     <aside
@@ -66,9 +67,12 @@ const Sidebar = ({
             <div className="flex-shrink-0">
               <IconBoardPurple />
             </div>
-            <label htmlFor="my-modal-3" className="flex-shrink-0">
+            <button
+              onClick={() => setOpenModal(true)}
+              className="flex-shrink-0"
+            >
               + Create New Board
-            </label>
+            </button>
           </div>
         </li>
       </ul>

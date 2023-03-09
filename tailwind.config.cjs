@@ -25,6 +25,7 @@ const config = {
       red: "#ea5555",
       redHover: "#ff9898",
       inputBorder: "#404552",
+      blacko: "rgba(0,0,0,25%)",
     },
   },
   plugins: [require("daisyui")],

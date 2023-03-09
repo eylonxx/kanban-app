@@ -11,6 +11,7 @@ import BoardModal from "../components/BoardModal";
 const Home: React.FC = () => {
   const { data: sessionData } = useSession();
   const [open, setOpen] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
 
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
 
@@ -59,6 +60,7 @@ const Home: React.FC = () => {
           boardNames={boardNames}
           handleSetOpen={handleSetOpen}
           selectedBoard={selectedBoard?.title || ""}
+          setOpenModal={setOpenModal}
         />
         <div
           className={`${
@@ -69,7 +71,7 @@ const Home: React.FC = () => {
           <ShowSidebar />
         </div>
         <main className="grow bg-veryDarkGrey">
-          <BoardModal create={true} createBoard={handleCreateBoard} />
+          <BoardModal setOpen={setOpenModal} open={openModal} />
           <TasksBoard selectedBoard={selectedBoard} />
         </main>
       </div>
