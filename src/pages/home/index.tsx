@@ -31,9 +31,9 @@ const Home: React.FC = () => {
     },
   });
 
-  const handleCreateBoard = () => {
-    createBoard.mutate({});
-  };
+  // const handleCreateBoard = () => {
+  //   createBoard.mutate({});
+  // };
 
   const boardNames = useMemo(() => {
     return boards?.map((board) => board.title) || [];

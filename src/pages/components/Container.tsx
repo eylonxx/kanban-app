@@ -15,9 +15,14 @@ const containerStyle = {
 interface ContainerProps {
   items: Task[];
   id: string;
+  setOpenTaskModal: (task: Task, val: boolean) => void;
 }
 
-export default function Container({ items, id }: ContainerProps) {
+export default function Container({
+  items,
+  id,
+  setOpenTaskModal,
+}: ContainerProps) {
   const { setNodeRef } = useDroppable({
     id,
   });
@@ -34,7 +39,12 @@ export default function Container({ items, id }: ContainerProps) {
         className="flex flex-col items-center gap-3 border py-6"
       >
         {items.map((item, idx) => (
-          <SortableItem key={`${item.id}-${idx}`} task={item} id={item.id} />
+          <SortableItem
+            setOpenTaskModal={setOpenTaskModal}
+            key={`${item.id}-${idx}`}
+            task={item}
+            id={item.id}
+          />
         ))}
       </div>
     </SortableContext>

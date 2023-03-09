@@ -6,12 +6,19 @@ import { type Task } from "@prisma/client";
 interface TaskCardProps {
   id: string;
   task: Task | null;
+  setOpenTaskModal?: (task: Task, val: boolean) => void;
 }
 
-export function TaskCard({ id, task }: TaskCardProps) {
+export function TaskCard({ id, task, setOpenTaskModal }: TaskCardProps) {
   return (
     task && (
-      <div className="flex h-24 w-64 flex-col justify-center gap-2 rounded-md bg-darkGrey px-4 font-bold shadow-taskCard">
+      <div
+        onClick={() => {
+          if (!setOpenTaskModal) return;
+          setOpenTaskModal(task, true);
+        }}
+        className="flex h-24 w-64 flex-col justify-center gap-2 rounded-md bg-darkGrey px-4 font-bold shadow-taskCard"
+      >
         <div>
           <p className="text-s text-white ">{task.title}</p>
         </div>
@@ -26,9 +33,14 @@ export function TaskCard({ id, task }: TaskCardProps) {
 interface SortableItemProps {
   id: string;
   task: Task;
+  setOpenTaskModal: (task: Task, val: boolean) => void;
 }
 
-export default function SortableItem({ id, task }: SortableItemProps) {
+export default function SortableItem({
+  id,
+  task,
+  setOpenTaskModal,
+}: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -51,7 +63,7 @@ export default function SortableItem({ id, task }: SortableItemProps) {
       {...attributes}
       {...listeners}
     >
-      <TaskCard id={id} task={task} />
+      <TaskCard id={id} task={task} setOpenTaskModal={setOpenTaskModal} />
     </div>
   );
 }

@@ -4,6 +4,10 @@ import {
   type DragStartEvent,
   type DragOverEvent,
   closestCorners,
+  useSensor,
+  MouseSensor,
+  TouchSensor,
+  useSensors,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { type Board, type Task } from "@prisma/client";
@@ -13,6 +17,7 @@ import React, { useState } from "react";
 import { api } from "~/utils/api";
 import Container from "./Container";
 import { TaskCard } from "./SortableItem";
+import TaskModal from "./TaskModal";
 
 interface TasksBoardProps {
   selectedBoard: Board | null;
@@ -24,6 +29,23 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   const [items, setItems] = useState<Task[]>([]);
   const [columnIds, setColumnIds] = useState<string[]>([]);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+
+  const [taskModalOpen, setTaskModalOpen] = useState<boolean>(false);
+  const [taskModalTask, setTaskModalTask] = useState<Task | null>(null);
+
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      delay: 250,
+      tolerance: 5,
+    },
+  });
+
+  const sensors = useSensors(mouseSensor);
+
+  const setOpenTaskModal = (task: Task, val: boolean) => {
+    setTaskModalOpen(val);
+    setTaskModalTask(task);
+  };
 
   const { data: columns, refetch: refetchColumns } = api.column.getAll.useQuery(
     { boardId: selectedBoard?.id || "" },
@@ -164,17 +186,24 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
 
   return (
     <div className="flex flex-row">
+      <TaskModal
+        task={taskModalTask}
+        open={taskModalOpen}
+        setOpen={setTaskModalOpen}
+      />
       <DndContext
         collisionDetection={closestCorners}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
+        sensors={sensors}
       >
         <SortableContext items={columnIds}>
           <div className="flex gap-4">
             {columns?.map((column) => {
               return (
                 <Container
+                  setOpenTaskModal={setOpenTaskModal}
                   key={column.id}
                   id={column.id}
                   items={getTasksByColumn(column.id)}

@@ -17,7 +17,7 @@ export default function BoardModal({ setOpen, open }: BoardModalProps) {
         className="relative z-10"
         initialFocus={cancelButtonRef}
         onClose={() => {
-          console.log("hi");
+          return;
         }}
       >
         <Transition.Child
