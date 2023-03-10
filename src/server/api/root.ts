@@ -1,6 +1,7 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { boardRouter } from "./routers/BoardRouter";
 import { columnRouter } from "./routers/ColumnRouter";
+import { subtaskRouter } from "./routers/subtaskRouter";
 import { taskRouter } from "./routers/TaskRouter";
 
 /**
@@ -12,6 +13,7 @@ export const appRouter = createTRPCRouter({
   board: boardRouter,
   task: taskRouter,
   column: columnRouter,
+  subtask: subtaskRouter,
 });
 
 // export type definition of API

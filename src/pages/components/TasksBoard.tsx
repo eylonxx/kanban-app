@@ -6,16 +6,15 @@ import {
   closestCorners,
   useSensor,
   MouseSensor,
-  TouchSensor,
   useSensors,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import { type Board, type Task } from "@prisma/client";
+import { Subtask, type Board, type Task } from "@prisma/client";
 import { LexoRank } from "lexorank";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
-import Container from "./Container";
+import Column from "./Column";
 import { TaskCard } from "./SortableItem";
 import TaskModal from "./TaskModal";
 
@@ -29,13 +28,12 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   const [items, setItems] = useState<Task[]>([]);
   const [columnIds, setColumnIds] = useState<string[]>([]);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-
   const [taskModalOpen, setTaskModalOpen] = useState<boolean>(false);
   const [taskModalTask, setTaskModalTask] = useState<Task | null>(null);
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
-      delay: 250,
+      delay: 100,
       tolerance: 5,
     },
   });
@@ -74,6 +72,23 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   });
 
   const updateTask = api.task.update.useMutation({});
+  const updateSubtask = api.subtask.update.useMutation({});
+
+  const handleUpdateTask = (
+    id: string,
+    title?: string,
+    description?: string,
+    subtasks?: { id: string; title: string }[]
+  ) => {
+    updateTask.mutate({
+      id,
+      title,
+      description,
+    });
+    if (subtasks?.length) {
+      updateSubtask.mutate({});
+    }
+  };
 
   function getTasksByColumn(columnId: string) {
     return items
@@ -81,7 +96,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
       .sort((a, b) => a.rank.localeCompare(b.rank));
   }
 
-  function findContainer(id: string) {
+  function findColumn(id: string) {
     if (columnIds.includes(id)) return id;
     const task = items?.find((task) => task.id === id);
     return task?.columnId;
@@ -127,7 +142,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
       return;
     }
 
-    const overContainer = findContainer(overId.toString());
+    const overContainer = findColumn(overId.toString());
     if (!overContainer) return;
 
     setItems((prev) => {
@@ -202,7 +217,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
           <div className="flex gap-4">
             {columns?.map((column) => {
               return (
-                <Container
+                <Column
                   setOpenTaskModal={setOpenTaskModal}
                   key={column.id}
                   id={column.id}
