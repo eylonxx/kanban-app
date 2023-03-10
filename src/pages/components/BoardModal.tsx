@@ -1,11 +1,12 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
+import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
 
 interface BoardModalProps {
   setOpen: (val: boolean) => void;
   open: boolean;
+  handleCreateBoard: (title: string, columnNames: string[]) => void;
 }
 
 type FormValues = {
@@ -15,7 +16,11 @@ type FormValues = {
   }[];
 };
 
-export default function BoardModal({ setOpen, open }: BoardModalProps) {
+export default function BoardModal({
+  setOpen,
+  open,
+  handleCreateBoard,
+}: BoardModalProps) {
   const cancelButtonRef = useRef(null);
 
   const {
@@ -31,6 +36,10 @@ export default function BoardModal({ setOpen, open }: BoardModalProps) {
 
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
     console.log(data);
+    const spreadData = data.columns.map((col) => col.title);
+    console.log(spreadData);
+
+    handleCreateBoard(data.boardName, spreadData);
   };
 
   const { fields, append, remove } = useFieldArray({
@@ -72,7 +81,6 @@ export default function BoardModal({ setOpen, open }: BoardModalProps) {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative flex  min-w-[30%] transform flex-col overflow-hidden rounded-lg bg-darkGrey p-8 transition-all">
-                {/* title */}
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="mb-6 flex justify-between">
                     <p className="text-left text-lg font-bold text-white">
@@ -89,7 +97,6 @@ export default function BoardModal({ setOpen, open }: BoardModalProps) {
                       <IconCross />
                     </button>
                   </div>
-                  {/* body */}
                   <div className="mb-6 flex flex-col items-start">
                     <label htmlFor="" className="mb-2 font-bold text-white">
                       Board Name
@@ -147,7 +154,6 @@ export default function BoardModal({ setOpen, open }: BoardModalProps) {
                       );
                     })}
                   </div>
-                  {/* buttons - only if edit*/}
                   <div className="flex flex-col">
                     <button
                       className="mb-6 h-10 w-full rounded-full bg-white text-sm font-bold text-mainPurple"

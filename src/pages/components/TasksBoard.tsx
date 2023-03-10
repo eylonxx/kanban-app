@@ -85,9 +85,9 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
       title,
       description,
     });
-    if (subtasks?.length) {
-      updateSubtask.mutate({});
-    }
+    // if (subtasks?.length) {
+    //   updateSubtask.mutate({});
+    // }
   };
 
   function getTasksByColumn(columnId: string) {

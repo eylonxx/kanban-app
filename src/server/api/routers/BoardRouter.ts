@@ -11,13 +11,53 @@ export const boardRouter = createTRPCRouter({
     });
   }),
   create: protectedProcedure
-    .input(z.object({ title: z.string() }))
-    .mutation(({ ctx, input }) => {
+    .input(
+      z.object({
+        title: z.string(),
+        columns: z.array(z.string()),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       return ctx.prisma.board.create({
         data: {
           title: input.title,
           userId: ctx.session.user.id,
+          columns: {
+            create: input.columns.map((column) => ({
+              title: column,
+            })),
+          },
         },
       });
     }),
 });
+//   await ctx.prisma.$transaction(async (tx) => {
+//     const board = await tx.board.create({
+//       data: {
+//         title: input.title,
+//         userId: ctx.session.user.id,
+//       },
+//     });
+
+//     const columns = input.columns.map((col) =>
+//       tx.column.create({
+//         data: {
+//           title: col,
+//           boardId: board.id,
+//         },
+//       })
+//     );
+//   });
+// }),
+
+// return ctx.prisma.board.create({
+//   data: {
+//     title: input.title,
+//     user:{connect:},
+//     columns: {
+//       create: input.columns.map((column) => ({
+//         title: column,
+//       })),
+//     },
+//   },
+// });

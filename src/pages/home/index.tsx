@@ -29,11 +29,17 @@ const Home: React.FC = () => {
     onSuccess: () => {
       void refetchBoards();
     },
+    onError: (e) => {
+      console.log(e);
+    },
   });
 
-  // const handleCreateBoard = () => {
-  //   createBoard.mutate({});
-  // };
+  const handleCreateBoard = (title: string, columnNames: string[]) => {
+    createBoard.mutate({
+      title: title,
+      columns: columnNames,
+    });
+  };
 
   const boardNames = useMemo(() => {
     return boards?.map((board) => board.title) || [];
@@ -71,7 +77,11 @@ const Home: React.FC = () => {
           <ShowSidebar />
         </div>
         <main className="grow bg-veryDarkGrey">
-          <BoardModal setOpen={setOpenModal} open={openModal} />
+          <BoardModal
+            setOpen={setOpenModal}
+            open={openModal}
+            handleCreateBoard={handleCreateBoard}
+          />
           <TasksBoard selectedBoard={selectedBoard} />
         </main>
       </div>
