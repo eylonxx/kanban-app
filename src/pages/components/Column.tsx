@@ -8,21 +8,17 @@ import {
 import SortableItem from "./SortableItem";
 import { type Task } from "@prisma/client";
 
-const containerStyle = {
+const columnStyle = {
   width: 280,
 };
 
-interface ContainerProps {
+interface ColumnProps {
   items: Task[];
   id: string;
   setOpenTaskModal: (task: Task, val: boolean) => void;
 }
 
-export default function Container({
-  items,
-  id,
-  setOpenTaskModal,
-}: ContainerProps) {
+export default function Column({ items, id, setOpenTaskModal }: ColumnProps) {
   const { setNodeRef } = useDroppable({
     id,
   });
@@ -35,7 +31,7 @@ export default function Container({
     >
       <div
         ref={setNodeRef}
-        style={containerStyle}
+        style={columnStyle}
         className="flex flex-col items-center gap-3 border py-6"
       >
         {items.map((item, idx) => (

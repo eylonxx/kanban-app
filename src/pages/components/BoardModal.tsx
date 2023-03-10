@@ -1,14 +1,41 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { useForm, useFieldArray } from "react-hook-form";
+import IconCross from "../../assets/icon-cross.svg";
 
 interface BoardModalProps {
   setOpen: (val: boolean) => void;
   open: boolean;
 }
 
+type FormValues = {
+  boardName: string;
+  columns: {
+    title: string;
+  }[];
+};
+
 export default function BoardModal({ setOpen, open }: BoardModalProps) {
   const cancelButtonRef = useRef(null);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: { boardName: "", columns: [{ title: "" }] },
+    mode: "onBlur",
+  });
+
+  const onSubmit = (data: FormValues) => {
+    console.log(data);
+  };
+
+  const { fields, append, remove } = useFieldArray({
+    name: "columns",
+    control,
+  });
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -43,49 +70,101 @@ export default function BoardModal({ setOpen, open }: BoardModalProps) {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                  <div className="sm:flex sm:items-start">
-                    <div className="bg-red-100 mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10">
-                      <ExclamationTriangleIcon
-                        className="text-red-600 h-6 w-6"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                      <Dialog.Title
-                        as="h3"
-                        className="text-gray-900 text-base font-semibold leading-6"
-                      >
-                        Deactivate account
-                      </Dialog.Title>
-                      <div className="mt-2">
-                        <p className="text-gray-500 text-sm">
-                          Are you sure you want to deactivate your account? All
-                          of your data will be permanently removed. This action
-                          cannot be undone.
-                        </p>
-                      </div>
-                    </div>
+              <Dialog.Panel className="relative flex  min-w-[30%] transform flex-col overflow-hidden rounded-lg bg-darkGrey p-8 transition-all">
+                {/* title */}
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div className="mb-6 flex justify-between">
+                    <p className="text-left text-lg font-bold text-white">
+                      Add New Board
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setOpen(false)}
+                      ref={cancelButtonRef}
+                    >
+                      <IconCross />
+                    </button>
                   </div>
-                </div>
-                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                  <button
-                    type="button"
-                    className="bg-red-600 hover:bg-red-500 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto"
-                    onClick={() => setOpen(false)}
-                  >
-                    Deactivate
-                  </button>
-                  <button
-                    type="button"
-                    className="text-gray-900 ring-gray-300 hover:bg-gray-50 mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset sm:mt-0 sm:w-auto"
-                    onClick={() => setOpen(false)}
-                    ref={cancelButtonRef}
-                  >
-                    Cancel
-                  </button>
-                </div>
+                  {/* body */}
+                  {console.log(errors?.boardName)}
+                  <div className="mb-6 flex flex-col items-start">
+                    <label htmlFor="" className="mb-2 font-bold text-white">
+                      Board Name
+                    </label>
+                    {errors?.boardName?.message && (
+                      <span className="absolute mt-11 ml-4 text-xs text-red">
+                        Cannot be empty
+                      </span>
+                    )}
+                    <input
+                      className={`${
+                        errors?.boardName?.message
+                          ? "border-red"
+                          : "border-inputBorder"
+                      } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base focus:outline-none`}
+                      {...register("boardName", {
+                        required: "Cannot be empty",
+                      })}
+                    />
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <label htmlFor="" className="mb-2 font-bold text-white">
+                      Board Columns
+                    </label>
+                    {fields.map((field, index) => {
+                      return (
+                        <div key={field.id} className="mb-3 flex w-full">
+                          {errors?.columns?.[index]?.title && (
+                            <span className="absolute mt-3 ml-4 text-xs text-red">
+                              Cannot be empty
+                            </span>
+                          )}
+                          <input
+                            type="text"
+                            {...register(`columns.${index}.title` as const, {
+                              required: true,
+                            })}
+                            className={`${
+                              errors?.columns?.[index]?.title
+                                ? "border-red"
+                                : "border-inputBorder"
+                            } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base focus:outline-none`}
+                          />
+                          <button
+                            type="button"
+                            className={`${
+                              errors?.columns?.[index]?.title ? "text-red" : ""
+                            } ${fields.length === 1 ? "opacity-20" : ""} ml-4`}
+                            disabled={fields.length === 1}
+                            onClick={() => remove(index)}
+                          >
+                            <IconCross />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* buttons - only if edit*/}
+                  <div className="flex flex-col">
+                    <button
+                      className="mb-6 h-10 w-full rounded-full bg-white text-sm font-bold text-mainPurple"
+                      type="button"
+                      onClick={() =>
+                        append({
+                          title: "",
+                        })
+                      }
+                    >
+                      + Add New Column
+                    </button>
+                    <button
+                      type="submit"
+                      className="h-10 w-full rounded-full bg-mainPurple text-sm font-bold text-white"
+                    >
+                      Create New Board
+                    </button>
+                  </div>
+                </form>
               </Dialog.Panel>
             </Transition.Child>
           </div>

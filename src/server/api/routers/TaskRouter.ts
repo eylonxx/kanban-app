@@ -17,8 +17,10 @@ export const taskRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        newRank: z.string(),
+        newRank: z.string().optional(),
         newColumnId: z.string().optional(),
+        title: z.string().optional(),
+        description: z.string().optional(),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -29,6 +31,28 @@ export const taskRouter = createTRPCRouter({
         data: {
           rank: input.newRank,
           columnId: input.newColumnId,
+          title: input.title,
+          description: input.description,
+        },
+      });
+    }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        description: z.string(),
+        columnId: z.string(),
+        rank: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.task.create({
+        data: {
+          title: input.title,
+          description: input.description,
+          userId: ctx.session.user.id,
+          columnId: input.columnId,
+          rank: input.rank,
         },
       });
     }),
