@@ -1,6 +1,6 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
 
 interface BoardModalProps {
@@ -22,13 +22,14 @@ export default function BoardModal({ setOpen, open }: BoardModalProps) {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: { boardName: "", columns: [{ title: "" }] },
     mode: "onBlur",
   });
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
     console.log(data);
   };
 
@@ -79,14 +80,16 @@ export default function BoardModal({ setOpen, open }: BoardModalProps) {
                     </p>
                     <button
                       type="button"
-                      onClick={() => setOpen(false)}
+                      onClick={() => {
+                        reset();
+                        setOpen(false);
+                      }}
                       ref={cancelButtonRef}
                     >
                       <IconCross />
                     </button>
                   </div>
                   {/* body */}
-                  {console.log(errors?.boardName)}
                   <div className="mb-6 flex flex-col items-start">
                     <label htmlFor="" className="mb-2 font-bold text-white">
                       Board Name
