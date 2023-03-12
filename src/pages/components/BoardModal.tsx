@@ -35,11 +35,9 @@ export default function BoardModal({
   });
 
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
-    console.log(data);
     const spreadData = data.columns.map((col) => col.title);
-    console.log(spreadData);
-
     handleCreateBoard(data.boardName, spreadData);
+    setOpen(false);
   };
 
   const { fields, append, remove } = useFieldArray({
