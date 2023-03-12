@@ -7,11 +7,13 @@ import Navbar from "../components/Navbar";
 import TasksBoard from "../components/TasksBoard";
 import Sidebar from "../components/Sidebar";
 import BoardModal from "../components/BoardModal";
+import NewTaskModal from "../components/NewTaskModal";
 
 const Home: React.FC = () => {
   const { data: sessionData } = useSession();
   const [open, setOpen] = useState(true);
-  const [openModal, setOpenModal] = useState(false);
+  const [openNewBoardModal, setOpenNewBoardModal] = useState(false);
+  const [openNewTaskModal, setOpenNewTaskModal] = useState(false);
 
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
 
@@ -57,7 +59,7 @@ const Home: React.FC = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <div className=" flex items-center justify-between  bg-darkGrey ">
-        <Navbar open={open} />
+        <Navbar open={open} setOpenModal={setOpenNewTaskModal} />
       </div>
       <div className="relative flex flex-grow">
         <Sidebar
@@ -66,7 +68,7 @@ const Home: React.FC = () => {
           boardNames={boardNames}
           handleSetOpen={handleSetOpen}
           selectedBoard={selectedBoard?.title || ""}
-          setOpenModal={setOpenModal}
+          setOpenModal={setOpenNewBoardModal}
         />
         <div
           className={`${
@@ -78,10 +80,11 @@ const Home: React.FC = () => {
         </div>
         <main className="grow bg-veryDarkGrey">
           <BoardModal
-            setOpen={setOpenModal}
-            open={openModal}
+            setOpen={setOpenNewBoardModal}
+            open={openNewBoardModal}
             handleCreateBoard={handleCreateBoard}
           />
+          <NewTaskModal setOpen={setOpenNewTaskModal} open={openNewTaskModal} />
           <TasksBoard selectedBoard={selectedBoard} />
         </main>
       </div>

@@ -1,13 +1,13 @@
 import { signOut, useSession } from "next-auth/react";
 import React from "react";
 import LogoLight from "../../assets/logo-light.svg";
-import Button from "./Button";
 
 interface NavbarProps {
   open: boolean;
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Navbar = ({ open }: NavbarProps) => {
+const Navbar = ({ open, setOpenModal }: NavbarProps) => {
   const { data: sessionData } = useSession();
 
   return (
@@ -22,12 +22,13 @@ const Navbar = ({ open }: NavbarProps) => {
         </div>
       </div>
       <div className="flex h-24 flex-1 items-center justify-end border-b-2 border-b-darkLines">
-        <Button
-          text="+ Add New Task"
-          width="24"
-          height="10"
-          variant="mainPurple"
-        />
+        <button
+          className="rounded-full bg-mainPurple px-10 py-3 font-semibold text-white no-underline transition "
+          onClick={() => setOpenModal(true)}
+        >
+          + Add New Task
+        </button>
+
         <button
           className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
           onClick={() => {
