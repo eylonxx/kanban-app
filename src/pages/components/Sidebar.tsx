@@ -36,22 +36,22 @@ const Sidebar = ({
           return (
             <div
               onClick={() => {
-                handleSelectedBoard(selectedBoard);
+                handleSelectedBoard(board);
               }}
               key={i}
               className={`
                   flex h-12 cursor-pointer items-center gap-4 pl-8
                   ${
                     selectedBoard === board
-                      ? "rounded-r-full bg-mainPurple text-white"
-                      : "rounded-r-full text-mediumGrey hover:bg-white hover:text-mainPurple "
+                      ? "rounded-r-full bg-mainPurple text-white transition-all"
+                      : "rounded-r-full text-mediumGrey transition-all hover:bg-white hover:text-mainPurple "
                   }`}
             >
               <div
                 className={`${
                   selectedBoard === board
-                    ? "text-white"
-                    : "hover:text-mainPurple"
+                    ? "text-white transition-all "
+                    : " transition-all  hover:text-mainPurple"
                 } flex-shrink-0`}
               >
                 <IconBoard />
@@ -62,7 +62,7 @@ const Sidebar = ({
         })}
         <li>
           <div
-            className={`${"text-mainPurple"} flex h-12 cursor-pointer items-center gap-4 pl-8`}
+            className={`${"text-mainPurple"}  flex h-12 cursor-pointer items-center gap-4 pl-8`}
           >
             <div className="flex-shrink-0">
               <IconBoardPurple />
