@@ -8,17 +8,19 @@ import {
 import SortableItem from "./SortableItem";
 import { type Task } from "@prisma/client";
 
-const columnStyle = {
-  width: 280,
-};
-
 interface ColumnProps {
   items: Task[];
   id: string;
+  columnTitle: string;
   setOpenTaskModal: (task: Task, val: boolean) => void;
 }
 
-export default function Column({ items, id, setOpenTaskModal }: ColumnProps) {
+export default function Column({
+  items,
+  id,
+  setOpenTaskModal,
+  columnTitle,
+}: ColumnProps) {
   const { setNodeRef } = useDroppable({
     id,
   });
@@ -31,9 +33,11 @@ export default function Column({ items, id, setOpenTaskModal }: ColumnProps) {
     >
       <div
         ref={setNodeRef}
-        style={columnStyle}
-        className="flex flex-col items-center gap-3 border py-6"
+        className="flex w-72 flex-col items-center gap-3 py-6"
       >
+        <p className="self-start pl-6 text-xs font-bold uppercase tracking-[.25em] text-mediumGrey">
+          {columnTitle} ({items.length})
+        </p>
         {items.map((item, idx) => (
           <SortableItem
             setOpenTaskModal={setOpenTaskModal}

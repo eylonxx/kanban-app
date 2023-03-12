@@ -221,6 +221,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
                   setOpenTaskModal={setOpenTaskModal}
                   key={column.id}
                   id={column.id}
+                  columnTitle={column.title}
                   items={getTasksByColumn(column.id)}
                 />
               );
