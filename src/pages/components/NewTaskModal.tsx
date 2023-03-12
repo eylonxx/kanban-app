@@ -3,6 +3,10 @@ import { Dialog, Transition } from "@headlessui/react";
 import { type Task } from "@prisma/client";
 import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
+import { columnsAtom, tasksAtom } from "~/utils/jotai";
+import { useAtom } from "jotai";
+import { api } from "~/utils/api";
+import { LexoRank } from "lexorank";
 
 interface NewTaskModalProps {
   setOpen: (val: boolean) => void;
@@ -12,6 +16,7 @@ interface NewTaskModalProps {
 type FormValues = {
   taskName: string;
   description: string;
+  columnId: string;
   subtasks: {
     title: string;
   }[];
@@ -30,13 +35,44 @@ export default function NewTaskModal({ setOpen, open }: NewTaskModalProps) {
     mode: "onBlur",
   });
 
+  const [tasks, setTasks] = useAtom(tasksAtom);
+  const [columns, setColumns] = useAtom(columnsAtom);
+
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
+    const subtaskTitle = data.subtasks.map((subtask) => subtask.title);
+    const colTasks = tasks
+      .filter((task) => task.columnId === data.columnId)
+      .sort((a, b) => a.rank.localeCompare(b.rank));
     console.log(data);
+
+    let rank;
+    if (!colTasks.length) {
+      rank = LexoRank.middle().toString();
+    } else {
+      rank = LexoRank.parse(colTasks[colTasks.length - 1].rank)
+        .genNext()
+        .toString();
+    }
+
+    createTask.mutate({
+      title: data.taskName,
+      description: data.description,
+      columnId: data.columnId,
+      rank: rank,
+      subtasks: subtaskTitle,
+    });
+    setOpen(false);
   };
 
   const { fields, append, remove } = useFieldArray({
     name: "subtasks",
     control,
+  });
+
+  const createTask = api.task.create.useMutation({
+    onSuccess: (data) => {
+      setTasks([...tasks, data]);
+    },
   });
 
   return (
@@ -158,6 +194,18 @@ export default function NewTaskModal({ setOpen, open }: NewTaskModalProps) {
                         </div>
                       );
                     })}
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <select
+                      className="select w-full max-w-xs"
+                      {...register("columnId", { required: true })}
+                    >
+                      {columns.map((col) => (
+                        <option value={col.id} key={col.id}>
+                          {col.title}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="flex flex-col">
                     <button

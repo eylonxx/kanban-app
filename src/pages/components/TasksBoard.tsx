@@ -10,10 +10,12 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { Subtask, type Board, type Task } from "@prisma/client";
+import { useAtom } from "jotai";
 import { LexoRank } from "lexorank";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
+import { columnsAtom, tasksAtom } from "~/utils/jotai";
 import Column from "./Column";
 import { TaskCard } from "./SortableItem";
 import TaskModal from "./TaskModal";
@@ -25,7 +27,8 @@ interface TasksBoardProps {
 const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   const { data: sessionData } = useSession();
   const [activeId, setActiveId] = useState<string | null>();
-  const [items, setItems] = useState<Task[]>([]);
+  const [items, setItems] = useAtom(tasksAtom);
+  const [columns, setColumns] = useAtom(columnsAtom);
   const [columnIds, setColumnIds] = useState<string[]>([]);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [taskModalOpen, setTaskModalOpen] = useState<boolean>(false);
@@ -45,15 +48,20 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     setTaskModalTask(task);
   };
 
-  const { data: columns, refetch: refetchColumns } = api.column.getAll.useQuery(
-    { boardId: selectedBoard?.id || "" },
-    {
-      enabled: sessionData?.user !== undefined,
-      onSuccess: (data) => {
-        setColumnIds(data?.map((column) => column.id) || []);
-      },
-    }
-  );
+  useEffect(() => {
+    setColumnIds(columns.map((column) => column.id) || []);
+  }, [columns]);
+
+  const { data: fetchedColumns, refetch: refetchColumns } =
+    api.column.getAll.useQuery(
+      { boardId: selectedBoard?.id || "" },
+      {
+        enabled: sessionData?.user !== undefined,
+        onSuccess: (data) => {
+          setColumns(data);
+        },
+      }
+    );
 
   const { data: tasks, refetch: refetchTasks } = api.task.getAll.useQuery(
     {
@@ -72,6 +80,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   });
 
   const updateTask = api.task.update.useMutation({});
+
   const updateSubtask = api.subtask.update.useMutation({});
 
   const handleUpdateTask = (
@@ -104,12 +113,14 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
 
   function getActiveTask(id: string): Task | null {
     if (!tasks) return null;
-    return tasks.find((task) => task.id === id) || null;
+    return items.find((task) => task.id === id) || null;
   }
 
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     const { id } = active;
+    console.log(id);
+
     setActiveId(id as string);
     setActiveTask(getActiveTask(id as string));
   }

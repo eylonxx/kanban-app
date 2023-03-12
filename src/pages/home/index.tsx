@@ -14,7 +14,6 @@ const Home: React.FC = () => {
   const [open, setOpen] = useState(true);
   const [openNewBoardModal, setOpenNewBoardModal] = useState(false);
   const [openNewTaskModal, setOpenNewTaskModal] = useState(false);
-
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
 
   const { data: boards, refetch: refetchBoards } = api.board.getAll.useQuery(

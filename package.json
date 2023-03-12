@@ -24,6 +24,7 @@
     "@trpc/react-query": "^10.9.0",
     "@trpc/server": "^10.9.0",
     "daisyui": "^2.51.2",
+    "jotai": "^2.0.3",
     "lexorank": "^1.0.5",
     "next": "^13.2.1",
     "next-auth": "^4.19.0",
