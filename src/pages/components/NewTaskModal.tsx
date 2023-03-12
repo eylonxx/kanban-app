@@ -1,6 +1,5 @@
 import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { type Task } from "@prisma/client";
 import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
 import { columnsAtom, tasksAtom } from "~/utils/jotai";
