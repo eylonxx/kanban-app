@@ -1,6 +1,8 @@
 import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { type Task } from "@prisma/client";
+import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
+import IconCross from "../../assets/icon-cross.svg";
 
 interface TaskModalProps {
   setOpen: (val: boolean) => void;
@@ -8,8 +10,35 @@ interface TaskModalProps {
   task: Task | null;
 }
 
+type FormValues = {
+  taskName: string;
+  description: string;
+  subtasks: {
+    title: string;
+  }[];
+};
+
 export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
   const cancelButtonRef = useRef(null);
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: { taskName: "", subtasks: [{ title: "" }] },
+    mode: "onBlur",
+  });
+
+  const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
+    console.log(data);
+  };
+
+  const { fields, append, remove } = useFieldArray({
+    name: "subtasks",
+    control,
+  });
 
   return (
     task && (
@@ -46,42 +75,116 @@ export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
                 <Dialog.Panel className="relative flex w-1/3 transform flex-col overflow-hidden rounded-lg bg-darkGrey p-8 transition-all">
-                  {/* title */}
-                  <div className="flex justify-between">
-                    <p className="text-left text-lg font-bold text-white">
-                      Title
-                    </p>
-                    <p>3 dots</p>
-                  </div>
-                  {/* body */}
-                  <div className="flex flex-col items-start">
-                    <div>description</div>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="mb-6 flex justify-between">
+                      <p className="text-left text-lg font-bold text-white">
+                        Add New Task
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          reset();
+                          setOpen(false);
+                        }}
+                        ref={cancelButtonRef}
+                      >
+                        <IconCross />
+                      </button>
+                    </div>
+                    <div className="mb-6 flex flex-col items-start">
+                      <label htmlFor="" className="mb-2 font-bold text-white">
+                        Title
+                      </label>
+                      {errors?.taskName?.message && (
+                        <span className="absolute mt-11 ml-4 text-xs text-red">
+                          Cannot be empty
+                        </span>
+                      )}
+                      <input
+                        className={`${
+                          errors?.taskName?.message
+                            ? "border-red"
+                            : "border-inputBorder"
+                        } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base focus:outline-none`}
+                        {...register("taskName", {
+                          required: "Cannot be empty",
+                        })}
+                      />
+                    </div>
+                    <div className="mb-6 flex flex-col items-start">
+                      <label htmlFor="" className="mb-2 font-bold text-white">
+                        Description
+                      </label>
+
+                      <textarea
+                        rows={4}
+                        placeholder="e.g. It’s always good to take a break. This 15 minute break will 
+                      recharge the batteries a little."
+                        className="h-10 w-full flex-1 rounded-md border-2 border-inputBorder bg-transparent py-2 pl-4 text-base placeholder:opacity-30 focus:outline-none"
+                        {...register("description")}
+                      />
+                    </div>
                     <div className="flex flex-col items-start">
-                      <p>subtasks x of y</p>
-                      <p>subtask card component</p>
+                      <label htmlFor="" className="mb-2 font-bold text-white">
+                        Subtasks
+                      </label>
+                      {fields.map((field, index) => {
+                        return (
+                          <div key={field.id} className="mb-3 flex w-full">
+                            {errors?.subtasks?.[index]?.title && (
+                              <span className="absolute mt-3 ml-4 text-xs text-red">
+                                Cannot be empty
+                              </span>
+                            )}
+                            <input
+                              type="text"
+                              {...register(`subtasks.${index}.title` as const, {
+                                required: true,
+                              })}
+                              className={`${
+                                errors?.subtasks?.[index]?.title
+                                  ? "border-red"
+                                  : "border-inputBorder"
+                              } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base focus:outline-none`}
+                            />
+                            <button
+                              type="button"
+                              className={`${
+                                errors?.subtasks?.[index]?.title
+                                  ? "text-red"
+                                  : ""
+                              } ${
+                                fields.length === 1 ? "opacity-20" : ""
+                              } ml-4`}
+                              disabled={fields.length === 1}
+                              onClick={() => remove(index)}
+                            >
+                              <IconCross />
+                            </button>
+                          </div>
+                        );
+                      })}
                     </div>
-                    <div>
-                      <p>set column dropdown</p>
+                    <div className="flex flex-col">
+                      <button
+                        className="mb-6 h-10 w-full rounded-full bg-white text-sm font-bold text-mainPurple"
+                        type="button"
+                        onClick={() =>
+                          append({
+                            title: "",
+                          })
+                        }
+                      >
+                        + Add New Task
+                      </button>
+                      <button
+                        type="submit"
+                        className="h-10 w-full rounded-full bg-mainPurple text-sm font-bold text-white"
+                      >
+                        Create New Task
+                      </button>
                     </div>
-                  </div>
-                  {/* buttons - only if edit*/}
-                  <div className="px-4 py-3 ">
-                    {/* <button
-                      type="button"
-                      className="bg-red-600 hover:bg-red-500 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto"
-                      onClick={() => setOpen(false)}
-                    >
-                      Deactivate
-                    </button> */}
-                    <button
-                      type="button"
-                      className="text-gray-900 ring-gray-300 hover:bg-gray-50 mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset sm:mt-0 sm:w-auto"
-                      onClick={() => setOpen(false)}
-                      ref={cancelButtonRef}
-                    >
-                      Cancel
-                    </button>
-                  </div>
+                  </form>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
