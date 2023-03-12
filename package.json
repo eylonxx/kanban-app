@@ -31,7 +31,8 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.5",
     "superjson": "1.9.1",
-    "zod": "^3.20.6"
+    "zod": "^3.20.6",
+    "zustand": "^4.3.6"
   },
   "devDependencies": {
     "@svgr/webpack": "^6.5.1",

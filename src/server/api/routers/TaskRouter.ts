@@ -43,6 +43,7 @@ export const taskRouter = createTRPCRouter({
         description: z.string(),
         columnId: z.string(),
         rank: z.string(),
+        subtasks: z.array(z.string()),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -53,6 +54,11 @@ export const taskRouter = createTRPCRouter({
           userId: ctx.session.user.id,
           columnId: input.columnId,
           rank: input.rank,
+          subTasks: {
+            create: input.subtasks.map((subtask) => ({
+              title: subtask,
+            })),
+          },
         },
       });
     }),
