@@ -6,18 +6,22 @@ export const subtaskRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
-        id: z.string(),
-        checked: z.boolean(),
+        subtasks: z.array(
+          z.object({
+            id: z.string(),
+            checked: z.boolean(),
+          })
+        ),
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.subtask.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          checked: input.checked,
-        },
-      });
+      return ctx.prisma.$transaction(
+        input.subtasks.map(({ id, checked }) =>
+          ctx.prisma.subtask.update({
+            where: { id },
+            data: { checked },
+          })
+        )
+      );
     }),
 });

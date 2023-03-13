@@ -1,6 +1,6 @@
-import { Fragment, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { type Task } from "@prisma/client";
+import { Subtask, type Task } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
 import { api } from "~/utils/api";
@@ -17,9 +17,14 @@ type FormValues = {
 
 export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
   const cancelButtonRef = useRef(null);
+  const [subtasks, setSubtasks] = useState<Subtask[] | undefined>([]);
   const { register, handleSubmit } = useForm<FormValues>({
     defaultValues: getInitialValues(),
   });
+
+  useEffect(() => {
+    setSubtasks(task?.subTasks);
+  }, [task]);
 
   function getInitialValues() {
     const initialValues: FormValues = {};
@@ -31,9 +36,12 @@ export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
     return initialValues;
   }
 
+  const updateSubtask = api.subtask.update.useMutation({});
+
   function onSubmit(data: FormValues) {
-    const changedSubtasks = [];
+    const changedSubtasks: { id: string; checked: boolean }[] = [];
     for (const subtask of task?.subTasks ?? []) {
+      console.log("db:", subtask.checked, "form:", data[subtask.id]);
       if (data[subtask.id] !== subtask.checked) {
         changedSubtasks.push({
           id: subtask.id,
@@ -41,10 +49,22 @@ export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
         });
       }
     }
+    if (changedSubtasks.length) {
+      setSubtasks((prev) => {
+        if (prev !== undefined) {
+          changedSubtasks.map((subtask) => {
+            const indexToUpdate = prev.findIndex(
+              (sub) => sub.id === subtask.id
+            );
+            prev[indexToUpdate].checked = subtask.checked;
+          });
+          return [...prev];
+        }
+      });
+      updateSubtask.mutate({ subtasks: changedSubtasks });
+    }
     console.log(changedSubtasks);
   }
-
-  const updateSubtask = api.subtask.update.useMutation({});
 
   return (
     task && (
@@ -87,7 +107,6 @@ export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
                         {task.title}
                       </p>
                       <button
-                        type="button"
                         onClick={() => {
                           setOpen(false);
                         }}
@@ -105,7 +124,7 @@ export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
                       <p className="mb-4 text-sm font-bold text-white">
                         Subtasks
                       </p>
-                      {task.subTasks?.map((subtask) => (
+                      {subtasks?.map((subtask) => (
                         <div key={subtask.id}>
                           <label>
                             <input
@@ -119,12 +138,12 @@ export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
                       ))}
                     </div>
                     <div className="flex flex-col">
-                      <button
+                      {/* <button
                         type="submit"
                         className="h-10 w-full rounded-full bg-mainPurple text-sm font-bold text-white"
                       >
                         Create New Task
-                      </button>
+                      </button> */}
                     </div>
                   </form>
                 </Dialog.Panel>
