@@ -48,6 +48,14 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     setTaskModalTask(task);
   };
 
+  const handleUpdateSubtask = (subtasksToChange: Subtask[]) => {
+    setItems((prev) => {
+      const index = prev.findIndex((task) => task.id === taskModalTask!.id);
+      prev[index].subTasks = [...subtasksToChange];
+      return [...prev];
+    });
+  };
+
   useEffect(() => {
     setColumnIds(columns.map((column) => column.id) || []);
   }, [columns]);
@@ -211,6 +219,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   return (
     <div className="flex flex-row">
       <TaskModal
+        handleUpdateSubtask={handleUpdateSubtask}
         task={taskModalTask}
         open={taskModalOpen}
         setOpen={setTaskModalOpen}

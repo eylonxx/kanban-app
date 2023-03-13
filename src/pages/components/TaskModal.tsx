@@ -1,6 +1,6 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Subtask, type Task } from "@prisma/client";
+import { type Subtask, type Task } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
 import { api } from "~/utils/api";
@@ -9,22 +9,23 @@ interface TaskModalProps {
   setOpen: (val: boolean) => void;
   open: boolean;
   task: Task | null;
+  handleUpdateSubtask: (subtasksToChange: Subtask[]) => void;
 }
 
 type FormValues = {
   [key: string]: boolean;
 };
 
-export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
+export default function TaskModal({
+  setOpen,
+  open,
+  task,
+  handleUpdateSubtask,
+}: TaskModalProps) {
   const cancelButtonRef = useRef(null);
-  const [subtasks, setSubtasks] = useState<Subtask[] | undefined>([]);
   const { register, handleSubmit } = useForm<FormValues>({
     defaultValues: getInitialValues(),
   });
-
-  useEffect(() => {
-    setSubtasks(task?.subTasks);
-  }, [task]);
 
   function getInitialValues() {
     const initialValues: FormValues = {};
@@ -40,30 +41,23 @@ export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
 
   function onSubmit(data: FormValues) {
     const changedSubtasks: { id: string; checked: boolean }[] = [];
+    const allUpdatedSubtasks: Subtask[] = [];
     for (const subtask of task?.subTasks ?? []) {
-      console.log("db:", subtask.checked, "form:", data[subtask.id]);
       if (data[subtask.id] !== subtask.checked) {
         changedSubtasks.push({
           id: subtask.id,
           checked: data[subtask.id],
         });
       }
+      allUpdatedSubtasks.push({
+        ...subtask,
+        checked: data[subtask.id],
+      });
     }
     if (changedSubtasks.length) {
-      setSubtasks((prev) => {
-        if (prev !== undefined) {
-          changedSubtasks.map((subtask) => {
-            const indexToUpdate = prev.findIndex(
-              (sub) => sub.id === subtask.id
-            );
-            prev[indexToUpdate].checked = subtask.checked;
-          });
-          return [...prev];
-        }
-      });
+      handleUpdateSubtask(allUpdatedSubtasks);
       updateSubtask.mutate({ subtasks: changedSubtasks });
     }
-    console.log(changedSubtasks);
   }
 
   return (
@@ -124,7 +118,7 @@ export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
                       <p className="mb-4 text-sm font-bold text-white">
                         Subtasks
                       </p>
-                      {subtasks?.map((subtask) => (
+                      {task.subTasks?.map((subtask) => (
                         <div key={subtask.id}>
                           <label>
                             <input
