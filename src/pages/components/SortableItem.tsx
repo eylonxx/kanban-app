@@ -23,7 +23,9 @@ export function TaskCard({ id, task, setOpenTaskModal }: TaskCardProps) {
           <p className="text-s text-white ">{task.title}</p>
         </div>
         <div>
-          <p className="text-xs text-mediumGrey">of {task.subTasks.length}</p>
+          <p className="text-xs text-mediumGrey">
+            of {task.subTasks.length ? task.subTasks.length : 0}
+          </p>
         </div>
       </div>
     )

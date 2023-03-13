@@ -119,8 +119,6 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     const { id } = active;
-    console.log(id);
-
     setActiveId(id as string);
     setActiveTask(getActiveTask(id as string));
   }

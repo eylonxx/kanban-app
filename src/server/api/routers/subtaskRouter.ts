@@ -7,8 +7,7 @@ export const subtaskRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        title: z.string().optional(),
-        checked: z.boolean().optional(),
+        checked: z.boolean(),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -17,7 +16,6 @@ export const subtaskRouter = createTRPCRouter({
           id: input.id,
         },
         data: {
-          title: input.title,
           checked: input.checked,
         },
       });

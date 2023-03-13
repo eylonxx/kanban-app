@@ -1,8 +1,9 @@
 import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { type Task } from "@prisma/client";
-import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
+import { api } from "~/utils/api";
 
 interface TaskModalProps {
   setOpen: (val: boolean) => void;
@@ -11,34 +12,39 @@ interface TaskModalProps {
 }
 
 type FormValues = {
-  taskName: string;
-  description: string;
-  subtasks: {
-    title: string;
-  }[];
+  [key: string]: boolean;
 };
 
 export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
   const cancelButtonRef = useRef(null);
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm<FormValues>({
-    defaultValues: { taskName: "", subtasks: [{ title: "" }] },
-    mode: "onBlur",
+  const { register, handleSubmit } = useForm<FormValues>({
+    defaultValues: getInitialValues(),
   });
 
-  const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
-    console.log(data);
-  };
+  function getInitialValues() {
+    const initialValues: FormValues = {};
+    if (task?.subTasks) {
+      for (const subtask of task.subTasks) {
+        initialValues[subtask.id] = subtask.checked;
+      }
+    }
+    return initialValues;
+  }
 
-  const { fields, append, remove } = useFieldArray({
-    name: "subtasks",
-    control,
-  });
+  function onSubmit(data: FormValues) {
+    const changedSubtasks = [];
+    for (const subtask of task?.subTasks ?? []) {
+      if (data[subtask.id] !== subtask.checked) {
+        changedSubtasks.push({
+          id: subtask.id,
+          checked: data[subtask.id],
+        });
+      }
+    }
+    console.log(changedSubtasks);
+  }
+
+  const updateSubtask = api.subtask.update.useMutation({});
 
   return (
     task && (
@@ -78,12 +84,11 @@ export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-6 flex justify-between">
                       <p className="text-left text-lg font-bold text-white">
-                        Add New Task
+                        {task.title}
                       </p>
                       <button
                         type="button"
                         onClick={() => {
-                          reset();
                           setOpen(false);
                         }}
                         ref={cancelButtonRef}
@@ -92,91 +97,28 @@ export default function TaskModal({ setOpen, open, task }: TaskModalProps) {
                       </button>
                     </div>
                     <div className="mb-6 flex flex-col items-start">
-                      <label htmlFor="" className="mb-2 font-bold text-white">
-                        Title
-                      </label>
-                      {errors?.taskName?.message && (
-                        <span className="absolute mt-11 ml-4 text-xs text-red">
-                          Cannot be empty
-                        </span>
-                      )}
-                      <input
-                        className={`${
-                          errors?.taskName?.message
-                            ? "border-red"
-                            : "border-inputBorder"
-                        } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base focus:outline-none`}
-                        {...register("taskName", {
-                          required: "Cannot be empty",
-                        })}
-                      />
-                    </div>
-                    <div className="mb-6 flex flex-col items-start">
-                      <label htmlFor="" className="mb-2 font-bold text-white">
-                        Description
-                      </label>
-
-                      <textarea
-                        rows={4}
-                        placeholder="e.g. It’s always good to take a break. This 15 minute break will 
-                      recharge the batteries a little."
-                        className="h-10 w-full flex-1 rounded-md border-2 border-inputBorder bg-transparent py-2 pl-4 text-base placeholder:opacity-30 focus:outline-none"
-                        {...register("description")}
-                      />
+                      <p className="mb-2 text-sm text-mediumGrey">
+                        {task.description}
+                      </p>
                     </div>
                     <div className="flex flex-col items-start">
-                      <label htmlFor="" className="mb-2 font-bold text-white">
+                      <p className="mb-4 text-sm font-bold text-white">
                         Subtasks
-                      </label>
-                      {fields.map((field, index) => {
-                        return (
-                          <div key={field.id} className="mb-3 flex w-full">
-                            {errors?.subtasks?.[index]?.title && (
-                              <span className="absolute mt-3 ml-4 text-xs text-red">
-                                Cannot be empty
-                              </span>
-                            )}
+                      </p>
+                      {task.subTasks?.map((subtask) => (
+                        <div key={subtask.id}>
+                          <label>
                             <input
-                              type="text"
-                              {...register(`subtasks.${index}.title` as const, {
-                                required: true,
-                              })}
-                              className={`${
-                                errors?.subtasks?.[index]?.title
-                                  ? "border-red"
-                                  : "border-inputBorder"
-                              } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base focus:outline-none`}
+                              type="checkbox"
+                              {...register(subtask.id)}
+                              defaultChecked={subtask.checked}
                             />
-                            <button
-                              type="button"
-                              className={`${
-                                errors?.subtasks?.[index]?.title
-                                  ? "text-red"
-                                  : ""
-                              } ${
-                                fields.length === 1 ? "opacity-20" : ""
-                              } ml-4`}
-                              disabled={fields.length === 1}
-                              onClick={() => remove(index)}
-                            >
-                              <IconCross />
-                            </button>
-                          </div>
-                        );
-                      })}
+                            {subtask.title}
+                          </label>
+                        </div>
+                      ))}
                     </div>
                     <div className="flex flex-col">
-                      <button
-                        className="mb-6 h-10 w-full rounded-full bg-white text-sm font-bold text-mainPurple"
-                        type="button"
-                        onClick={() =>
-                          append({
-                            title: "",
-                          })
-                        }
-                      >
-                        + Add New Task
-                      </button>
                       <button
                         type="submit"
                         className="h-10 w-full rounded-full bg-mainPurple text-sm font-bold text-white"
