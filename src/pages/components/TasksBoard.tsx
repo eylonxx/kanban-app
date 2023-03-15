@@ -51,7 +51,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   const handleUpdateSubtask = (subtasksToChange: Subtask[]) => {
     setItems((prev) => {
       const index = prev.findIndex((task) => task.id === taskModalTask!.id);
-      prev[index].subTasks = [...subtasksToChange];
+      prev[index].subtasks = [...subtasksToChange];
       return [...prev];
     });
   };

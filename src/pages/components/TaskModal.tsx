@@ -29,8 +29,8 @@ export default function TaskModal({
 
   function getInitialValues() {
     const initialValues: FormValues = {};
-    if (task?.subTasks) {
-      for (const subtask of task.subTasks) {
+    if (task?.subtasks) {
+      for (const subtask of task.subtasks) {
         initialValues[subtask.id] = subtask.checked;
       }
     }
@@ -42,7 +42,7 @@ export default function TaskModal({
   function onSubmit(data: FormValues) {
     const changedSubtasks: { id: string; checked: boolean }[] = [];
     const allUpdatedSubtasks: Subtask[] = [];
-    for (const subtask of task?.subTasks ?? []) {
+    for (const subtask of task?.subtasks ?? []) {
       if (data[subtask.id] !== subtask.checked) {
         changedSubtasks.push({
           id: subtask.id,
@@ -118,7 +118,7 @@ export default function TaskModal({
                       <p className="mb-4 text-sm font-bold text-white">
                         Subtasks
                       </p>
-                      {task.subTasks?.map((subtask) => (
+                      {task.subtasks?.map((subtask) => (
                         <div key={subtask.id}>
                           <label>
                             <input

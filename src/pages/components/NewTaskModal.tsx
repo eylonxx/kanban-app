@@ -6,6 +6,8 @@ import { columnsAtom, tasksAtom } from "~/utils/jotai";
 import { useAtom } from "jotai";
 import { api } from "~/utils/api";
 import { LexoRank } from "lexorank";
+import { useQueryClient } from "@tanstack/react-query";
+import { getQueryKey } from "@trpc/react-query";
 
 interface NewTaskModalProps {
   setOpen: (val: boolean) => void;
@@ -37,12 +39,13 @@ export default function NewTaskModal({ setOpen, open }: NewTaskModalProps) {
   const [tasks, setTasks] = useAtom(tasksAtom);
   const [columns, setColumns] = useAtom(columnsAtom);
 
+  const queryClient = useQueryClient();
+
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
     const subtaskTitle = data.subtasks.map((subtask) => subtask.title);
     const colTasks = tasks
       .filter((task) => task.columnId === data.columnId)
       .sort((a, b) => a.rank.localeCompare(b.rank));
-    console.log(data);
 
     let rank;
     if (!colTasks.length) {
@@ -67,10 +70,14 @@ export default function NewTaskModal({ setOpen, open }: NewTaskModalProps) {
     name: "subtasks",
     control,
   });
+  console.log(getQueryKey(api.task.getAll, undefined));
 
   const createTask = api.task.create.useMutation({
-    onSuccess: (data) => {
-      setTasks([...tasks, data]);
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        queryKey: [...getQueryKey(api.task.getAll, undefined)],
+        type: "active",
+      });
     },
   });
 
