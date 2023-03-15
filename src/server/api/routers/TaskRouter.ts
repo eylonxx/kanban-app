@@ -10,7 +10,7 @@ export const taskRouter = createTRPCRouter({
         where: {
           columnId: { in: input.columnIds },
         },
-        include: { subTasks: true },
+        include: { subtasks: true },
       });
     }),
   update: protectedProcedure
@@ -54,7 +54,7 @@ export const taskRouter = createTRPCRouter({
           userId: ctx.session.user.id,
           columnId: input.columnId,
           rank: input.rank,
-          subTasks: {
+          subtasks: {
             create: input.subtasks.map((subtask) => ({
               title: subtask,
             })),
