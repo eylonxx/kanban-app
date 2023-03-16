@@ -70,7 +70,6 @@ export default function NewTaskModal({ setOpen, open }: NewTaskModalProps) {
     name: "subtasks",
     control,
   });
-  console.log(getQueryKey(api.task.getAll, undefined));
 
   const createTask = api.task.create.useMutation({
     onSuccess: async (data) => {

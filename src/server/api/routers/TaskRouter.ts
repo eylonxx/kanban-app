@@ -55,8 +55,9 @@ export const taskRouter = createTRPCRouter({
           columnId: input.columnId,
           rank: input.rank,
           subtasks: {
-            create: input.subtasks.map((subtask) => ({
+            create: input.subtasks.map((subtask, i) => ({
               title: subtask,
+              index: i,
             })),
           },
         },

@@ -79,6 +79,7 @@ model Subtask {
     checked Boolean @default(false)
     Task    Task    @relation(fields: [taskId], references: [id])
     taskId  String
+    index   Int
 }
 
 model Board {

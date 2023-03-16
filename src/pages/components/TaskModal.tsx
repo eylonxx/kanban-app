@@ -118,34 +118,36 @@ export default function TaskModal({
                     <p className="mb-4 text-sm font-bold text-white">
                       Subtasks
                     </p>
-                    {subtasks.map((subtask, i) => (
-                      <div
-                        className="mb-2 flex h-10 w-full items-center justify-start rounded-lg bg-veryDarkGrey"
-                        key={subtask.id}
-                      >
-                        <input
-                          className="removeHover ml-3 h-5 w-5 accent-mainPurple hover:accent-mainPurple focus:accent-mainPurple focus:outline-none "
-                          id={subtask.id}
-                          type="checkbox"
-                          {...register(`subtasks.${i}.id`)}
-                          checked={subtask.checked}
-                          onChange={(e) => {
-                            setSubtasks((prev) => {
-                              prev[i].checked = e.target.checked;
-                              return [...prev];
-                            });
-                          }}
-                        />
-                        <label
-                          htmlFor={subtask.id}
-                          className={`${
-                            subtask.checked ? "text-white" : "text-black"
-                          } ml-4 w-full cursor-pointer text-left`}
+                    {subtasks
+                      .sort((a, b) => a.index - b.index)
+                      .map((subtask, i) => (
+                        <div
+                          className="mb-2 flex h-10 w-full items-center justify-start rounded-lg bg-veryDarkGrey"
+                          key={subtask.id}
                         >
-                          {subtask.title}
-                        </label>
-                      </div>
-                    ))}
+                          <input
+                            className="removeHover ml-3 h-5 w-5 accent-mainPurple hover:accent-mainPurple focus:accent-mainPurple focus:outline-none "
+                            id={subtask.id}
+                            type="checkbox"
+                            {...register(`subtasks.${i}.id`)}
+                            checked={subtask.checked}
+                            onChange={(e) => {
+                              setSubtasks((prev) => {
+                                prev[i].checked = e.target.checked;
+                                return [...prev];
+                              });
+                            }}
+                          />
+                          <label
+                            htmlFor={subtask.id}
+                            className={`${
+                              subtask.checked ? "text-white" : "text-black"
+                            } ml-4 w-full cursor-pointer text-left`}
+                          >
+                            {subtask.title}
+                          </label>
+                        </div>
+                      ))}
                   </div>
                   <div className="flex flex-col">
                     {/* <button
