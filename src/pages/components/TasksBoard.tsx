@@ -44,8 +44,16 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   const sensors = useSensors(mouseSensor);
 
   const setOpenTaskModal = (task: Task, val: boolean) => {
+    console.log(taskModalOpen);
+
     setTaskModalOpen(val);
     setTaskModalTask(task);
+  };
+
+  const handleOnCloseModal = () => {
+    setTimeout(() => {
+      setTaskModalTask(null);
+    }, 500);
   };
 
   const handleUpdateSubtask = (subtasksToChange: Subtask[]) => {
@@ -219,6 +227,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   return (
     <div className="flex flex-row">
       <TaskModal
+        handleOnCloseModal={handleOnCloseModal}
         handleUpdateSubtask={handleUpdateSubtask}
         task={taskModalTask}
         open={taskModalOpen}
