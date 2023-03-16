@@ -141,8 +141,10 @@ export default function TaskModal({
                           <label
                             htmlFor={subtask.id}
                             className={`${
-                              subtask.checked ? "text-white" : "text-black"
-                            } ml-4 w-full cursor-pointer text-left`}
+                              subtask.checked
+                                ? "text-decoration-line text-white/40 line-through transition-all "
+                                : "text-white transition-all"
+                            } ml-4 w-full cursor-pointer break-normal text-left leading-4`}
                           >
                             {subtask.title}
                           </label>
