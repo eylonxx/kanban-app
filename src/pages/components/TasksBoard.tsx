@@ -50,12 +50,6 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     setTaskModalTask(task);
   };
 
-  const handleOnCloseModal = () => {
-    setTimeout(() => {
-      setTaskModalTask(null);
-    }, 500);
-  };
-
   const handleUpdateSubtask = (subtasksToChange: Subtask[]) => {
     setItems((prev) => {
       const index = prev.findIndex((task) => task.id === taskModalTask!.id);
@@ -227,7 +221,6 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   return (
     <div className="flex flex-row">
       <TaskModal
-        handleOnCloseModal={handleOnCloseModal}
         handleUpdateSubtask={handleUpdateSubtask}
         task={taskModalTask}
         open={taskModalOpen}

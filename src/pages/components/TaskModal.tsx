@@ -10,7 +10,6 @@ interface TaskModalProps {
   open: boolean;
   task: Task | null;
   handleUpdateSubtask: (subtasksToChange: Subtask[]) => void;
-  handleOnCloseModal: () => void;
 }
 
 type FormValues = {
@@ -22,7 +21,6 @@ export default function TaskModal({
   open,
   task,
   handleUpdateSubtask,
-  handleOnCloseModal,
 }: TaskModalProps) {
   const cancelButtonRef = useRef(null);
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);

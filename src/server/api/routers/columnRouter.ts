@@ -22,4 +22,20 @@ export const columnRouter = createTRPCRouter({
         },
       });
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        columns: z.array(z.object({ title: z.string(), id: z.string() })),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.$transaction(
+        input.columns.map(({ id, title }) =>
+          ctx.prisma.column.update({
+            where: { id: id },
+            data: { title: title },
+          })
+        )
+      );
+    }),
 });

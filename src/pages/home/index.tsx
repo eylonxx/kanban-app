@@ -15,6 +15,7 @@ const Home: React.FC = () => {
   const [openNewBoardModal, setOpenNewBoardModal] = useState(false);
   const [openNewTaskModal, setOpenNewTaskModal] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const { data: boards, refetch: refetchBoards } = api.board.getAll.useQuery(
     undefined,
@@ -35,10 +36,23 @@ const Home: React.FC = () => {
     },
   });
 
+  const updateBoard = api.board.update.useMutation({
+    onSuccess: () => {
+      void refetchBoards();
+    },
+  });
+
   const handleCreateBoard = (title: string, columnNames: string[]) => {
     createBoard.mutate({
       title: title,
       columns: columnNames,
+    });
+  };
+
+  const handleUpdateBoard = (boardName: string, boardId: string) => {
+    updateBoard.mutate({
+      id: boardId,
+      title: boardName,
     });
   };
 
@@ -55,10 +69,18 @@ const Home: React.FC = () => {
     setOpen(val);
   };
 
+  const handleBoardEdit = (val: boolean) => {
+    setIsEdit(val);
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <div className=" flex items-center justify-between  bg-darkGrey ">
-        <Navbar open={open} setOpenModal={setOpenNewTaskModal} />
+        <Navbar
+          open={open}
+          setOpenModal={setOpenNewTaskModal}
+          setBoardEdit={handleBoardEdit}
+        />
       </div>
       <div className="relative flex flex-grow">
         <Sidebar
@@ -82,6 +104,10 @@ const Home: React.FC = () => {
             setOpen={setOpenNewBoardModal}
             open={openNewBoardModal}
             handleCreateBoard={handleCreateBoard}
+            isEdit={isEdit}
+            setBoardEdit={handleBoardEdit}
+            selectedBoard={selectedBoard}
+            handleUpdateBoard={handleUpdateBoard}
           />
           <NewTaskModal setOpen={setOpenNewTaskModal} open={openNewTaskModal} />
           <TasksBoard selectedBoard={selectedBoard} />

@@ -30,6 +30,21 @@ export const boardRouter = createTRPCRouter({
         },
       });
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.board.update({
+        where: { id: input.id },
+        data: {
+          title: input.title,
+        },
+      });
+    }),
 });
 //   await ctx.prisma.$transaction(async (tx) => {
 //     const board = await tx.board.create({

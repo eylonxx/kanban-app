@@ -6,9 +6,10 @@ import VerticalEllipsis from "../../assets/icon-vertical-ellipsis.svg";
 interface NavbarProps {
   open: boolean;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setBoardEdit: (val: boolean) => void;
 }
 
-const Navbar = ({ open, setOpenModal }: NavbarProps) => {
+const Navbar = ({ open, setOpenModal, setBoardEdit }: NavbarProps) => {
   const { data: sessionData } = useSession();
 
   return (
@@ -39,7 +40,13 @@ const Navbar = ({ open, setOpenModal }: NavbarProps) => {
             className="dropdown-content menu rounded-box mt-6 w-52 bg-base-100 p-2 shadow"
           >
             <li>
-              <a>Edit Board</a>
+              <a
+                onClick={() => {
+                  setBoardEdit(true);
+                }}
+              >
+                Edit Board
+              </a>
             </li>
             <li>
               <a className="text-red">Delete Board</a>

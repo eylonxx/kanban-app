@@ -1,12 +1,19 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
+import { type Board } from "@prisma/client";
+import { useAtom } from "jotai";
+import { columnsAtom } from "~/utils/jotai";
 
 interface BoardModalProps {
   setOpen: (val: boolean) => void;
   open: boolean;
   handleCreateBoard: (title: string, columnNames: string[]) => void;
+  isEdit: boolean;
+  selectedBoard: Board | null;
+  setBoardEdit: (val: boolean) => void;
+  handleUpdateBoard: (boardName: string, boardId: string) => void;
 }
 
 type FormValues = {
@@ -20,14 +27,19 @@ export default function BoardModal({
   setOpen,
   open,
   handleCreateBoard,
+  isEdit,
+  selectedBoard,
+  handleUpdateBoard,
+  setBoardEdit,
 }: BoardModalProps) {
   const cancelButtonRef = useRef(null);
-
+  const [columns, setColumns] = useAtom(columnsAtom);
   const {
     register,
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: { boardName: "", columns: [{ title: "" }] },
@@ -35,10 +47,35 @@ export default function BoardModal({
   });
 
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
-    const spreadData = data.columns.map((col) => col.title);
-    handleCreateBoard(data.boardName, spreadData);
+    if (isEdit) {
+      if (data.boardName !== selectedBoard?.title) {
+        handleUpdateBoard(data.boardName, selectedBoard!.id);
+      }
+      if (data.columns !== data.columns) {
+        //update columns
+        //if columns added, call refetch queries
+      }
+    } else {
+      const spreadData = data.columns.map((col) => col.title);
+      handleCreateBoard(data.boardName, spreadData);
+    }
     setOpen(false);
+    setBoardEdit(false);
   };
+
+  useEffect(() => {
+    if (isEdit) {
+      setValue("boardName", selectedBoard!.title);
+      const cols = columns.map((col) => {
+        if (col.boardId === selectedBoard!.id) {
+          return { title: col.title };
+        }
+      });
+      if (cols !== undefined) {
+        setValue("columns", cols);
+      }
+    }
+  }, [isEdit]);
 
   const { fields, append, remove } = useFieldArray({
     name: "columns",
@@ -46,7 +83,7 @@ export default function BoardModal({
   });
 
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={open || isEdit} as={Fragment} afterLeave={reset}>
       <Dialog
         as="div"
         className="relative z-10"
@@ -82,13 +119,13 @@ export default function BoardModal({
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="mb-6 flex justify-between">
                     <p className="text-left text-lg font-bold text-white">
-                      Add New Board
+                      {isEdit ? "Edit Board" : "Add New Board"}
                     </p>
                     <button
                       type="button"
                       onClick={() => {
-                        reset();
                         setOpen(false);
+                        setBoardEdit(false);
                       }}
                       ref={cancelButtonRef}
                     >
@@ -168,7 +205,7 @@ export default function BoardModal({
                       type="submit"
                       className="h-10 w-full rounded-full bg-mainPurple text-sm font-bold text-white"
                     >
-                      Create New Board
+                      {isEdit ? "Save Changes" : "Create New Board"}
                     </button>
                   </div>
                 </form>
