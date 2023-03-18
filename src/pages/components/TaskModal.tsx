@@ -24,18 +24,7 @@ export default function TaskModal({
 }: TaskModalProps) {
   const cancelButtonRef = useRef(null);
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
-  const { register, handleSubmit, watch, reset, getValues } =
-    useForm<FormValues>({});
-
-  useEffect(() => {
-    if (!open) {
-      reset();
-      setSubtasks([]);
-    } else if (task) {
-      setSubtasks(task.subtasks.map((subtask) => ({ ...subtask })));
-    }
-    console.log(getValues(), open, task, subtasks);
-  }, [task, open]);
+  const { register, handleSubmit, reset, getValues } = useForm<FormValues>({});
 
   const updateSubtask = api.subtask.update.useMutation({});
 
@@ -52,12 +41,19 @@ export default function TaskModal({
       });
       handleUpdateSubtask(subtasks);
     }
-    // setSubtasks([]);
   }
 
   return (
     <Transition.Root
-      // afterLeave={handleOnCloseModal}
+      afterLeave={() => {
+        reset();
+        setSubtasks([]);
+      }}
+      beforeEnter={() => {
+        if (task) {
+          setSubtasks(task.subtasks.map((subtask) => ({ ...subtask })));
+        }
+      }}
       show={open}
       as={Fragment}
     >
