@@ -13,9 +13,9 @@ const Home: React.FC = () => {
   const { data: sessionData } = useSession();
   const [open, setOpen] = useState(true);
   const [openNewBoardModal, setOpenNewBoardModal] = useState(false);
+  const [openEditBoardModal, setOpenEditBoardModal] = useState(false);
   const [openNewTaskModal, setOpenNewTaskModal] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
-  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const { data: boards, refetch: refetchBoards } = api.board.getAll.useQuery(
     undefined,
@@ -69,8 +69,8 @@ const Home: React.FC = () => {
     setOpen(val);
   };
 
-  const handleBoardEdit = (val: boolean) => {
-    setIsEdit(val);
+  const handleOpenEditBoardModal = (val: boolean) => {
+    setOpenEditBoardModal(val);
   };
 
   return (
@@ -79,7 +79,7 @@ const Home: React.FC = () => {
         <Navbar
           open={open}
           setOpenModal={setOpenNewTaskModal}
-          setBoardEdit={handleBoardEdit}
+          setBoardEdit={handleOpenEditBoardModal}
         />
       </div>
       <div className="relative flex flex-grow">
@@ -104,8 +104,13 @@ const Home: React.FC = () => {
             setOpen={setOpenNewBoardModal}
             open={openNewBoardModal}
             handleCreateBoard={handleCreateBoard}
-            isEdit={isEdit}
-            setBoardEdit={handleBoardEdit}
+            isEdit={false}
+            selectedBoard={selectedBoard}
+          />
+          <BoardModal
+            setOpen={setOpenEditBoardModal}
+            open={openEditBoardModal}
+            isEdit={true}
             selectedBoard={selectedBoard}
             handleUpdateBoard={handleUpdateBoard}
           />

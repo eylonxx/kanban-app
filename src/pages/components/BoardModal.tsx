@@ -9,11 +9,10 @@ import { columnsAtom } from "~/utils/jotai";
 interface BoardModalProps {
   setOpen: (val: boolean) => void;
   open: boolean;
-  handleCreateBoard: (title: string, columnNames: string[]) => void;
+  handleCreateBoard?: (title: string, columnNames: string[]) => void;
   isEdit: boolean;
   selectedBoard: Board | null;
-  setBoardEdit: (val: boolean) => void;
-  handleUpdateBoard: (boardName: string, boardId: string) => void;
+  handleUpdateBoard?: (boardName: string, boardId: string) => void;
 }
 
 type FormValues = {
@@ -30,7 +29,6 @@ export default function BoardModal({
   isEdit,
   selectedBoard,
   handleUpdateBoard,
-  setBoardEdit,
 }: BoardModalProps) {
   const cancelButtonRef = useRef(null);
   const [columns, setColumns] = useAtom(columnsAtom);
@@ -50,6 +48,7 @@ export default function BoardModal({
     if (isEdit) {
       if (data.boardName !== selectedBoard?.title) {
         handleUpdateBoard(data.boardName, selectedBoard!.id);
+        // write a generic submit function that handles both cases
       }
       if (data.columns !== data.columns) {
         //update columns
@@ -60,22 +59,7 @@ export default function BoardModal({
       handleCreateBoard(data.boardName, spreadData);
     }
     setOpen(false);
-    setBoardEdit(false);
   };
-
-  useEffect(() => {
-    if (isEdit) {
-      setValue("boardName", selectedBoard!.title);
-      const cols = columns.map((col) => {
-        if (col.boardId === selectedBoard!.id) {
-          return { title: col.title };
-        }
-      });
-      if (cols !== undefined) {
-        setValue("columns", cols);
-      }
-    }
-  }, [isEdit]);
 
   const { fields, append, remove } = useFieldArray({
     name: "columns",
@@ -83,7 +67,20 @@ export default function BoardModal({
   });
 
   return (
-    <Transition.Root show={open || isEdit} as={Fragment} afterLeave={reset}>
+    <Transition.Root
+      beforeEnter={() => {
+        if (isEdit) {
+          setValue("boardName", selectedBoard!.title);
+          const cols = columns
+            .filter((col) => col.boardId === selectedBoard!.id)
+            .map((col) => ({ title: col.title }));
+          setValue("columns", cols);
+        }
+      }}
+      show={open || isEdit}
+      as={Fragment}
+      afterLeave={reset}
+    >
       <Dialog
         as="div"
         className="relative z-10"
@@ -125,7 +122,6 @@ export default function BoardModal({
                       type="button"
                       onClick={() => {
                         setOpen(false);
-                        setBoardEdit(false);
                       }}
                       ref={cancelButtonRef}
                     >
