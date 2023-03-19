@@ -73,7 +73,7 @@ const Home: React.FC = () => {
     setOpenEditBoardModal(val);
   };
 
-  const handleBoardModal = (isEdit: boolean) => {
+  const handleBoardModalOnSubmit = (isEdit: boolean) => {
     if (isEdit) {
       //run update
     } else {
@@ -111,18 +111,16 @@ const Home: React.FC = () => {
           <BoardModal
             setOpen={setOpenNewBoardModal}
             open={openNewBoardModal}
-            // handleCreateBoard={handleCreateBoard}
             isEdit={false}
             selectedBoard={selectedBoard}
-            handleBoardModal={handleBoardModal}
+            handleBoardModalOnSubmit={handleBoardModalOnSubmit}
           />
           <BoardModal
             setOpen={setOpenEditBoardModal}
             open={openEditBoardModal}
             isEdit={true}
             selectedBoard={selectedBoard}
-            handleBoardModal={handleBoardModal}
-            // handleUpdateBoard={handleUpdateBoard}
+            handleBoardModalOnSubmit={handleBoardModalOnSubmit}
           />
           <NewTaskModal setOpen={setOpenNewTaskModal} open={openNewTaskModal} />
           <TasksBoard selectedBoard={selectedBoard} />
