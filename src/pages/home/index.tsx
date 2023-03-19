@@ -73,6 +73,14 @@ const Home: React.FC = () => {
     setOpenEditBoardModal(val);
   };
 
+  const handleBoardModal = (isEdit: boolean) => {
+    if (isEdit) {
+      //run update
+    } else {
+      //run create
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <div className=" flex items-center justify-between  bg-darkGrey ">
@@ -103,16 +111,18 @@ const Home: React.FC = () => {
           <BoardModal
             setOpen={setOpenNewBoardModal}
             open={openNewBoardModal}
-            handleCreateBoard={handleCreateBoard}
+            // handleCreateBoard={handleCreateBoard}
             isEdit={false}
             selectedBoard={selectedBoard}
+            handleBoardModal={handleBoardModal}
           />
           <BoardModal
             setOpen={setOpenEditBoardModal}
             open={openEditBoardModal}
             isEdit={true}
             selectedBoard={selectedBoard}
-            handleUpdateBoard={handleUpdateBoard}
+            handleBoardModal={handleBoardModal}
+            // handleUpdateBoard={handleUpdateBoard}
           />
           <NewTaskModal setOpen={setOpenNewTaskModal} open={openNewTaskModal} />
           <TasksBoard selectedBoard={selectedBoard} />
