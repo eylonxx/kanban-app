@@ -9,10 +9,9 @@ import { columnsAtom } from "~/utils/jotai";
 interface BoardModalProps {
   setOpen: (val: boolean) => void;
   open: boolean;
-  handleCreateBoard?: (title: string, columnNames: string[]) => void;
   isEdit: boolean;
   selectedBoard: Board | null;
-  handleUpdateBoard?: (boardName: string, boardId: string) => void;
+  handleBoardModalOnSubmit: (isEdit: boolean) => void;
 }
 
 type FormValues = {
@@ -25,10 +24,9 @@ type FormValues = {
 export default function BoardModal({
   setOpen,
   open,
-  handleCreateBoard,
   isEdit,
   selectedBoard,
-  handleUpdateBoard,
+  handleBoardModalOnSubmit,
 }: BoardModalProps) {
   const cancelButtonRef = useRef(null);
   const [columns, setColumns] = useAtom(columnsAtom);
@@ -45,19 +43,7 @@ export default function BoardModal({
   });
 
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
-    if (isEdit) {
-      if (data.boardName !== selectedBoard?.title) {
-        handleUpdateBoard(data.boardName, selectedBoard!.id);
-        // write a generic submit function that handles both cases
-      }
-      if (data.columns !== data.columns) {
-        //update columns
-        //if columns added, call refetch queries
-      }
-    } else {
-      const spreadData = data.columns.map((col) => col.title);
-      handleCreateBoard(data.boardName, spreadData);
-    }
+    handleBoardModalOnSubmit(isEdit);
     setOpen(false);
   };
 
@@ -77,7 +63,7 @@ export default function BoardModal({
           setValue("columns", cols);
         }
       }}
-      show={open || isEdit}
+      show={open}
       as={Fragment}
       afterLeave={reset}
     >
