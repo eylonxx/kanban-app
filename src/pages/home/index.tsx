@@ -6,7 +6,9 @@ import { api } from "~/utils/api";
 import Navbar from "../components/Navbar";
 import TasksBoard from "../components/TasksBoard";
 import Sidebar from "../components/Sidebar";
-import BoardModal from "../components/BoardModal";
+import BoardModal, {
+  type BoardModalFormValues,
+} from "../components/BoardModal";
 import NewTaskModal from "../components/NewTaskModal";
 
 const Home: React.FC = () => {
@@ -73,7 +75,12 @@ const Home: React.FC = () => {
     setOpenEditBoardModal(val);
   };
 
-  const handleBoardModalOnSubmit = (isEdit: boolean) => {
+  const handleBoardModalOnSubmit = (
+    isEdit: boolean,
+    data: BoardModalFormValues
+  ) => {
+    console.log(data);
+
     if (isEdit) {
       //run update
     } else {

@@ -2,22 +2,29 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
-import { type Board } from "@prisma/client";
+import { type Column, type Board } from "@prisma/client";
 import { useAtom } from "jotai";
 import { columnsAtom } from "~/utils/jotai";
+import { closestCenter, DndContext, type DragOverEvent } from "@dnd-kit/core";
+import { SortableContext } from "@dnd-kit/sortable";
+import SortableItemColumn from "./SortableItemColumn";
 
 interface BoardModalProps {
   setOpen: (val: boolean) => void;
   open: boolean;
   isEdit: boolean;
   selectedBoard: Board | null;
-  handleBoardModalOnSubmit: (isEdit: boolean) => void;
+  handleBoardModalOnSubmit: (
+    isEdit: boolean,
+    data: BoardModalFormValues
+  ) => void;
 }
 
-type FormValues = {
+export type BoardModalFormValues = {
   boardName: string;
   columns: {
     title: string;
+    boardId: string;
   }[];
 };
 
@@ -37,17 +44,22 @@ export default function BoardModal({
     reset,
     setValue,
     formState: { errors },
-  } = useForm<FormValues>({
-    defaultValues: { boardName: "", columns: [{ title: "" }] },
+  } = useForm<BoardModalFormValues>({
+    defaultValues: {
+      boardName: "",
+      columns: [{ title: "", boardId: selectedBoard!.id }],
+    },
     mode: "onBlur",
   });
 
-  const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
-    handleBoardModalOnSubmit(isEdit);
+  const onSubmit: SubmitHandler<BoardModalFormValues> = (
+    data: BoardModalFormValues
+  ) => {
+    handleBoardModalOnSubmit(isEdit, data);
     setOpen(false);
   };
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, swap } = useFieldArray({
     name: "columns",
     control,
   });
@@ -59,7 +71,7 @@ export default function BoardModal({
           setValue("boardName", selectedBoard!.title);
           const cols = columns
             .filter((col) => col.boardId === selectedBoard!.id)
-            .map((col) => ({ title: col.title }));
+            .map((col) => ({ boardId: col.boardId, title: col.title }));
           setValue("columns", cols);
         }
       }}
@@ -138,47 +150,46 @@ export default function BoardModal({
                     <label htmlFor="" className="mb-2 font-bold text-white">
                       Board Columns
                     </label>
-                    {fields.map((field, index) => {
-                      return (
-                        <div key={field.id} className="mb-3 flex w-full">
-                          {errors?.columns?.[index]?.title && (
-                            <span className="absolute mt-3 ml-4 text-xs text-red">
-                              Cannot be empty
-                            </span>
-                          )}
-                          <input
-                            type="text"
-                            {...register(`columns.${index}.title` as const, {
-                              required: true,
-                            })}
-                            className={`${
-                              errors?.columns?.[index]?.title
-                                ? "border-red"
-                                : "border-inputBorder"
-                            } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base focus:outline-none`}
-                          />
-                          <button
-                            type="button"
-                            className={`${
-                              errors?.columns?.[index]?.title ? "text-red" : ""
-                            } ${fields.length === 1 ? "opacity-20" : ""} ml-4`}
-                            disabled={fields.length === 1}
-                            onClick={() => remove(index)}
-                          >
-                            <IconCross />
-                          </button>
-                        </div>
-                      );
-                    })}
+                    <DndContext
+                      collisionDetection={closestCenter}
+                      onDragOver={(event: DragOverEvent) => {
+                        const { active, over } = event;
+                        const { id } = active;
+                        const overId = over?.id;
+                        if (overId) {
+                          const activeIndex = fields.findIndex(
+                            (field) => field.id === id
+                          );
+                          const overIndex = fields.findIndex(
+                            (field) => field.id === overId
+                          );
+                          swap(activeIndex, overIndex);
+                        }
+                      }}
+                    >
+                      <SortableContext items={fields}>
+                        {fields.map((field, index) => {
+                          return (
+                            <SortableItemColumn
+                              id={field.id}
+                              key={field.id}
+                              errors={errors}
+                              index={index}
+                              register={register}
+                              remove={remove}
+                              length={fields.length}
+                            />
+                          );
+                        })}
+                      </SortableContext>
+                    </DndContext>
                   </div>
                   <div className="flex flex-col">
                     <button
                       className="mb-6 h-10 w-full rounded-full bg-white text-sm font-bold text-mainPurple"
                       type="button"
                       onClick={() =>
-                        append({
-                          title: "",
-                        })
+                        append({ boardId: selectedBoard!.id, title: "" })
                       }
                     >
                       + Add New Column
