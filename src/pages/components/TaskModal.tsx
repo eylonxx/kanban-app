@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { type Subtask, type Task } from "@prisma/client";
 import { useForm } from "react-hook-form";
@@ -24,11 +24,11 @@ export default function TaskModal({
 }: TaskModalProps) {
   const cancelButtonRef = useRef(null);
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
-  const { register, handleSubmit, reset, getValues } = useForm<FormValues>({});
+  const { register, handleSubmit, reset } = useForm<FormValues>({});
 
   const updateSubtask = api.subtask.update.useMutation({});
 
-  function onSubmit(data: FormValues) {
+  function onSubmit() {
     const changedSubtasks = subtasks.filter((subtask, i) => {
       return subtask.checked !== task?.subtasks[i].checked;
     });
@@ -120,7 +120,7 @@ export default function TaskModal({
                           key={subtask.id}
                         >
                           <input
-                            className="removeHover ml-3 h-5 w-5 accent-mainPurple hover:accent-mainPurple focus:accent-mainPurple focus:outline-none "
+                            className="removeHover ml-3 h-5 w-5 accent-mainPurple hover:accent-mainPurple focus:accent-mainPurple focus:outline-none"
                             id={subtask.id}
                             type="checkbox"
                             {...register(`subtasks.${i}.id`)}

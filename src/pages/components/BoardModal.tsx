@@ -1,8 +1,8 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
-import { type Column, type Board } from "@prisma/client";
+import { type Board } from "@prisma/client";
 import { useAtom } from "jotai";
 import { columnsAtom } from "~/utils/jotai";
 import { closestCenter, DndContext, type DragOverEvent } from "@dnd-kit/core";
@@ -38,7 +38,7 @@ export default function BoardModal({
   handleBoardModalOnSubmit,
 }: BoardModalProps) {
   const cancelButtonRef = useRef(null);
-  const [columns, setColumns] = useAtom(columnsAtom);
+  const [columns] = useAtom(columnsAtom);
   const {
     register,
     handleSubmit,
@@ -59,7 +59,6 @@ export default function BoardModal({
   ) => {
     const columns = data.columns.map((col, i) => ({ ...col, index: i }));
     const dataWithIndex = { boardName: data.boardName, columns };
-
     handleBoardModalOnSubmit(isEdit, dataWithIndex);
     setOpen(false);
   };
@@ -72,10 +71,10 @@ export default function BoardModal({
   return (
     <Transition.Root
       beforeEnter={() => {
-        if (isEdit) {
-          setValue("boardName", selectedBoard!.title);
+        if (isEdit && selectedBoard) {
+          setValue("boardName", selectedBoard.title);
           const cols = columns
-            .filter((col) => col.boardId === selectedBoard!.id)
+            .filter((col) => col.boardId === selectedBoard.id)
             .sort((a, b) => a.index - b.index)
             .map((col) => ({
               id: col.id,
@@ -151,7 +150,7 @@ export default function BoardModal({
                         errors?.boardName?.message
                           ? "border-red"
                           : "border-inputBorder"
-                      } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base focus:outline-none`}
+                      } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base transition-all hover:border-mainPurple focus:outline-none`}
                       {...register("boardName", {
                         required: "Cannot be empty",
                       })}

@@ -67,7 +67,7 @@ export default function SortableItemColumn({
             errors?.columns?.[index]?.title
               ? "border-red"
               : "border-inputBorder"
-          } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base focus:outline-none`}
+          } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base transition-all  hover:border-mainPurple focus:outline-none`}
         />
         <button
           type="button"

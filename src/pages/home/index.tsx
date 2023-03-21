@@ -74,7 +74,6 @@ const Home: React.FC = () => {
     isEdit: boolean,
     data: BoardModalFormValues
   ) => {
-    console.log(data);
     const currentColumnsIds = columns
       .filter((col) => col.boardId === selectedBoard!.id)
       .map((col) => col.id);
@@ -83,15 +82,6 @@ const Home: React.FC = () => {
     const columnsToUpdate = data.columns.filter((col) => col.boardId && col.id);
     const columnsToDelete = currentColumnsIds.filter(
       (id) => data.columns.find((col) => col.id === id) === undefined
-    );
-
-    console.log(
-      "create:",
-      columnsToCreate,
-      "update:",
-      columnsToUpdate,
-      "delete:",
-      columnsToDelete
     );
 
     if (isEdit) {
@@ -107,6 +97,12 @@ const Home: React.FC = () => {
         columns: data.columns.map((col) => col.title),
       });
     }
+  };
+
+  const getBoardColumns = (boardId: string) => {
+    console.log(columns.filter((col) => col.boardId === boardId));
+
+    return columns.filter((col) => col.boardId === boardId);
   };
 
   return (
@@ -135,24 +131,30 @@ const Home: React.FC = () => {
         >
           <ShowSidebar />
         </div>
-        <main className="grow bg-veryDarkGrey">
-          <BoardModal
-            setOpen={setOpenNewBoardModal}
-            open={openNewBoardModal}
-            isEdit={false}
-            selectedBoard={selectedBoard}
-            handleBoardModalOnSubmit={handleBoardModalOnSubmit}
-          />
-          <BoardModal
-            setOpen={setOpenEditBoardModal}
-            open={openEditBoardModal}
-            isEdit={true}
-            selectedBoard={selectedBoard}
-            handleBoardModalOnSubmit={handleBoardModalOnSubmit}
-          />
-          <NewTaskModal setOpen={setOpenNewTaskModal} open={openNewTaskModal} />
-          <TasksBoard selectedBoard={selectedBoard} />
-        </main>
+        {selectedBoard && (
+          <main className="grow bg-veryDarkGrey">
+            <BoardModal
+              setOpen={setOpenNewBoardModal}
+              open={openNewBoardModal}
+              isEdit={false}
+              selectedBoard={selectedBoard}
+              handleBoardModalOnSubmit={handleBoardModalOnSubmit}
+            />
+            <BoardModal
+              setOpen={setOpenEditBoardModal}
+              open={openEditBoardModal}
+              isEdit={true}
+              selectedBoard={selectedBoard}
+              handleBoardModalOnSubmit={handleBoardModalOnSubmit}
+            />
+            <NewTaskModal
+              setOpen={setOpenNewTaskModal}
+              open={openNewTaskModal}
+              boardColumns={getBoardColumns(selectedBoard.id)}
+            />
+            <TasksBoard selectedBoard={selectedBoard} />
+          </main>
+        )}
       </div>
     </div>
   );
