@@ -9,7 +9,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import { Subtask, type Board, type Task } from "@prisma/client";
+import { type Subtask, type Board, type Task } from "@prisma/client";
 import { useAtom } from "jotai";
 import { LexoRank } from "lexorank";
 import { useSession } from "next-auth/react";
@@ -235,17 +235,19 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
       >
         <SortableContext items={columnIds}>
           <div className="flex gap-4">
-            {columns?.map((column) => {
-              return (
-                <Column
-                  setOpenTaskModal={setOpenTaskModal}
-                  key={column.id}
-                  id={column.id}
-                  columnTitle={column.title}
-                  items={getTasksByColumn(column.id)}
-                />
-              );
-            })}
+            {columns
+              ?.sort((a, b) => a.index - b.index)
+              .map((column) => {
+                return (
+                  <Column
+                    setOpenTaskModal={setOpenTaskModal}
+                    key={column.id}
+                    id={column.id}
+                    columnTitle={column.title}
+                    items={getTasksByColumn(column.id)}
+                  />
+                );
+              })}
           </div>
         </SortableContext>
 

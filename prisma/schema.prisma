@@ -100,6 +100,7 @@ model Column {
     board     Board    @relation(fields: [boardId], references: [id])
     boardId   String
     Task      Task[]
+    index     Int
 }
 
 model VerificationToken {

@@ -23,8 +23,9 @@ export const boardRouter = createTRPCRouter({
           title: input.title,
           userId: ctx.session.user.id,
           columns: {
-            create: input.columns.map((column) => ({
+            create: input.columns.map((column, i) => ({
               title: column,
+              index: i,
             })),
           },
         },
@@ -33,46 +34,49 @@ export const boardRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
-        id: z.string(),
-        title: z.string(),
+        boardId: z.string(),
+        toCreate: z.array(
+          z.object({
+            title: z.string(),
+            index: z.number(),
+          })
+        ),
+        toUpdate: z.array(
+          z.object({
+            id: z.string().optional(),
+            title: z.string().optional(),
+            boardId: z.string().optional(),
+            index: z.number().optional(),
+          })
+        ),
+        toDelete: z.array(z.string()),
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.board.update({
-        where: { id: input.id },
-        data: {
-          title: input.title,
-        },
-      });
+      return ctx.prisma.$transaction([
+        ...input.toCreate.map((col) =>
+          ctx.prisma.column.create({
+            data: {
+              title: col.title,
+              boardId: input.boardId,
+              index: col.index,
+            },
+          })
+        ),
+        ...input.toUpdate.map((col) =>
+          ctx.prisma.column.update({
+            where: { id: col.id },
+            data: {
+              title: col.title,
+              index: col.index,
+            },
+          })
+        ),
+        ...input.toDelete.map((id) =>
+          ctx.prisma.column.delete({
+            where: { id },
+          })
+        ),
+      ]);
     }),
 });
-//   await ctx.prisma.$transaction(async (tx) => {
-//     const board = await tx.board.create({
-//       data: {
-//         title: input.title,
-//         userId: ctx.session.user.id,
-//       },
-//     });
-
-//     const columns = input.columns.map((col) =>
-//       tx.column.create({
-//         data: {
-//           title: col,
-//           boardId: board.id,
-//         },
-//       })
-//     );
-//   });
-// }),
-
-// return ctx.prisma.board.create({
-//   data: {
-//     title: input.title,
-//     user:{connect:},
-//     columns: {
-//       create: input.columns.map((column) => ({
-//         title: column,
-//       })),
-//     },
-//   },
-// });

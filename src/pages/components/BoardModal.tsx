@@ -23,8 +23,10 @@ interface BoardModalProps {
 export type BoardModalFormValues = {
   boardName: string;
   columns: {
+    id?: string;
+    boardId?: string;
     title: string;
-    boardId: string;
+    index: number;
   }[];
 };
 
@@ -47,7 +49,7 @@ export default function BoardModal({
   } = useForm<BoardModalFormValues>({
     defaultValues: {
       boardName: "",
-      columns: [{ title: "", boardId: selectedBoard!.id }],
+      columns: [{ title: "", index: 0 }],
     },
     mode: "onBlur",
   });
@@ -55,7 +57,10 @@ export default function BoardModal({
   const onSubmit: SubmitHandler<BoardModalFormValues> = (
     data: BoardModalFormValues
   ) => {
-    handleBoardModalOnSubmit(isEdit, data);
+    const columns = data.columns.map((col, i) => ({ ...col, index: i }));
+    const dataWithIndex = { boardName: data.boardName, columns };
+
+    handleBoardModalOnSubmit(isEdit, dataWithIndex);
     setOpen(false);
   };
 
@@ -71,7 +76,13 @@ export default function BoardModal({
           setValue("boardName", selectedBoard!.title);
           const cols = columns
             .filter((col) => col.boardId === selectedBoard!.id)
-            .map((col) => ({ boardId: col.boardId, title: col.title }));
+            .sort((a, b) => a.index - b.index)
+            .map((col) => ({
+              id: col.id,
+              boardId: col.boardId,
+              title: col.title,
+              index: col.index,
+            }));
           setValue("columns", cols);
         }
       }}
@@ -189,7 +200,7 @@ export default function BoardModal({
                       className="mb-6 h-10 w-full rounded-full bg-white text-sm font-bold text-mainPurple"
                       type="button"
                       onClick={() =>
-                        append({ boardId: selectedBoard!.id, title: "" })
+                        append({ title: "", index: fields.length })
                       }
                     >
                       + Add New Column

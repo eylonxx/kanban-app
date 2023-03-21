@@ -10,6 +10,10 @@ import BoardModal, {
   type BoardModalFormValues,
 } from "../components/BoardModal";
 import NewTaskModal from "../components/NewTaskModal";
+import { useAtom } from "jotai";
+import { columnsAtom } from "~/utils/jotai";
+import { useQueryClient } from "@tanstack/react-query";
+import { getQueryKey } from "@trpc/react-query";
 
 const Home: React.FC = () => {
   const { data: sessionData } = useSession();
@@ -18,6 +22,8 @@ const Home: React.FC = () => {
   const [openEditBoardModal, setOpenEditBoardModal] = useState(false);
   const [openNewTaskModal, setOpenNewTaskModal] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
+  const [columns, setColumns] = useAtom(columnsAtom);
+  const queryClient = useQueryClient();
 
   const { data: boards, refetch: refetchBoards } = api.board.getAll.useQuery(
     undefined,
@@ -39,24 +45,13 @@ const Home: React.FC = () => {
   });
 
   const updateBoard = api.board.update.useMutation({
-    onSuccess: () => {
-      void refetchBoards();
+    onSuccess: async () => {
+      await queryClient.refetchQueries({
+        queryKey: [...getQueryKey(api.column.getAll)],
+        type: "active",
+      });
     },
   });
-
-  const handleCreateBoard = (title: string, columnNames: string[]) => {
-    createBoard.mutate({
-      title: title,
-      columns: columnNames,
-    });
-  };
-
-  const handleUpdateBoard = (boardName: string, boardId: string) => {
-    updateBoard.mutate({
-      id: boardId,
-      title: boardName,
-    });
-  };
 
   const boardNames = useMemo(() => {
     return boards?.map((board) => board.title) || [];
@@ -80,11 +75,37 @@ const Home: React.FC = () => {
     data: BoardModalFormValues
   ) => {
     console.log(data);
+    const currentColumnsIds = columns
+      .filter((col) => col.boardId === selectedBoard!.id)
+      .map((col) => col.id);
+
+    const columnsToCreate = data.columns.filter((col) => !col.boardId);
+    const columnsToUpdate = data.columns.filter((col) => col.boardId && col.id);
+    const columnsToDelete = currentColumnsIds.filter(
+      (id) => data.columns.find((col) => col.id === id) === undefined
+    );
+
+    console.log(
+      "create:",
+      columnsToCreate,
+      "update:",
+      columnsToUpdate,
+      "delete:",
+      columnsToDelete
+    );
 
     if (isEdit) {
-      //run update
+      updateBoard.mutate({
+        boardId: selectedBoard!.id,
+        toCreate: columnsToCreate,
+        toUpdate: columnsToUpdate,
+        toDelete: columnsToDelete,
+      });
     } else {
-      //run create
+      createBoard.mutate({
+        title: data.boardName,
+        columns: data.columns.map((col) => col.title),
+      });
     }
   };
 
