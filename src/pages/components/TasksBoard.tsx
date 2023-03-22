@@ -21,7 +21,7 @@ import { TaskCard } from "./SortableItem";
 import TaskModal from "./TaskModal";
 
 interface TasksBoardProps {
-  selectedBoard: Board | null;
+  selectedBoard: Board;
 }
 
 const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
@@ -64,7 +64,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
 
   const { data: fetchedColumns, refetch: refetchColumns } =
     api.column.getAll.useQuery(
-      { boardId: selectedBoard?.id || "" },
+      { boardId: selectedBoard.id },
       {
         enabled: sessionData?.user !== undefined,
         onSuccess: (data) => {
@@ -90,24 +90,6 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
   });
 
   const updateTask = api.task.update.useMutation({});
-
-  const updateSubtask = api.subtask.update.useMutation({});
-
-  const handleUpdateTask = (
-    id: string,
-    title?: string,
-    description?: string,
-    subtasks?: { id: string; title: string }[]
-  ) => {
-    updateTask.mutate({
-      id,
-      title,
-      description,
-    });
-    // if (subtasks?.length) {
-    //   updateSubtask.mutate({});
-    // }
-  };
 
   function getTasksByColumn(columnId: string) {
     return items

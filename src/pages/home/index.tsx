@@ -22,7 +22,7 @@ const Home: React.FC = () => {
   const [openEditBoardModal, setOpenEditBoardModal] = useState(false);
   const [openNewTaskModal, setOpenNewTaskModal] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
-  const [columns, setColumns] = useAtom(columnsAtom);
+  const [columns] = useAtom(columnsAtom);
   const queryClient = useQueryClient();
 
   const { data: boards, refetch: refetchBoards } = api.board.getAll.useQuery(
