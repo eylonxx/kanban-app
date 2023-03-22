@@ -61,6 +61,7 @@ export const taskRouter = createTRPCRouter({
             })),
           },
         },
+        include: { subtasks: true },
       });
     }),
 });

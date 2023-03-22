@@ -7,12 +7,10 @@ import {
   Controller,
 } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
-import { columnsAtom, tasksAtom } from "~/utils/jotai";
+import { tasksAtom } from "~/utils/jotai";
 import { useAtom } from "jotai";
 import { api } from "~/utils/api";
 import { LexoRank } from "lexorank";
-import { useQueryClient } from "@tanstack/react-query";
-import { getQueryKey } from "@trpc/react-query";
 import SelectWithListbox from "./SelectWithListbox";
 import { type Column } from "@prisma/client";
 
@@ -53,8 +51,6 @@ export default function NewTaskModal({
     mode: "onBlur",
   });
 
-  const queryClient = useQueryClient();
-
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
     const subtaskTitle = data.subtasks.map((subtask) => subtask.title);
     const colTasks = tasks
@@ -86,14 +82,8 @@ export default function NewTaskModal({
   });
 
   const createTask = api.task.create.useMutation({
-    onSuccess: async (data) => {
-      console.log(data);
-
-      await queryClient.refetchQueries({
-        queryKey: [...getQueryKey(api.task.getAll, undefined)],
-        type: "active",
-      });
-      // setTasks([...tasks, data]);
+    onSuccess: (data) => {
+      setTasks([...tasks, data]);
     },
   });
 
@@ -101,6 +91,7 @@ export default function NewTaskModal({
     if (boardColumns.length) {
       setValue("columnId", boardColumns[0].id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardColumns]);
 
   return (
