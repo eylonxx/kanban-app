@@ -20,7 +20,6 @@ const SelectWithListbox = ({
         <Listbox
           value={selected}
           onChange={(newSelected) => {
-            console.log("Listbox onChange internal: ", newSelected);
             onChange(newSelected);
             if (ref.current) {
               ref.current.dispatchEvent(new Event("change", { bubbles: true }));
