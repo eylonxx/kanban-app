@@ -16,29 +16,6 @@ const SelectWithListbox = ({
   return (
     <>
       <select style={{ display: "none" }} ref={ref} />
-      {/* <Listbox
-        value={selected}
-        onChange={(newSelected) => {
-          console.log("Listbox onChange internal: ", newSelected);
-          onChange(newSelected);
-          if (ref.current) {
-            ref.current.dispatchEvent(new Event("change", { bubbles: true }));
-          }
-        }}
-        name={name}
-      >
-        <Listbox.Button>
-          {columns.find((col) => col.id === selected)?.title}
-        </Listbox.Button>
-        <Listbox.Options>
-          {columns.map((col) => (
-            <Listbox.Option key={col.id} value={col.id}>
-              {col.title}
-            </Listbox.Option>
-          ))}
-        </Listbox.Options>
-      </Listbox> */}
-
       <div className="w-full">
         <Listbox
           value={selected}

@@ -4,12 +4,11 @@ import { CSS } from "@dnd-kit/utilities";
 import { type Task } from "@prisma/client";
 
 interface TaskCardProps {
-  id: string;
   task: Task | null;
   setOpenTaskModal?: (task: Task, val: boolean) => void;
 }
 
-export function TaskCard({ id, task, setOpenTaskModal }: TaskCardProps) {
+export function TaskCard({ task, setOpenTaskModal }: TaskCardProps) {
   return (
     task && (
       <div
@@ -63,7 +62,7 @@ export default function SortableItem({
       {...attributes}
       {...listeners}
     >
-      <TaskCard id={id} task={task} setOpenTaskModal={setOpenTaskModal} />
+      <TaskCard task={task} setOpenTaskModal={setOpenTaskModal} />
     </div>
   );
 }

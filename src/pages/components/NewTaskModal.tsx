@@ -51,6 +51,24 @@ export default function NewTaskModal({
     mode: "onBlur",
   });
 
+  const { fields, append, remove } = useFieldArray({
+    name: "subtasks",
+    control,
+  });
+
+  useEffect(() => {
+    if (boardColumns.length) {
+      setValue("columnId", boardColumns[0].id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardColumns]);
+
+  const createTask = api.task.create.useMutation({
+    onSuccess: (data) => {
+      setTasks([...tasks, data]);
+    },
+  });
+
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
     const subtaskTitle = data.subtasks.map((subtask) => subtask.title);
     const colTasks = tasks
@@ -75,24 +93,6 @@ export default function NewTaskModal({
     });
     setOpen(false);
   };
-
-  const { fields, append, remove } = useFieldArray({
-    name: "subtasks",
-    control,
-  });
-
-  const createTask = api.task.create.useMutation({
-    onSuccess: (data) => {
-      setTasks([...tasks, data]);
-    },
-  });
-
-  useEffect(() => {
-    if (boardColumns.length) {
-      setValue("columnId", boardColumns[0].id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardColumns]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -155,11 +155,13 @@ export default function NewTaskModal({
                         </span>
                       )}
                       <input
-                        className={`${
+                        className={`
+                        h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base transition-all hover:border-mainPurple focus:outline-none 
+                        ${
                           errors?.taskName?.message
                             ? "border-red"
                             : "border-inputBorder"
-                        } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base transition-all hover:border-mainPurple focus:outline-none`}
+                        }`}
                         {...register("taskName", {
                           required: "Cannot be empty",
                         })}
@@ -195,21 +197,21 @@ export default function NewTaskModal({
                               {...register(`subtasks.${index}.title` as const, {
                                 required: true,
                               })}
-                              className={`${
+                              className={`
+                              h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base transition-all hover:border-mainPurple focus:outline-none
+                              ${
                                 errors?.subtasks?.[index]?.title
                                   ? "border-red"
                                   : "border-inputBorder"
-                              } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base transition-all hover:border-mainPurple focus:outline-none`}
+                              }`}
                             />
                             <button
                               type="button"
-                              className={`${
+                              className={`ml-4 ${
                                 errors?.subtasks?.[index]?.title
                                   ? "text-red"
                                   : ""
-                              } ${
-                                fields.length === 1 ? "opacity-20" : ""
-                              } ml-4`}
+                              } ${fields.length === 1 ? "opacity-20" : ""}`}
                               disabled={fields.length === 1}
                               onClick={() => remove(index)}
                             >
@@ -234,7 +236,7 @@ export default function NewTaskModal({
                       </button>
 
                       <div className="mb-6 flex flex-col items-start">
-                        <label htmlFor="" className="mb-2 font-bold text-white">
+                        <label className="mb-2 font-bold text-white">
                           Status
                         </label>
                         <Controller

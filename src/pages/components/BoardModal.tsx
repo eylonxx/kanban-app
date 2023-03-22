@@ -54,6 +54,11 @@ export default function BoardModal({
     mode: "onBlur",
   });
 
+  const { fields, append, remove, swap } = useFieldArray({
+    name: "columns",
+    control,
+  });
+
   const onSubmit: SubmitHandler<BoardModalFormValues> = (
     data: BoardModalFormValues
   ) => {
@@ -62,11 +67,6 @@ export default function BoardModal({
     handleBoardModalOnSubmit(isEdit, dataWithIndex);
     setOpen(false);
   };
-
-  const { fields, append, remove, swap } = useFieldArray({
-    name: "columns",
-    control,
-  });
 
   return (
     <Transition.Root
@@ -146,11 +146,13 @@ export default function BoardModal({
                       </span>
                     )}
                     <input
-                      className={`${
+                      className={`
+                      h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base transition-all hover:border-mainPurple focus:outline-none
+                      ${
                         errors?.boardName?.message
                           ? "border-red"
                           : "border-inputBorder"
-                      } h-10 w-full flex-1 rounded-md border-2 bg-transparent py-2 pl-4 text-base transition-all hover:border-mainPurple focus:outline-none`}
+                      }`}
                       {...register("boardName", {
                         required: "Cannot be empty",
                       })}

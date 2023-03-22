@@ -134,24 +134,18 @@ export default function TaskModal({
                           />
                           <label
                             htmlFor={subtask.id}
-                            className={`${
+                            className={`
+                            ml-4 w-full cursor-pointer break-normal text-left leading-4 
+                            ${
                               subtask.checked
                                 ? "text-decoration-line text-white/40 line-through transition-all "
                                 : "text-white transition-all"
-                            } ml-4 w-full cursor-pointer break-normal text-left leading-4`}
+                            }`}
                           >
                             {subtask.title}
                           </label>
                         </div>
                       ))}
-                  </div>
-                  <div className="flex flex-col">
-                    {/* <button
-                        type="submit"
-                        className="h-10 w-full rounded-full bg-mainPurple text-sm font-bold text-white"
-                      >
-                        Create New Task
-                      </button> */}
                   </div>
                 </form>
               </Dialog.Panel>

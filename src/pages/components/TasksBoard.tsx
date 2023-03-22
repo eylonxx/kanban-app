@@ -43,37 +43,21 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
 
   const sensors = useSensors(mouseSensor);
 
-  const setOpenTaskModal = (task: Task, val: boolean) => {
-    console.log(taskModalOpen);
-
-    setTaskModalOpen(val);
-    setTaskModalTask(task);
-  };
-
-  const handleUpdateSubtask = (subtasksToChange: Subtask[]) => {
-    setItems((prev) => {
-      const index = prev.findIndex((task) => task.id === taskModalTask!.id);
-      prev[index].subtasks = [...subtasksToChange];
-      return [...prev];
-    });
-  };
-
   useEffect(() => {
     setColumnIds(columns.map((column) => column.id) || []);
   }, [columns]);
 
-  const { data: fetchedColumns, refetch: refetchColumns } =
-    api.column.getAll.useQuery(
-      { boardId: selectedBoard.id },
-      {
-        enabled: sessionData?.user !== undefined,
-        onSuccess: (data) => {
-          setColumns(data);
-        },
-      }
-    );
+  api.column.getAll.useQuery(
+    { boardId: selectedBoard.id },
+    {
+      enabled: sessionData?.user !== undefined,
+      onSuccess: (data) => {
+        setColumns(data);
+      },
+    }
+  );
 
-  const { data: tasks, refetch: refetchTasks } = api.task.getAll.useQuery(
+  const { data: tasks } = api.task.getAll.useQuery(
     {
       columnIds: columns?.map((column) => column.id) || [],
     },
@@ -83,13 +67,12 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     }
   );
 
-  const createColumn = api.column.create.useMutation({
-    onSuccess: () => {
-      void refetchColumns();
-    },
-  });
-
   const updateTask = api.task.update.useMutation({});
+
+  const setOpenTaskModal = (task: Task, val: boolean) => {
+    setTaskModalOpen(val);
+    setTaskModalTask(task);
+  };
 
   function getTasksByColumn(columnId: string) {
     return items
@@ -108,6 +91,14 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     return items.find((task) => task.id === id) || null;
   }
 
+  const handleUpdateSubtask = (subtasksToChange: Subtask[]) => {
+    setItems((prev) => {
+      const index = prev.findIndex((task) => task.id === taskModalTask!.id);
+      prev[index].subtasks = [...subtasksToChange];
+      return [...prev];
+    });
+  };
+
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     const { id } = active;
@@ -120,9 +111,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     const { id } = active;
 
     const overId = over?.id;
-    if (overId == null || overId === "void") {
-      return;
-    }
+    if (overId == null || overId === "void") return;
 
     const activeTask = items.find((task) => task.id === id);
     if (!activeTask) return;
@@ -139,9 +128,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
     const { id } = active;
     const overId = over?.id;
 
-    if (overId == null || overId === "void" || activeId === overId) {
-      return;
-    }
+    if (overId == null || overId === "void" || activeId === overId) return;
 
     const overContainer = findColumn(overId.toString());
     if (!overContainer) return;
@@ -234,7 +221,7 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
         </SortableContext>
 
         <DragOverlay>
-          {activeId ? <TaskCard task={activeTask} id={activeId} /> : null}
+          {activeId ? <TaskCard task={activeTask} /> : null}
         </DragOverlay>
       </DndContext>
     </div>

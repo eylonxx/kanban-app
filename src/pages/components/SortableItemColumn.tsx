@@ -71,9 +71,9 @@ export default function SortableItemColumn({
         />
         <button
           type="button"
-          className={`${errors?.columns?.[index]?.title ? "text-red" : ""} ${
-            length === 1 ? "opacity-20" : ""
-          } ml-4`}
+          className={`ml-4 
+          ${errors?.columns?.[index]?.title ? "text-red" : ""} 
+          ${length === 1 ? "opacity-20" : ""}`}
           disabled={length === 1}
           onClick={() => remove(index)}
         >

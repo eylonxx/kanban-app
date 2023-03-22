@@ -57,6 +57,10 @@ const Home: React.FC = () => {
     return boards?.map((board) => board.title) || [];
   }, [boards]);
 
+  const getBoardColumns = (boardId: string) => {
+    return columns.filter((col) => col.boardId === boardId);
+  };
+
   const handleSelectedBoard = (boardTitle: string) => {
     const newBoard = boards?.filter((board) => boardTitle === board.title)[0];
     setSelectedBoard(newBoard ? newBoard : null);
@@ -99,15 +103,9 @@ const Home: React.FC = () => {
     }
   };
 
-  const getBoardColumns = (boardId: string) => {
-    console.log(columns.filter((col) => col.boardId === boardId));
-
-    return columns.filter((col) => col.boardId === boardId);
-  };
-
   return (
     <div className="flex min-h-screen flex-col">
-      <div className=" flex items-center justify-between  bg-darkGrey ">
+      <div className=" flex items-center justify-between bg-darkGrey ">
         <Navbar
           open={open}
           setOpenModal={setOpenNewTaskModal}
@@ -124,9 +122,9 @@ const Home: React.FC = () => {
           setOpenModal={setOpenNewBoardModal}
         />
         <div
-          className={`${
-            open ? "hidden" : ""
-          } absolute bottom-10 flex h-12 cursor-pointer items-center rounded-r-full bg-mainPurple py-4 px-5 text-white transition-all hover:bg-mainPurpleHover`}
+          className={`
+          absolute bottom-10 flex h-12 cursor-pointer items-center rounded-r-full bg-mainPurple py-4 px-5 text-white transition-all hover:bg-mainPurpleHover 
+          ${open ? "hidden" : ""}`}
           onClick={() => setOpen(true)}
         >
           <ShowSidebar />

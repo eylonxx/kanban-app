@@ -1,4 +1,4 @@
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import React from "react";
 import LogoLight from "../../assets/logo-light.svg";
 import VerticalEllipsis from "../../assets/icon-vertical-ellipsis.svg";
@@ -10,14 +10,11 @@ interface NavbarProps {
 }
 
 const Navbar = ({ open, setOpenModal, setBoardEdit }: NavbarProps) => {
-  const { data: sessionData } = useSession();
-
   return (
     <div className="flex h-24 w-screen items-center bg-darkGrey  shadow-lg">
       <div
-        className={`${
-          open ? "border-b-0" : "border-b-2"
-        } rounded-non box-border flex h-full w-72 items-center justify-center border-r-2  border-b-darkLines border-r-darkLines `}
+        className={`rounded-non box-border flex h-full w-72 items-center justify-center border-r-2  border-b-darkLines border-r-darkLines
+         ${open ? "border-b-0" : "border-b-2"}`}
       >
         <div className={`${open ? "h-[30px]" : "h-[28px]"}`}>
           <LogoLight />
