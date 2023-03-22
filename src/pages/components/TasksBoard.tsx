@@ -7,6 +7,7 @@ import {
   useSensor,
   MouseSensor,
   useSensors,
+  closestCenter,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { type Subtask, type Board, type Task } from "@prisma/client";
@@ -22,9 +23,10 @@ import TaskModal from "./TaskModal";
 
 interface TasksBoardProps {
   selectedBoard: Board;
+  setOpen: (val: boolean) => void;
 }
 
-const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
+const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
   const { data: sessionData } = useSession();
   const [activeId, setActiveId] = useState<string | null>();
   const [items, setItems] = useAtom(tasksAtom);
@@ -196,14 +198,14 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
         setOpen={setTaskModalOpen}
       />
       <DndContext
-        collisionDetection={closestCorners}
+        collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
         sensors={sensors}
       >
         <SortableContext items={columnIds}>
-          <div className="flex gap-4">
+          <div className="flex min-h-full gap-4">
             {columns
               ?.sort((a, b) => a.index - b.index)
               .map((column) => {
@@ -217,6 +219,12 @@ const TasksBoard = ({ selectedBoard }: TasksBoardProps) => {
                   />
                 );
               })}
+            <div
+              className="mt-12 flex h-[580px]  w-72 cursor-pointer flex-col items-center justify-center rounded-lg bg-[#22232F]"
+              onClick={() => setOpen(true)}
+            >
+              <p className="text-2xl font-bold text-mediumGrey">+ New Column</p>
+            </div>
           </div>
         </SortableContext>
 

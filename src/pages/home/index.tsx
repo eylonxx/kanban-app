@@ -150,7 +150,10 @@ const Home: React.FC = () => {
               open={openNewTaskModal}
               boardColumns={getBoardColumns(selectedBoard.id)}
             />
-            <TasksBoard selectedBoard={selectedBoard} />
+            <TasksBoard
+              selectedBoard={selectedBoard}
+              setOpen={setOpenEditBoardModal}
+            />
           </main>
         )}
       </div>
