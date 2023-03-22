@@ -58,9 +58,8 @@ const SelectWithListbox = ({
                     {({ selected }) => (
                       <>
                         <span
-                          className={`block truncate text-left ${
-                            selected ? "font-medium" : "font-normal"
-                          }`}
+                          className={`block truncate text-left 
+                          ${selected ? "font-medium" : "font-normal"}`}
                         >
                           {col.title}
                         </span>
