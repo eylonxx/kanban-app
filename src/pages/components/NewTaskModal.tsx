@@ -12,12 +12,14 @@ import { useAtom } from "jotai";
 import { api } from "~/utils/api";
 import { LexoRank } from "lexorank";
 import SelectWithListbox from "./SelectWithListbox";
-import { type Column } from "@prisma/client";
+import { type Task, type Column } from "@prisma/client";
 
 interface NewTaskModalProps {
   setOpen: (val: boolean) => void;
   boardColumns: Column[];
   open: boolean;
+  isEdit: boolean;
+  task?: Task | null;
 }
 
 type FormValues = {
@@ -33,6 +35,8 @@ export default function NewTaskModal({
   setOpen,
   open,
   boardColumns,
+  isEdit,
+  task,
 }: NewTaskModalProps) {
   const [tasks, setTasks] = useAtom(tasksAtom);
   const cancelButtonRef = useRef(null);
@@ -61,7 +65,18 @@ export default function NewTaskModal({
       setValue("columnId", boardColumns[0].id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardColumns]);
+  }, [boardColumns, open]);
+
+  useEffect(() => {
+    if (isEdit && task) {
+      setValue("taskName", task.title);
+      setValue("description", task.description);
+      setValue(
+        "subtasks",
+        task.subtasks.map((subtask) => ({ title: subtask.title }))
+      );
+    }
+  }, [open]);
 
   const createTask = api.task.create.useMutation({
     onSuccess: (data) => {
@@ -70,27 +85,31 @@ export default function NewTaskModal({
   });
 
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
-    const subtaskTitle = data.subtasks.map((subtask) => subtask.title);
-    const colTasks = tasks
-      .filter((task) => task.columnId === data.columnId)
-      .sort((a, b) => a.rank.localeCompare(b.rank));
-
-    let rank;
-    if (!colTasks.length) {
-      rank = LexoRank.middle().toString();
+    if (isEdit) {
+      console.log(data);
     } else {
-      rank = LexoRank.parse(colTasks[colTasks.length - 1].rank)
-        .genNext()
-        .toString();
-    }
+      const subtaskTitle = data.subtasks.map((subtask) => subtask.title);
+      const colTasks = tasks
+        .filter((task) => task.columnId === data.columnId)
+        .sort((a, b) => a.rank.localeCompare(b.rank));
 
-    createTask.mutate({
-      title: data.taskName,
-      description: data.description,
-      columnId: data.columnId,
-      rank: rank,
-      subtasks: subtaskTitle,
-    });
+      let rank;
+      if (!colTasks.length) {
+        rank = LexoRank.middle().toString();
+      } else {
+        rank = LexoRank.parse(colTasks[colTasks.length - 1].rank)
+          .genNext()
+          .toString();
+      }
+
+      createTask.mutate({
+        title: data.taskName,
+        description: data.description,
+        columnId: data.columnId,
+        rank: rank,
+        subtasks: subtaskTitle,
+      });
+    }
     setOpen(false);
   };
 
@@ -132,7 +151,7 @@ export default function NewTaskModal({
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-6 flex justify-between">
                       <p className="text-left text-lg font-bold text-white">
-                        Add New Task
+                        {isEdit ? "Edit Task" : "Add New Task"}
                       </p>
                       <button
                         type="button"

@@ -18,6 +18,7 @@ import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { columnsAtom, tasksAtom } from "~/utils/jotai";
 import Column from "./Column";
+import NewTaskModal from "./NewTaskModal";
 import { TaskCard } from "./SortableItem";
 import TaskModal from "./TaskModal";
 
@@ -35,6 +36,7 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [taskModalOpen, setTaskModalOpen] = useState<boolean>(false);
   const [taskModalTask, setTaskModalTask] = useState<Task | null>(null);
+  const [openEditTaskModal, setOpenEditTaskModal] = useState<boolean>(false);
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
@@ -196,6 +198,14 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
         task={taskModalTask}
         open={taskModalOpen}
         setOpen={setTaskModalOpen}
+        setOpenEditTaskModal={setOpenEditTaskModal}
+      />
+      <NewTaskModal
+        isEdit={true}
+        open={openEditTaskModal}
+        setOpen={setOpenEditTaskModal}
+        task={taskModalTask}
+        boardColumns={columns}
       />
       <DndContext
         collisionDetection={closestCenter}

@@ -11,6 +11,7 @@ interface TaskModalProps {
   open: boolean;
   task: Task | null;
   handleUpdateSubtask: (subtasksToChange: Subtask[]) => void;
+  setOpenEditTaskModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type FormValues = {
@@ -22,9 +23,11 @@ export default function TaskModal({
   open,
   task,
   handleUpdateSubtask,
+  setOpenEditTaskModal,
 }: TaskModalProps) {
   const cancelButtonRef = useRef(null);
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
+
   const { register, handleSubmit, reset } = useForm<FormValues>({});
 
   const updateSubtask = api.subtask.update.useMutation({});
@@ -108,7 +111,14 @@ export default function TaskModal({
                           className="dropdown-content menu rounded-box w-48 bg-base-100 p-2 shadow"
                         >
                           <li>
-                            <a>Edit Task</a>
+                            <a
+                              onClick={() => {
+                                setOpenEditTaskModal(true);
+                                setOpen(false);
+                              }}
+                            >
+                              Edit Task
+                            </a>
                           </li>
                           <li>
                             <a className="text-red">Delete Task</a>

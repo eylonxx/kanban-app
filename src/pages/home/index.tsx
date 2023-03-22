@@ -146,6 +146,7 @@ const Home: React.FC = () => {
               handleBoardModalOnSubmit={handleBoardModalOnSubmit}
             />
             <NewTaskModal
+              isEdit={false}
               setOpen={setOpenNewTaskModal}
               open={openNewTaskModal}
               boardColumns={getBoardColumns(selectedBoard.id)}
