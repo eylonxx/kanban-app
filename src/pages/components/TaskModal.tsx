@@ -4,6 +4,7 @@ import { type Subtask, type Task } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
 import { api } from "~/utils/api";
+import VerticalEllipsis from "../../assets/icon-vertical-ellipsis.svg";
 
 interface TaskModalProps {
   setOpen: (val: boolean) => void;
@@ -94,14 +95,35 @@ export default function TaskModal({
                     <p className="text-left text-lg font-bold text-white">
                       {task?.title}
                     </p>
-                    <button
-                      onClick={() => {
-                        setOpen(false);
-                      }}
-                      ref={cancelButtonRef}
-                    >
-                      <IconCross />
-                    </button>
+                    <div className="flex items-center">
+                      <div className="dropdown-end dropdown mx-3 cursor-pointer ">
+                        <label
+                          tabIndex={0}
+                          className="cursor-pointer text-center"
+                        >
+                          <VerticalEllipsis />
+                        </label>
+                        <ul
+                          tabIndex={0}
+                          className="dropdown-content menu rounded-box w-48 bg-base-100 p-2 shadow"
+                        >
+                          <li>
+                            <a>Edit Task</a>
+                          </li>
+                          <li>
+                            <a className="text-red">Delete Task</a>
+                          </li>
+                        </ul>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setOpen(false);
+                        }}
+                        ref={cancelButtonRef}
+                      >
+                        <IconCross />
+                      </button>
+                    </div>
                   </div>
                   <div className="mb-6 flex flex-col items-start">
                     <p className="mb-2 text-sm text-mediumGrey">
