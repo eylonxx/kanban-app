@@ -64,4 +64,46 @@ export const taskRouter = createTRPCRouter({
         include: { subtasks: true },
       });
     }),
+  updateTaskAndSubtasks: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+        description: z.string(),
+        subtasksToCreate: z.array(
+          z.object({
+            title: z.string(),
+            index: z.number().optional(),
+            id: z.string().optional(),
+            columnId: z.string().optional(),
+            checked: z.boolean().optional(),
+          })
+        ),
+        subtasksToUpdate: z.array(
+          z.object({
+            title: z.string(),
+            index: z.number(),
+            id: z.string().optional(),
+            columnId: z.string().optional(),
+            checked: z.boolean().optional(),
+          })
+        ),
+        subtasksToDelete: z.array(z.string()),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.$transaction([
+        ...input.subtasksToCreate.map((subtask) =>
+          ctx.prisma.subtask.create({
+            data: {
+              title: subtask.title,
+              index: subtask.index,
+              checked: false,
+              taskId: input.id,
+              //cont
+            },
+          })
+        ),
+      ]);
+    }),
 });

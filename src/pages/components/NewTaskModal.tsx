@@ -12,7 +12,7 @@ import { useAtom } from "jotai";
 import { api } from "~/utils/api";
 import { LexoRank } from "lexorank";
 import SelectWithListbox from "./SelectWithListbox";
-import { type Task, type Column } from "@prisma/client";
+import { type Task, type Column, type Subtask } from "@prisma/client";
 
 interface NewTaskModalProps {
   setOpen: (val: boolean) => void;
@@ -27,7 +27,11 @@ type FormValues = {
   description: string;
   columnId: string;
   subtasks: {
+    id?: string;
     title: string;
+    checked?: boolean;
+    taskId?: string;
+    index?: number;
   }[];
 };
 
@@ -46,6 +50,7 @@ export default function NewTaskModal({
     control,
     reset,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -71,10 +76,7 @@ export default function NewTaskModal({
     if (isEdit && task) {
       setValue("taskName", task.title);
       setValue("description", task.description);
-      setValue(
-        "subtasks",
-        task.subtasks.map((subtask) => ({ title: subtask.title }))
-      );
+      setValue("subtasks", task.subtasks);
     }
   }, [open]);
 
@@ -84,9 +86,48 @@ export default function NewTaskModal({
     },
   });
 
+  const updateTaskAndSubtasks = api.task.updateTaskAndSubtasks.useMutation({
+    onSuccess: (data) => {
+      console.log(data);
+      //change local state's task and subtasks
+    },
+  });
+
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
     if (isEdit) {
-      console.log(data);
+      const subtasksWithIndex = data.subtasks.map((subtask, i) => ({
+        ...subtask,
+        index: i,
+      }));
+      const currentSubtasksIds = task!.subtasks.map((subtask) => subtask.id);
+      const subtasksToCreate = subtasksWithIndex.filter(
+        (subtask) => !subtask.id
+      );
+      const subtasksToUpdate = subtasksWithIndex.filter(
+        (subtask) => subtask.id
+      );
+      const subtasksToDelete = currentSubtasksIds.filter(
+        (id) =>
+          subtasksWithIndex.find((subtask) => subtask.id === id) === undefined
+      );
+
+      console.log(
+        "create:",
+        subtasksToCreate,
+        "update:",
+        subtasksToUpdate,
+        "delete:",
+        subtasksToDelete
+      );
+
+      // updateTaskAndSubtasks.mutate({
+      //   id: task!.id,
+      //   title: data.taskName,
+      //   description: data.description,
+      //   subtasksToCreate: subtasksToCreate,
+      //   subtasksToUpdate: subtasksToUpdate,
+      //   subtasksToDelete: subtasksToDelete,
+      // });
     } else {
       const subtaskTitle = data.subtasks.map((subtask) => subtask.title);
       const colTasks = tasks
@@ -156,7 +197,6 @@ export default function NewTaskModal({
                       <button
                         type="button"
                         onClick={() => {
-                          reset();
                           setOpen(false);
                         }}
                         ref={cancelButtonRef}
@@ -246,9 +286,15 @@ export default function NewTaskModal({
                         className="mb-6 h-10 w-full rounded-full bg-white text-sm font-bold text-mainPurple"
                         type="button"
                         onClick={() =>
-                          append({
-                            title: "",
-                          })
+                          append(
+                            isEdit && task
+                              ? {
+                                  title: "",
+                                  checked: false,
+                                  // index: getValues("subtasks").length,
+                                }
+                              : { title: "" }
+                          )
                         }
                       >
                         + Add New Task
