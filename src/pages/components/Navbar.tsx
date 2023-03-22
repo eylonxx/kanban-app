@@ -22,7 +22,7 @@ const Navbar = ({ open, setOpenModal, setBoardEdit }: NavbarProps) => {
       </div>
       <div className="flex h-24 flex-1 items-center justify-end border-b-2 border-b-darkLines">
         <button
-          className="rounded-full bg-mainPurple px-10 py-3 font-semibold text-white no-underline transition "
+          className="w-56 rounded-full bg-mainPurple px-10 py-3 font-semibold text-white no-underline transition "
           onClick={() => setOpenModal(true)}
         >
           + Add New Task
