@@ -95,7 +95,7 @@ export default function NewTaskModal({
   };
 
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={open} as={Fragment} afterLeave={reset}>
       <Dialog
         as="div"
         className="relative z-10"
@@ -128,7 +128,7 @@ export default function NewTaskModal({
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               {boardColumns.length && (
-                <Dialog.Panel className="relative flex w-1/3 transform flex-col overflow-hidden rounded-lg bg-darkGrey p-8 transition-all">
+                <Dialog.Panel className="relative flex w-1/3 transform flex-col rounded-lg bg-darkGrey p-8 transition-all">
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-6 flex justify-between">
                       <p className="text-left text-lg font-bold text-white">
