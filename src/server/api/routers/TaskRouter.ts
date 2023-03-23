@@ -70,10 +70,11 @@ export const taskRouter = createTRPCRouter({
         id: z.string(),
         title: z.string(),
         description: z.string(),
+        columnId: z.string(),
         subtasksToCreate: z.array(
           z.object({
             title: z.string(),
-            index: z.number().optional(),
+            index: z.number(),
             id: z.string().optional(),
             columnId: z.string().optional(),
             checked: z.boolean().optional(),
@@ -84,6 +85,7 @@ export const taskRouter = createTRPCRouter({
             title: z.string(),
             index: z.number(),
             id: z.string().optional(),
+            description: z.string().optional(),
             columnId: z.string().optional(),
             checked: z.boolean().optional(),
           })
@@ -93,6 +95,14 @@ export const taskRouter = createTRPCRouter({
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.$transaction([
+        ctx.prisma.task.update({
+          where: { id: input.id },
+          data: {
+            title: input.title,
+            columnId: input.columnId,
+            description: input.description,
+          },
+        }),
         ...input.subtasksToCreate.map((subtask) =>
           ctx.prisma.subtask.create({
             data: {
@@ -100,8 +110,21 @@ export const taskRouter = createTRPCRouter({
               index: subtask.index,
               checked: false,
               taskId: input.id,
-              //cont
             },
+          })
+        ),
+        ...input.subtasksToUpdate.map((subtask) =>
+          ctx.prisma.subtask.update({
+            where: { id: subtask.id },
+            data: {
+              title: subtask.title,
+              index: subtask.index,
+            },
+          })
+        ),
+        ...input.subtasksToDelete.map((subtaskId) =>
+          ctx.prisma.subtask.delete({
+            where: { id: subtaskId },
           })
         ),
       ]);

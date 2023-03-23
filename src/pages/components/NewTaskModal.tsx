@@ -66,8 +66,8 @@ export default function NewTaskModal({
   });
 
   useEffect(() => {
-    if (boardColumns.length) {
-      setValue("columnId", boardColumns[0].id);
+    if (boardColumns.length && task) {
+      setValue("columnId", task.columnId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardColumns, open]);
@@ -120,14 +120,15 @@ export default function NewTaskModal({
         subtasksToDelete
       );
 
-      // updateTaskAndSubtasks.mutate({
-      //   id: task!.id,
-      //   title: data.taskName,
-      //   description: data.description,
-      //   subtasksToCreate: subtasksToCreate,
-      //   subtasksToUpdate: subtasksToUpdate,
-      //   subtasksToDelete: subtasksToDelete,
-      // });
+      updateTaskAndSubtasks.mutate({
+        id: task!.id,
+        title: data.taskName,
+        columnId: data.columnId,
+        description: data.description,
+        subtasksToCreate: subtasksToCreate,
+        subtasksToUpdate: subtasksToUpdate,
+        subtasksToDelete: subtasksToDelete,
+      });
     } else {
       const subtaskTitle = data.subtasks.map((subtask) => subtask.title);
       const colTasks = tasks
