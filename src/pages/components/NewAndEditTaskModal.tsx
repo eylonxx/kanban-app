@@ -50,7 +50,6 @@ export default function NewAndEditTaskModal({
     control,
     reset,
     setValue,
-    getValues,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -110,6 +109,18 @@ export default function NewAndEditTaskModal({
         (id) =>
           subtasksWithIndex.find((subtask) => subtask.id === id) === undefined
       );
+      let newRank;
+      if (data.columnId !== task?.columnId) {
+        //generate new rank based on other column's last task;
+        const lastTaskInNewColumn = tasks
+          .filter((task) => task.columnId === data.columnId)
+          .sort((a, b) => a.rank.localeCompare(b.rank));
+        newRank = LexoRank.parse(
+          lastTaskInNewColumn[lastTaskInNewColumn.length - 1].rank
+        )
+          .genNext()
+          .toString();
+      }
 
       console.log(
         "create:",
@@ -124,6 +135,7 @@ export default function NewAndEditTaskModal({
         id: task!.id,
         title: data.taskName,
         columnId: data.columnId,
+        rank: newRank,
         description: data.description,
         subtasksToCreate: subtasksToCreate,
         subtasksToUpdate: subtasksToUpdate,

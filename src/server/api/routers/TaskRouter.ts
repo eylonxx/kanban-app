@@ -71,6 +71,7 @@ export const taskRouter = createTRPCRouter({
         title: z.string(),
         description: z.string(),
         columnId: z.string(),
+        rank: z.string().optional(),
         subtasksToCreate: z.array(
           z.object({
             title: z.string(),
