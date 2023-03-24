@@ -18,7 +18,7 @@ import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { columnsAtom, tasksAtom } from "~/utils/jotai";
 import Column from "./Column";
-import NewTaskModal from "./NewTaskModal";
+import NewAndEditTaskModal from "./NewAndEditTaskModal";
 import { TaskCard } from "./SortableItem";
 import TaskModal from "./TaskModal";
 
@@ -200,7 +200,7 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
         setOpen={setTaskModalOpen}
         setOpenEditTaskModal={setOpenEditTaskModal}
       />
-      <NewTaskModal
+      <NewAndEditTaskModal
         isEdit={true}
         open={openEditTaskModal}
         setOpen={setOpenEditTaskModal}

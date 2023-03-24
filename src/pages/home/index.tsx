@@ -9,7 +9,7 @@ import Sidebar from "../components/Sidebar";
 import BoardModal, {
   type BoardModalFormValues,
 } from "../components/BoardModal";
-import NewTaskModal from "../components/NewTaskModal";
+import NewAndEditTaskModal from "../components/NewAndEditTaskModal";
 import { useAtom } from "jotai";
 import { columnsAtom } from "~/utils/jotai";
 import { useQueryClient } from "@tanstack/react-query";
@@ -145,7 +145,7 @@ const Home: React.FC = () => {
               selectedBoard={selectedBoard}
               handleBoardModalOnSubmit={handleBoardModalOnSubmit}
             />
-            <NewTaskModal
+            <NewAndEditTaskModal
               isEdit={false}
               setOpen={setOpenNewTaskModal}
               open={openNewTaskModal}

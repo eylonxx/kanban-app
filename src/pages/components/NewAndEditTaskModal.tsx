@@ -14,7 +14,7 @@ import { LexoRank } from "lexorank";
 import SelectWithListbox from "./SelectWithListbox";
 import { type Task, type Column, type Subtask } from "@prisma/client";
 
-interface NewTaskModalProps {
+interface NewAndEditTaskModalProps {
   setOpen: (val: boolean) => void;
   boardColumns: Column[];
   open: boolean;
@@ -35,13 +35,13 @@ type FormValues = {
   }[];
 };
 
-export default function NewTaskModal({
+export default function NewAndEditTaskModal({
   setOpen,
   open,
   boardColumns,
   isEdit,
   task,
-}: NewTaskModalProps) {
+}: NewAndEditTaskModalProps) {
   const [tasks, setTasks] = useAtom(tasksAtom);
   const cancelButtonRef = useRef(null);
   const {
