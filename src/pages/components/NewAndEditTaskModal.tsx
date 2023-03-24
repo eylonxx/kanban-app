@@ -88,7 +88,14 @@ export default function NewAndEditTaskModal({
   const updateTaskAndSubtasks = api.task.updateTaskAndSubtasks.useMutation({
     onSuccess: (data) => {
       console.log(data);
-      //change local state's task and subtasks
+      setTasks((prev) => {
+        const editedIndex = prev.findIndex((task) => task.id === data[0].id);
+        data[0].subtasks = [...data.slice(1)] as Subtask[];
+        console.log(data[0]);
+
+        prev[editedIndex] = data[0];
+        return [...prev];
+      });
     },
   });
 
@@ -111,7 +118,6 @@ export default function NewAndEditTaskModal({
       );
       let newRank;
       if (data.columnId !== task?.columnId) {
-        //generate new rank based on other column's last task;
         const lastTaskInNewColumn = tasks
           .filter((task) => task.columnId === data.columnId)
           .sort((a, b) => a.rank.localeCompare(b.rank));
@@ -304,7 +310,6 @@ export default function NewAndEditTaskModal({
                               ? {
                                   title: "",
                                   checked: false,
-                                  // index: getValues("subtasks").length,
                                 }
                               : { title: "" }
                           )
@@ -336,7 +341,7 @@ export default function NewAndEditTaskModal({
                         type="submit"
                         className="h-10 w-full rounded-full bg-mainPurple text-sm font-bold text-white"
                       >
-                        Create New Task
+                        {isEdit ? "Save Changes" : "Create New Task"}
                       </button>
                     </div>
                   </form>
