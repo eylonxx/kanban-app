@@ -10,6 +10,8 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { type Subtask, type Board, type Task } from "@prisma/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { getQueryKey } from "@trpc/react-query";
 import { useAtom } from "jotai";
 import { LexoRank } from "lexorank";
 import { useSession } from "next-auth/react";
@@ -29,6 +31,8 @@ interface TasksBoardProps {
 
 const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
   const { data: sessionData } = useSession();
+  const queryClient = useQueryClient();
+
   const [activeId, setActiveId] = useState<string | null>();
   const [items, setItems] = useAtom(tasksAtom);
   const [columns, setColumns] = useAtom(columnsAtom);
@@ -73,6 +77,15 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
 
   const updateTask = api.task.update.useMutation({});
 
+  const deleteTask = api.task.deleteTask.useMutation({
+    onSuccess: async () => {
+      await queryClient.refetchQueries({
+        queryKey: [...getQueryKey(api.task.getAll)],
+        type: "active",
+      });
+    },
+  });
+
   const setOpenTaskModal = (task: Task, val: boolean) => {
     setTaskModalOpen(val);
     setTaskModalTask(task);
@@ -100,6 +113,12 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
       const index = prev.findIndex((task) => task.id === taskModalTask!.id);
       prev[index].subtasks = [...subtasksToChange];
       return [...prev];
+    });
+  };
+
+  const handleDeleteTask = (id: string) => {
+    deleteTask.mutate({
+      id,
     });
   };
 
@@ -194,6 +213,7 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
   return (
     <div className="flex grow flex-row">
       <TaskModal
+        handleDeleteTask={handleDeleteTask}
         handleUpdateSubtask={handleUpdateSubtask}
         task={taskModalTask}
         open={taskModalOpen}

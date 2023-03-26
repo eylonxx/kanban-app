@@ -8,6 +8,7 @@ import VerticalEllipsis from "../../assets/icon-vertical-ellipsis.svg";
 
 interface TaskModalProps {
   setOpen: (val: boolean) => void;
+  handleDeleteTask: (id: string) => void;
   open: boolean;
   task: Task | null;
   handleUpdateSubtask: (subtasksToChange: Subtask[]) => void;
@@ -24,6 +25,7 @@ export default function TaskModal({
   task,
   handleUpdateSubtask,
   setOpenEditTaskModal,
+  handleDeleteTask,
 }: TaskModalProps) {
   const cancelButtonRef = useRef(null);
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
@@ -121,7 +123,15 @@ export default function TaskModal({
                             </a>
                           </li>
                           <li>
-                            <a className="text-red">Delete Task</a>
+                            <a
+                              className="text-red"
+                              onClick={() => {
+                                handleDeleteTask(task!.id);
+                                setOpen(false);
+                              }}
+                            >
+                              Delete Task
+                            </a>
                           </li>
                         </ul>
                       </div>
