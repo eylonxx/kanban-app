@@ -13,7 +13,17 @@ import { api } from "~/utils/api";
 import { LexoRank } from "lexorank";
 import SelectWithListbox from "./SelectWithListbox";
 import { Prisma, type Column, type Subtask } from "@prisma/client";
-type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
+type Task = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  description: string;
+  userId: string;
+  columnId: string;
+  rank: string;
+  subtasks: Subtask[];
+};
 
 interface NewAndEditTaskModalProps {
   setOpen: (val: boolean) => void;
