@@ -24,9 +24,10 @@ const Sidebar = ({
   isLoadingBoards,
 }: SidebarProps) => {
   return (
+    // ani ba telefon dai la
     <aside
-      className={`flex w-0 flex-col overflow-hidden border-r-darkLines bg-darkGrey transition-all duration-500 
-      ${open ? "border-r-2 pr-8 sm:w-72" : "border-r-0 pr-0"}`}
+      className={`flex flex-col overflow-hidden border-r-darkLines bg-darkGrey transition-all duration-500 sm:min-w-[230px]
+      ${open ? "border-r-2 pr-8 sm:w-72" : "w-0 border-r-0 pr-0"}`}
     >
       <div className="my-5 flex flex-shrink-0 pl-8">
         <p className="m-0 flex-shrink-0 p-0 text-xs font-bold uppercase tracking-widest text-mediumGrey">

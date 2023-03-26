@@ -132,34 +132,7 @@ const Home: React.FC = () => {
         >
           <ShowSidebar />
         </div>
-        {selectedBoard ? (
-          <main className="grow bg-veryDarkGrey">
-            <BoardModal
-              setOpen={setOpenNewBoardModal}
-              open={openNewBoardModal}
-              isEdit={false}
-              selectedBoard={selectedBoard}
-              handleBoardModalOnSubmit={handleBoardModalOnSubmit}
-            />
-            <BoardModal
-              setOpen={setOpenEditBoardModal}
-              open={openEditBoardModal}
-              isEdit={true}
-              selectedBoard={selectedBoard}
-              handleBoardModalOnSubmit={handleBoardModalOnSubmit}
-            />
-            <NewAndEditTaskModal
-              isEdit={false}
-              setOpen={setOpenNewTaskModal}
-              open={openNewTaskModal}
-              boardColumns={getBoardColumns(selectedBoard.id)}
-            />
-            <TasksBoard
-              selectedBoard={selectedBoard}
-              setOpen={setOpenEditBoardModal}
-            />
-          </main>
-        ) : (
+        {isLoading ? (
           <div className="flex grow items-center justify-center">
             <Oval
               height={80}
@@ -174,6 +147,39 @@ const Home: React.FC = () => {
               strokeWidthSecondary={2}
             />
           </div>
+        ) : boards?.length === 0 ? (
+          <div className="flex grow items-center justify-center">
+            <p>NO BOARDS!!</p>
+          </div>
+        ) : (
+          selectedBoard && (
+            <main className="grow bg-veryDarkGrey">
+              <BoardModal
+                setOpen={setOpenNewBoardModal}
+                open={openNewBoardModal}
+                isEdit={false}
+                selectedBoard={selectedBoard}
+                handleBoardModalOnSubmit={handleBoardModalOnSubmit}
+              />
+              <BoardModal
+                setOpen={setOpenEditBoardModal}
+                open={openEditBoardModal}
+                isEdit={true}
+                selectedBoard={selectedBoard}
+                handleBoardModalOnSubmit={handleBoardModalOnSubmit}
+              />
+              <NewAndEditTaskModal
+                isEdit={false}
+                setOpen={setOpenNewTaskModal}
+                open={openNewTaskModal}
+                boardColumns={getBoardColumns(selectedBoard.id)}
+              />
+              <TasksBoard
+                selectedBoard={selectedBoard}
+                setOpen={setOpenEditBoardModal}
+              />
+            </main>
+          )
         )}
       </div>
     </div>
