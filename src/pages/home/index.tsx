@@ -33,13 +33,14 @@ const Home: React.FC = () => {
   } = api.board.getAll.useQuery(undefined, {
     enabled: sessionData?.user !== undefined,
     onSuccess: (data: Board[]) => {
-      setSelectedBoard(selectedBoard ?? data[0] ?? null);
+      setSelectedBoard(data[0] ?? null);
     },
   });
 
   const createBoard = api.board.create.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       void refetchBoards();
+      setSelectedBoard(data);
     },
     onError: (e) => {
       console.log(e);
@@ -52,6 +53,12 @@ const Home: React.FC = () => {
         queryKey: [...getQueryKey(api.column.getAll)],
         type: "active",
       });
+    },
+  });
+
+  const deleteBoard = api.board.deleteBoard.useMutation({
+    onSuccess: () => {
+      void refetchBoards();
     },
   });
 
@@ -74,6 +81,12 @@ const Home: React.FC = () => {
 
   const handleOpenEditBoardModal = (val: boolean) => {
     setOpenEditBoardModal(val);
+  };
+
+  const handleDeleteBoard = () => {
+    if (selectedBoard) {
+      deleteBoard.mutate({ id: selectedBoard.id });
+    }
   };
 
   const handleBoardModalOnSubmit = (
@@ -123,6 +136,7 @@ const Home: React.FC = () => {
       />
       <div className=" flex items-center justify-between ">
         <Navbar
+          handleDeleteBoard={handleDeleteBoard}
           open={open}
           setOpenModal={setOpenNewTaskModal}
           setBoardEdit={handleOpenEditBoardModal}
@@ -162,7 +176,7 @@ const Home: React.FC = () => {
             />
           </div>
         ) : boards?.length === 0 ? (
-          <div className="flex grow flex-col items-center justify-center">
+          <div className="flex grow flex-col items-center justify-center gap-4">
             <p>No Boards</p>
             <button
               type="button"

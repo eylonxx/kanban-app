@@ -79,4 +79,11 @@ export const boardRouter = createTRPCRouter({
         ),
       ]);
     }),
+  deleteBoard: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.board.delete({
+        where: { id: input.id },
+      });
+    }),
 });

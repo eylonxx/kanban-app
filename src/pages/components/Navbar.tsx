@@ -7,9 +7,15 @@ interface NavbarProps {
   open: boolean;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   setBoardEdit: (val: boolean) => void;
+  handleDeleteBoard: () => void;
 }
 
-const Navbar = ({ open, setOpenModal, setBoardEdit }: NavbarProps) => {
+const Navbar = ({
+  open,
+  setOpenModal,
+  setBoardEdit,
+  handleDeleteBoard,
+}: NavbarProps) => {
   return (
     <div className="flex h-24 w-screen items-center bg-darkGrey  shadow-lg">
       <div
@@ -46,7 +52,14 @@ const Navbar = ({ open, setOpenModal, setBoardEdit }: NavbarProps) => {
               </a>
             </li>
             <li>
-              <a className="text-red">Delete Board</a>
+              <a
+                onClick={() => {
+                  handleDeleteBoard();
+                }}
+                className="text-red"
+              >
+                Delete Board
+              </a>
             </li>
             <li>
               <a
