@@ -92,13 +92,10 @@ export default function NewAndEditTaskModal({
   });
 
   const updateTaskAndSubtasks = api.task.updateTaskAndSubtasks.useMutation({
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: (data: [Task, ...Subtask[]]) => {
       setTasks((prev) => {
         const editedIndex = prev.findIndex((task) => task.id === data[0].id);
         data[0].subtasks = [...data.slice(1)] as Subtask[];
-        console.log(data[0]);
-
         prev[editedIndex] = data[0];
         return [...prev];
       });
@@ -145,8 +142,6 @@ export default function NewAndEditTaskModal({
         subtasksToDelete: subtasksToDelete,
       });
     } else {
-      console.log(data);
-
       const subtaskTitle = data.subtasks.map((subtask) => subtask.title);
       const colTasks = tasks
         .filter((task) => task.columnId === data.columnId)
