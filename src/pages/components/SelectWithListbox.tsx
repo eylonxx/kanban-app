@@ -29,7 +29,8 @@ const SelectWithListbox = ({
           <div className="relative mt-1 rounded-md border-2 border-inputBorder">
             <Listbox.Button className="focus-visible:border-indigo-500 focus-visible:ring-offset-orange-300 relative h-10 w-full cursor-default rounded-lg bg-darkGrey py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 sm:text-sm">
               <span className="block truncate">
-                {columns.find((col) => col.id === selected)!.title}
+                {columns.find((col) => col.id === selected)?.title ||
+                  columns[0].title}
               </span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronUpDownIcon

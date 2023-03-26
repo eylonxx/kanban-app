@@ -65,8 +65,13 @@ export default function NewAndEditTaskModal({
   });
 
   useEffect(() => {
+    //setting default col id on edit task
     if (boardColumns.length && task) {
       setValue("columnId", task.columnId);
+    }
+    //setting default col id on new task
+    if (boardColumns.length && !task) {
+      setValue("columnId", boardColumns[0].id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardColumns, open]);
@@ -139,6 +144,8 @@ export default function NewAndEditTaskModal({
         subtasksToDelete: subtasksToDelete,
       });
     } else {
+      console.log(data);
+
       const subtaskTitle = data.subtasks.map((subtask) => subtask.title);
       const colTasks = tasks
         .filter((task) => task.columnId === data.columnId)
@@ -319,7 +326,7 @@ export default function NewAndEditTaskModal({
                           render={({ field }) => (
                             <SelectWithListbox
                               columns={boardColumns}
-                              selected={field.value}
+                              selected={field.value || boardColumns[0].id}
                               onChange={(newSelected) => {
                                 field.onChange(newSelected);
                               }}
