@@ -3,7 +3,6 @@ import {
   DragOverlay,
   type DragStartEvent,
   type DragOverEvent,
-  closestCorners,
   useSensor,
   MouseSensor,
   useSensors,
@@ -15,6 +14,7 @@ import { useAtom } from "jotai";
 import { LexoRank } from "lexorank";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
+import { Oval } from "react-loader-spinner";
 import { api } from "~/utils/api";
 import { columnsAtom, tasksAtom } from "~/utils/jotai";
 import Column from "./Column";
@@ -51,7 +51,7 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
     setColumnIds(columns.map((column) => column.id) || []);
   }, [columns]);
 
-  api.column.getAll.useQuery(
+  const { isLoading: isLoadingColumns } = api.column.getAll.useQuery(
     { boardId: selectedBoard.id },
     {
       enabled: sessionData?.user !== undefined,
@@ -61,7 +61,7 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
     }
   );
 
-  const { data: tasks } = api.task.getAll.useQuery(
+  const { data: tasks, isLoading: isLoadingTasks } = api.task.getAll.useQuery(
     {
       columnIds: columns?.map((column) => column.id) || [],
     },
@@ -192,7 +192,7 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
   }
 
   return (
-    <div className="flex flex-row">
+    <div className="flex grow flex-row">
       <TaskModal
         handleUpdateSubtask={handleUpdateSubtask}
         task={taskModalTask}
@@ -207,41 +207,60 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
         task={taskModalTask}
         boardColumns={columns}
       />
-      <DndContext
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-        sensors={sensors}
-      >
-        <SortableContext items={columnIds}>
-          <div className="flex min-h-full gap-4">
-            {columns
-              ?.sort((a, b) => a.index - b.index)
-              .map((column) => {
-                return (
-                  <Column
-                    setOpenTaskModal={setOpenTaskModal}
-                    key={column.id}
-                    id={column.id}
-                    columnTitle={column.title}
-                    items={getTasksByColumn(column.id)}
-                  />
-                );
-              })}
-            <div
-              className="mt-12 flex h-[580px]  w-72 cursor-pointer flex-col items-center justify-center rounded-lg bg-[#22232F]"
-              onClick={() => setOpen(true)}
-            >
-              <p className="text-2xl font-bold text-mediumGrey">+ New Column</p>
+      {isLoadingColumns || isLoadingTasks ? (
+        <div className="flex grow items-center justify-center">
+          <Oval
+            height={80}
+            width={80}
+            color="#635FC7"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+            ariaLabel="oval-loading"
+            secondaryColor="#828fa3"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        </div>
+      ) : (
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+          sensors={sensors}
+        >
+          <SortableContext items={columnIds}>
+            <div className="flex min-h-full gap-4">
+              {columns
+                ?.sort((a, b) => a.index - b.index)
+                .map((column) => {
+                  return (
+                    <Column
+                      setOpenTaskModal={setOpenTaskModal}
+                      key={column.id}
+                      id={column.id}
+                      columnTitle={column.title}
+                      items={getTasksByColumn(column.id)}
+                    />
+                  );
+                })}
+              <div
+                className="mt-12 flex h-[580px]  w-72 cursor-pointer flex-col items-center justify-center rounded-lg bg-[#22232F]"
+                onClick={() => setOpen(true)}
+              >
+                <p className="text-2xl font-bold text-mediumGrey">
+                  + New Column
+                </p>
+              </div>
             </div>
-          </div>
-        </SortableContext>
+          </SortableContext>
 
-        <DragOverlay>
-          {activeId ? <TaskCard task={activeTask} /> : null}
-        </DragOverlay>
-      </DndContext>
+          <DragOverlay>
+            {activeId ? <TaskCard task={activeTask} /> : null}
+          </DragOverlay>
+        </DndContext>
+      )}
     </div>
   );
 };

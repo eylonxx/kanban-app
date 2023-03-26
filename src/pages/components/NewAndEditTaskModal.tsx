@@ -128,15 +128,6 @@ export default function NewAndEditTaskModal({
           .toString();
       }
 
-      console.log(
-        "create:",
-        subtasksToCreate,
-        "update:",
-        subtasksToUpdate,
-        "delete:",
-        subtasksToDelete
-      );
-
       updateTaskAndSubtasks.mutate({
         id: task!.id,
         title: data.taskName,

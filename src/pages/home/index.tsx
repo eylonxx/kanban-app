@@ -14,6 +14,7 @@ import { useAtom } from "jotai";
 import { columnsAtom } from "~/utils/jotai";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
+import { Oval } from "react-loader-spinner";
 
 const Home: React.FC = () => {
   const { data: sessionData } = useSession();
@@ -25,15 +26,16 @@ const Home: React.FC = () => {
   const [columns] = useAtom(columnsAtom);
   const queryClient = useQueryClient();
 
-  const { data: boards, refetch: refetchBoards } = api.board.getAll.useQuery(
-    undefined,
-    {
-      enabled: sessionData?.user !== undefined,
-      onSuccess: (data: Board[]) => {
-        setSelectedBoard(selectedBoard ?? data[0] ?? null);
-      },
-    }
-  );
+  const {
+    data: boards,
+    refetch: refetchBoards,
+    isLoading,
+  } = api.board.getAll.useQuery(undefined, {
+    enabled: sessionData?.user !== undefined,
+    onSuccess: (data: Board[]) => {
+      setSelectedBoard(selectedBoard ?? data[0] ?? null);
+    },
+  });
 
   const createBoard = api.board.create.useMutation({
     onSuccess: () => {
@@ -104,8 +106,8 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <div className=" flex items-center justify-between bg-darkGrey ">
+    <div className="flex min-h-screen flex-col bg-veryDarkGrey">
+      <div className=" flex items-center justify-between ">
         <Navbar
           open={open}
           setOpenModal={setOpenNewTaskModal}
@@ -114,6 +116,7 @@ const Home: React.FC = () => {
       </div>
       <div className="relative flex flex-grow">
         <Sidebar
+          isLoadingBoards={isLoading}
           open={open}
           handleSelectedBoard={handleSelectedBoard}
           boardNames={boardNames}
@@ -129,7 +132,7 @@ const Home: React.FC = () => {
         >
           <ShowSidebar />
         </div>
-        {selectedBoard && (
+        {selectedBoard ? (
           <main className="grow bg-veryDarkGrey">
             <BoardModal
               setOpen={setOpenNewBoardModal}
@@ -156,6 +159,21 @@ const Home: React.FC = () => {
               setOpen={setOpenEditBoardModal}
             />
           </main>
+        ) : (
+          <div className="flex grow items-center justify-center">
+            <Oval
+              height={80}
+              width={80}
+              color="#635FC7"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+              ariaLabel="oval-loading"
+              secondaryColor="#828fa3"
+              strokeWidth={2}
+              strokeWidthSecondary={2}
+            />
+          </div>
         )}
       </div>
     </div>

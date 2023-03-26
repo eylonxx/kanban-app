@@ -2,6 +2,7 @@ import IconBoard from "../../assets/icon-board.svg";
 import IconBoardPurple from "../../assets/icon-board-purple.svg";
 import HideSidebar from "../../assets/icon-hide-sidebar.svg";
 import React from "react";
+import { Oval } from "react-loader-spinner";
 
 interface SidebarProps {
   open: boolean;
@@ -10,6 +11,7 @@ interface SidebarProps {
   boardNames: string[];
   selectedBoard: string;
   setOpenModal: (val: boolean) => void;
+  isLoadingBoards: boolean;
 }
 
 const Sidebar = ({
@@ -19,6 +21,7 @@ const Sidebar = ({
   handleSetOpen,
   selectedBoard,
   setOpenModal,
+  isLoadingBoards,
 }: SidebarProps) => {
   return (
     <aside
@@ -30,50 +33,67 @@ const Sidebar = ({
           all boards ({boardNames?.length})
         </p>
       </div>
-      <ul>
-        {boardNames?.map((board, i) => {
-          return (
-            <div
-              onClick={() => {
-                handleSelectedBoard(board);
-              }}
-              key={i}
-              className={`
+      {isLoadingBoards ? (
+        <div className="flex items-center justify-center">
+          <Oval
+            height={80}
+            width={80}
+            color="#635FC7"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+            ariaLabel="oval-loading"
+            secondaryColor="#828fa3"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        </div>
+      ) : (
+        <ul>
+          {boardNames?.map((board, i) => {
+            return (
+              <div
+                onClick={() => {
+                  handleSelectedBoard(board);
+                }}
+                key={i}
+                className={`
                   flex h-12 cursor-pointer items-center gap-4 pl-8
                   ${
                     selectedBoard === board
                       ? "rounded-r-full bg-mainPurple text-white transition-all"
                       : "rounded-r-full text-mediumGrey transition-all hover:bg-white hover:text-mainPurple "
                   }`}
-            >
-              <div
-                className={`flex-shrink-0 
+              >
+                <div
+                  className={`flex-shrink-0 
                 ${
                   selectedBoard === board
                     ? "text-white transition-all "
                     : " transition-all  hover:text-mainPurple"
                 }`}
-              >
-                <IconBoard />
+                >
+                  <IconBoard />
+                </div>
+                <p className="flex-shrink-0 font-bold tracking-wide">{board}</p>
               </div>
-              <p className="flex-shrink-0 font-bold tracking-wide">{board}</p>
+            );
+          })}
+          <li>
+            <div className="flex h-12 cursor-pointer items-center gap-4 pl-8 text-mainPurple">
+              <div className="flex-shrink-0">
+                <IconBoardPurple />
+              </div>
+              <button
+                onClick={() => setOpenModal(true)}
+                className="flex-shrink-0"
+              >
+                + Create New Board
+              </button>
             </div>
-          );
-        })}
-        <li>
-          <div className="flex h-12 cursor-pointer items-center gap-4 pl-8 text-mainPurple">
-            <div className="flex-shrink-0">
-              <IconBoardPurple />
-            </div>
-            <button
-              onClick={() => setOpenModal(true)}
-              className="flex-shrink-0"
-            >
-              + Create New Board
-            </button>
-          </div>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      )}
       <div
         onClick={() => handleSetOpen(false)}
         className="group mb-10 mt-auto flex h-12 flex-shrink-0 cursor-pointer items-center rounded-r-full pl-8 transition-all hover:bg-white hover:text-mainPurple"
