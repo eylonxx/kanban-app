@@ -12,7 +12,8 @@ import { useAtom } from "jotai";
 import { api } from "~/utils/api";
 import { LexoRank } from "lexorank";
 import SelectWithListbox from "./SelectWithListbox";
-import { type Task, type Column, type Subtask } from "@prisma/client";
+import { Prisma, type Column, type Subtask } from "@prisma/client";
+type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 
 interface NewAndEditTaskModalProps {
   setOpen: (val: boolean) => void;

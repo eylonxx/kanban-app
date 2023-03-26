@@ -1,7 +1,8 @@
 import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { type Task } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 
 interface TaskCardProps {
   task: Task | null;

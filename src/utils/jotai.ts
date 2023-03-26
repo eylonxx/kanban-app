@@ -1,5 +1,6 @@
-import { type Column, type Task } from "@prisma/client";
+import { type Column, Prisma } from "@prisma/client";
 import { atom } from "jotai";
+type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 
 export const tasksAtom = atom<Task[]>([]);
 export const columnsAtom = atom<Column[]>([]);

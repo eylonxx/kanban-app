@@ -9,7 +9,7 @@ import {
   closestCenter,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import { type Subtask, type Board, type Task } from "@prisma/client";
+import { type Subtask, type Board, Prisma } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
 import { useAtom } from "jotai";
@@ -23,6 +23,8 @@ import Column from "./Column";
 import NewAndEditTaskModal from "./NewAndEditTaskModal";
 import { TaskCard } from "./SortableItem";
 import TaskModal from "./TaskModal";
+
+type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 
 interface TasksBoardProps {
   selectedBoard: Board;

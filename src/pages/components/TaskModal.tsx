@@ -1,10 +1,11 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { type Subtask, type Task } from "@prisma/client";
+import { type Subtask, Prisma } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import IconCross from "../../assets/icon-cross.svg";
 import { api } from "~/utils/api";
 import VerticalEllipsis from "../../assets/icon-vertical-ellipsis.svg";
+type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 
 interface TaskModalProps {
   setOpen: (val: boolean) => void;
