@@ -107,6 +107,20 @@ const Home: React.FC = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-veryDarkGrey">
+      <BoardModal
+        setOpen={setOpenNewBoardModal}
+        open={openNewBoardModal}
+        isEdit={false}
+        selectedBoard={selectedBoard}
+        handleBoardModalOnSubmit={handleBoardModalOnSubmit}
+      />
+      <BoardModal
+        setOpen={setOpenEditBoardModal}
+        open={openEditBoardModal}
+        isEdit={true}
+        selectedBoard={selectedBoard}
+        handleBoardModalOnSubmit={handleBoardModalOnSubmit}
+      />
       <div className=" flex items-center justify-between ">
         <Navbar
           open={open}
@@ -148,26 +162,19 @@ const Home: React.FC = () => {
             />
           </div>
         ) : boards?.length === 0 ? (
-          <div className="flex grow items-center justify-center">
-            <p>NO BOARDS!!</p>
+          <div className="flex grow flex-col items-center justify-center">
+            <p>No Boards</p>
+            <button
+              type="button"
+              className="w-56 rounded-full bg-mainPurple px-10 py-3 font-semibold text-white no-underline transition "
+              onClick={() => setOpenNewBoardModal(true)}
+            >
+              Create New Board
+            </button>
           </div>
         ) : (
           selectedBoard && (
             <main className="grow bg-veryDarkGrey">
-              <BoardModal
-                setOpen={setOpenNewBoardModal}
-                open={openNewBoardModal}
-                isEdit={false}
-                selectedBoard={selectedBoard}
-                handleBoardModalOnSubmit={handleBoardModalOnSubmit}
-              />
-              <BoardModal
-                setOpen={setOpenEditBoardModal}
-                open={openEditBoardModal}
-                isEdit={true}
-                selectedBoard={selectedBoard}
-                handleBoardModalOnSubmit={handleBoardModalOnSubmit}
-              />
               <NewAndEditTaskModal
                 isEdit={false}
                 setOpen={setOpenNewTaskModal}
