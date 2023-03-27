@@ -1,5 +1,5 @@
 import ShowSidebar from "../../assets/icon-show-sidebar.svg";
-import { type Board } from "@prisma/client";
+import { Column, type Board } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React, { useMemo, useState } from "react";
 import { api } from "~/utils/api";
@@ -69,7 +69,9 @@ const Home: React.FC = () => {
   };
 
   const handleSelectedBoard = (boardTitle: string) => {
-    const newBoard = boards?.filter((board) => boardTitle === board.title)[0];
+    const newBoard = boards?.filter(
+      (board: Board) => boardTitle === board.title
+    )[0];
     setSelectedBoard(newBoard ? newBoard : null);
   };
 
@@ -92,8 +94,8 @@ const Home: React.FC = () => {
     data: BoardModalFormValues
   ) => {
     const currentColumnsIds = columns
-      .filter((col) => col.boardId === selectedBoard!.id)
-      .map((col) => col.id);
+      .filter((col: Column) => col.boardId === selectedBoard!.id)
+      .map((col: Column) => col.id);
 
     const columnsToCreate = data.columns.filter((col) => !col.boardId);
     const columnsToUpdate = data.columns.filter((col) => col.boardId && col.id);
