@@ -33,14 +33,14 @@ const Home: React.FC = () => {
   } = api.board.getAll.useQuery(undefined, {
     enabled: sessionData?.user !== undefined,
     onSuccess: (data: Board[]) => {
-      setSelectedBoard(data[0] ?? null);
+      setSelectedBoard(selectedBoard ?? data[0] ?? null);
     },
   });
 
   const createBoard = api.board.create.useMutation({
     onSuccess: (data: Board) => {
-      void refetchBoards();
       setSelectedBoard(data);
+      void refetchBoards();
     },
   });
 
