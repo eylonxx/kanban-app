@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Fragment, useEffect, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
@@ -12,7 +13,7 @@ import { useAtom } from "jotai";
 import { api } from "~/utils/api";
 import { LexoRank } from "lexorank";
 import SelectWithListbox from "./SelectWithListbox";
-import { Prisma, type Column, type Subtask } from "@prisma/client";
+import { type Prisma, type Column } from "@prisma/client";
 
 type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 
@@ -87,6 +88,7 @@ export default function NewAndEditTaskModal({
         task.subtasks.sort((a, b) => a.index - b.index)
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const createTask = api.task.create.useMutation({

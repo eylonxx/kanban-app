@@ -1,4 +1,4 @@
-import { type Column, Prisma } from "@prisma/client";
+import { type Column, type Prisma } from "@prisma/client";
 import { atom } from "jotai";
 type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 

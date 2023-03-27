@@ -1,12 +1,12 @@
 import React from "react";
-import { DragOverlay, useDroppable } from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
 import SortableItem from "./SortableItem";
-import { Prisma } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
 
 type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 

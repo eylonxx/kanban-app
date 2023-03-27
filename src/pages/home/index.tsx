@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import ShowSidebar from "../../assets/icon-show-sidebar.svg";
-import { Column, type Board } from "@prisma/client";
+import { type Column, type Board } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React, { useMemo, useState } from "react";
 import { api } from "~/utils/api";
