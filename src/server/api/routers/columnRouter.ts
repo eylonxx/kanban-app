@@ -13,12 +13,15 @@ export const columnRouter = createTRPCRouter({
       });
     }),
   create: protectedProcedure
-    .input(z.object({ title: z.string(), boardId: z.string() }))
+    .input(
+      z.object({ title: z.string(), boardId: z.string(), index: z.number() })
+    )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.column.create({
         data: {
           title: input.title,
           boardId: input.boardId,
+          index: input.index,
         },
       });
     }),
