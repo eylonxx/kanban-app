@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
-export const BoardRouter = createTRPCRouter({
+export const boardRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.board.findMany({
       where: {
