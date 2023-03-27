@@ -62,6 +62,7 @@ const Home: React.FC = () => {
   const boardNames = useMemo(() => {
     return boards?.map((board: Board) => board.title) || [];
   }, [boards]);
+  //
 
   const getBoardColumns = (boardId: string) => {
     return columns.filter((col) => col.boardId === boardId);
