@@ -7,7 +7,7 @@ import {
   type SubmitHandler,
   Controller,
 } from "react-hook-form";
-import IconCross from "../../assets/icon-cross.svg";
+import IconCross from "../assets/icon-cross.svg";
 import { tasksAtom } from "~/utils/jotai";
 import { useAtom } from "jotai";
 import { api } from "~/utils/api";

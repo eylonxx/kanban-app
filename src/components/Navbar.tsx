@@ -1,7 +1,7 @@
 import { signOut } from "next-auth/react";
 import React from "react";
-import LogoLight from "../../assets/logo-light.svg";
-import VerticalEllipsis from "../../assets/icon-vertical-ellipsis.svg";
+import LogoLight from "../assets/logo-light.svg";
+import VerticalEllipsis from "../assets/icon-vertical-ellipsis.svg";
 
 interface NavbarProps {
   open: boolean;

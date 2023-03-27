@@ -7,8 +7,8 @@ import {
   type UseFieldArrayRemove,
   type UseFormRegister,
 } from "react-hook-form";
-import IconCross from "../../assets/icon-cross.svg";
-import IconMenu from "../../assets/icon-menu.svg";
+import IconCross from "../assets/icon-cross.svg";
+import IconMenu from "../assets/icon-menu.svg";
 
 interface SortableItemProps {
   id: string;

@@ -1,6 +1,6 @@
-import IconBoard from "../../assets/icon-board.svg";
-import IconBoardPurple from "../../assets/icon-board-purple.svg";
-import HideSidebar from "../../assets/icon-hide-sidebar.svg";
+import IconBoard from "../assets/icon-board.svg";
+import IconBoardPurple from "../assets/icon-board-purple.svg";
+import HideSidebar from "../assets/icon-hide-sidebar.svg";
 import React from "react";
 import { Oval } from "react-loader-spinner";
 

@@ -3,9 +3,9 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { type Subtask, type Prisma } from "@prisma/client";
 import { useForm } from "react-hook-form";
-import IconCross from "../../assets/icon-cross.svg";
+import IconCross from "../assets/icon-cross.svg";
 import { api } from "~/utils/api";
-import VerticalEllipsis from "../../assets/icon-vertical-ellipsis.svg";
+import VerticalEllipsis from "../assets/icon-vertical-ellipsis.svg";
 type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 
 interface TaskModalProps {
@@ -53,6 +53,7 @@ export default function TaskModal({
 
   return (
     <Transition.Root
+      show={open}
       afterLeave={() => {
         reset();
         setSubtasks([]);
@@ -62,7 +63,6 @@ export default function TaskModal({
           setSubtasks(task.subtasks.map((subtask) => ({ ...subtask })));
         }
       }}
-      show={open}
       as={Fragment}
     >
       <Dialog

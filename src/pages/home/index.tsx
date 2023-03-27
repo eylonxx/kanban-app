@@ -5,18 +5,16 @@ import { type Column, type Board } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React, { useMemo, useState } from "react";
 import { api } from "~/utils/api";
-import Navbar from "../components/Navbar";
-import TasksBoard from "../components/TasksBoard";
-import Sidebar from "../components/Sidebar";
-import BoardModal, {
-  type BoardModalFormValues,
-} from "../components/BoardModal";
-import NewAndEditTaskModal from "../components/NewAndEditTaskModal";
+import TasksBoard from "~/components/TasksBoard";
+import Sidebar from "~/components/Sidebar";
+import BoardModal, { type BoardModalFormValues } from "~/components/BoardModal";
+import NewAndEditTaskModal from "~/components/NewAndEditTaskModal";
 import { useAtom } from "jotai";
 import { columnsAtom } from "~/utils/jotai";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
 import { Oval } from "react-loader-spinner";
+import Navbar from "~/components/Navbar";
 
 const Home: React.FC = () => {
   const { data: sessionData } = useSession();
