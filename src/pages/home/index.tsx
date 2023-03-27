@@ -42,9 +42,6 @@ const Home: React.FC = () => {
       void refetchBoards();
       setSelectedBoard(data);
     },
-    onError: (e) => {
-      console.log(e);
-    },
   });
 
   const updateBoard = api.board.update.useMutation({
