@@ -38,7 +38,7 @@ const Home: React.FC = () => {
   });
 
   const createBoard = api.board.create.useMutation({
-    onSuccess: (data) => {
+    onSuccess: (data: Board) => {
       void refetchBoards();
       setSelectedBoard(data);
     },

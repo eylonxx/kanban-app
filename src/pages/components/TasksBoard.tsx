@@ -78,7 +78,7 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
     },
     {
       enabled: sessionData?.user !== undefined,
-      onSuccess: (data) => setItems(data),
+      onSuccess: (data: Task[]) => setItems(data),
     }
   );
 

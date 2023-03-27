@@ -90,7 +90,7 @@ export default function NewAndEditTaskModal({
   }, [open]);
 
   const createTask = api.task.create.useMutation({
-    onSuccess: (data) => {
+    onSuccess: (data: Task) => {
       setTasks([...tasks, data]);
     },
   });
