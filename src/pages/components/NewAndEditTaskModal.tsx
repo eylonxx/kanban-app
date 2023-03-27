@@ -33,7 +33,7 @@ type FormValues = {
     title: string;
     checked?: boolean;
     taskId?: string;
-    index?: number;
+    index: number;
   }[];
 };
 
@@ -82,7 +82,10 @@ export default function NewAndEditTaskModal({
     if (isEdit && task) {
       setValue("taskName", task.title);
       setValue("description", task.description);
-      setValue("subtasks", task.subtasks);
+      setValue(
+        "subtasks",
+        task.subtasks.sort((a, b) => a.index - b.index)
+      );
     }
   }, [open]);
 
@@ -93,11 +96,10 @@ export default function NewAndEditTaskModal({
   });
 
   const updateTaskAndSubtasks = api.task.updateTaskAndSubtasks.useMutation({
-    onSuccess: (data) => {
+    onSuccess: (data: Task) => {
       setTasks((prev) => {
-        const editedIndex = prev.findIndex((task) => task.id === data[0].id);
-        data[0].subtasks = [...data.slice(1)] as Subtask[];
-        prev[editedIndex] = data[0];
+        const editedIndex = prev.findIndex((task) => task.id === data.id);
+        prev[editedIndex] = { ...data };
         return [...prev];
       });
     },
@@ -305,8 +307,9 @@ export default function NewAndEditTaskModal({
                               ? {
                                   title: "",
                                   checked: false,
+                                  index: fields.length,
                                 }
-                              : { title: "" }
+                              : { title: "", index: fields.length }
                           )
                         }
                       >

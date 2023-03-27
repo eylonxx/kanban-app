@@ -95,41 +95,32 @@ export const taskRouter = createTRPCRouter({
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.$transaction([
-        ctx.prisma.task.update({
-          where: { id: input.id },
-          data: {
-            title: input.title,
-            columnId: input.columnId,
-            description: input.description,
-          },
-        }),
-        ...input.subtasksToCreate.map((subtask) =>
-          ctx.prisma.subtask.create({
-            data: {
+      return ctx.prisma.task.update({
+        where: { id: input.id },
+        data: {
+          title: input.title,
+          columnId: input.columnId,
+          description: input.description,
+          subtasks: {
+            create: input.subtasksToCreate.map((subtask) => ({
               title: subtask.title,
               index: subtask.index,
               checked: false,
-              taskId: input.id,
-            },
-          })
-        ),
-        ...input.subtasksToUpdate.map((subtask) =>
-          ctx.prisma.subtask.update({
-            where: { id: subtask.id },
-            data: {
-              title: subtask.title,
-              index: subtask.index,
-            },
-          })
-        ),
-        ...input.subtasksToDelete.map((subtaskId) =>
-          ctx.prisma.subtask.delete({
-            where: { id: subtaskId },
-          })
-        ),
-      ]);
+            })),
+            update: input.subtasksToUpdate.map((subtask) => ({
+              where: { id: subtask.id },
+              data: {
+                title: subtask.title,
+                index: subtask.index,
+              },
+            })),
+            deleteMany: { id: { in: input.subtasksToDelete } },
+          },
+        },
+        include: { subtasks: true },
+      });
     }),
+
   deleteTask: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
