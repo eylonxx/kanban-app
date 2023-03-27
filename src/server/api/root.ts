@@ -2,7 +2,7 @@ import { createTRPCRouter } from "~/server/api/trpc";
 import { boardRouter } from "./routers/boardRouter";
 import { columnRouter } from "./routers/columnRouter";
 import { subtaskRouter } from "./routers/subtaskRouter";
-import { taskRouter } from "./routers/TaskRouter";
+import { taskRouter } from "./routers/taskRouter";
 
 /**
  * This is the primary router for your server.
