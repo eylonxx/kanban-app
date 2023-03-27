@@ -13,17 +13,8 @@ import { api } from "~/utils/api";
 import { LexoRank } from "lexorank";
 import SelectWithListbox from "./SelectWithListbox";
 import { Prisma, type Column, type Subtask } from "@prisma/client";
-type Task = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  title: string;
-  description: string;
-  userId: string;
-  columnId: string;
-  rank: string;
-  subtasks: Subtask[];
-};
+
+type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 
 interface NewAndEditTaskModalProps {
   setOpen: (val: boolean) => void;
@@ -102,7 +93,7 @@ export default function NewAndEditTaskModal({
   });
 
   const updateTaskAndSubtasks = api.task.updateTaskAndSubtasks.useMutation({
-    onSuccess: (data: [Task, ...Subtask[]]) => {
+    onSuccess: (data) => {
       setTasks((prev) => {
         const editedIndex = prev.findIndex((task) => task.id === data[0].id);
         data[0].subtasks = [...data.slice(1)] as Subtask[];
