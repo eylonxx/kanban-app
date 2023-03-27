@@ -1,8 +1,8 @@
 import { createTRPCRouter } from "~/server/api/trpc";
-import { boardRouter } from "./routers/boardRouter";
-import { columnRouter } from "./routers/columnRouter";
-import { subtaskRouter } from "./routers/subtaskRouter";
-import { taskRouter } from "./routers/taskRouter";
+import { BoardRouter } from "./routers/boardRouter";
+import { ColumnRouter } from "./routers/columnRouter";
+import { SubtaskRouter } from "./routers/subtaskRouter";
+import { TaskRouter } from "./routers/taskRouter";
 
 /**
  * This is the primary router for your server.
@@ -10,10 +10,10 @@ import { taskRouter } from "./routers/taskRouter";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  board: boardRouter,
-  task: taskRouter,
-  column: columnRouter,
-  subtask: subtaskRouter,
+  board: BoardRouter,
+  task: TaskRouter,
+  column: ColumnRouter,
+  subtask: SubtaskRouter,
 });
 
 // export type definition of API

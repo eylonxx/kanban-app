@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
-export const columnRouter = createTRPCRouter({
+export const ColumnRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(z.object({ boardId: z.string() }))
     .query(({ ctx, input }) => {

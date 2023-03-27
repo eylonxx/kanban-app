@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
-export const subtaskRouter = createTRPCRouter({
+export const SubtaskRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
