@@ -206,9 +206,17 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
             newRank = overRank.genNext().toString();
           } else {
             const modifier = isBelowOver ? 1 : -1;
-            newRank = overRank
-              .between(LexoRank.parse(overTasks[overIndex + modifier].rank))
-              .toString();
+            try {
+              newRank = overRank
+                .between(LexoRank.parse(overTasks[overIndex + modifier].rank))
+                .toString();
+            } catch (error) {
+              newRank = overRank
+                .between(
+                  LexoRank.parse(overTasks[overIndex + modifier].rank).genNext()
+                )
+                .toString();
+            }
           }
         }
       }
@@ -219,7 +227,7 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
   }
 
   return (
-    <div className="flex grow flex-row">
+    <div className="flex grow flex-row transition-all">
       <TaskModal
         handleDeleteTask={handleDeleteTask}
         handleUpdateSubtask={handleUpdateSubtask}
@@ -236,7 +244,7 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
         boardColumns={columns}
       />
       {isLoadingColumns || isLoadingTasks ? (
-        <div className="flex grow items-center justify-center">
+        <div className="flex grow items-center justify-center bg-black/5 transition-colors duration-500 ease-linear">
           <Oval
             height={80}
             width={80}
@@ -251,43 +259,45 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
           />
         </div>
       ) : (
-        <DndContext
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
-          onDragEnd={handleDragEnd}
-          sensors={sensors}
-        >
-          <SortableContext items={columnIds}>
-            <div className="flex min-h-full gap-4">
-              {columns
-                ?.sort((a, b) => a.index - b.index)
-                .map((column) => {
-                  return (
-                    <Column
-                      setOpenTaskModal={setOpenTaskModal}
-                      key={column.id}
-                      id={column.id}
-                      columnTitle={column.title}
-                      items={getTasksByColumn(column.id)}
-                    />
-                  );
-                })}
-              <div
-                className="mt-12 flex h-[580px]  w-72 cursor-pointer flex-col items-center justify-center rounded-lg bg-[#22232F]"
-                onClick={() => setOpen(true)}
-              >
-                <p className="text-2xl font-bold text-mediumGrey">
-                  + New Column
-                </p>
+        <div className="transition-all duration-200">
+          <DndContext
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
+            onDragEnd={handleDragEnd}
+            sensors={sensors}
+          >
+            <SortableContext items={columnIds}>
+              <div className="flex min-h-full">
+                {columns
+                  ?.sort((a, b) => a.index - b.index)
+                  .map((column) => {
+                    return (
+                      <Column
+                        setOpenTaskModal={setOpenTaskModal}
+                        key={column.id}
+                        id={column.id}
+                        columnTitle={column.title}
+                        items={getTasksByColumn(column.id)}
+                      />
+                    );
+                  })}
+                <div
+                  className="mt-12 flex h-[580px]  w-72 cursor-pointer flex-col items-center justify-center rounded-lg bg-[#22232F]"
+                  onClick={() => setOpen(true)}
+                >
+                  <p className="text-2xl font-bold text-mediumGrey">
+                    + New Column
+                  </p>
+                </div>
               </div>
-            </div>
-          </SortableContext>
+            </SortableContext>
 
-          <DragOverlay>
-            {activeId ? <TaskCard task={activeTask} /> : null}
-          </DragOverlay>
-        </DndContext>
+            <DragOverlay>
+              {activeId ? <TaskCard task={activeTask} /> : null}
+            </DragOverlay>
+          </DndContext>
+        </div>
       )}
     </div>
   );

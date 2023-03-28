@@ -20,11 +20,11 @@ export function TaskCard({ task, setOpenTaskModal }: TaskCardProps) {
         className="flex h-24 w-64 flex-col justify-center gap-2 rounded-md bg-darkGrey px-4 font-bold shadow-taskCard"
       >
         <div>
-          <p className="text-s text-white ">{task.title}</p>
+          <p className="text-sm text-white">{task.title}</p>
         </div>
         <div>
           <p className="text-xs text-mediumGrey">
-            {task.subtasks.filter((subtask) => subtask.checked === true).length}
+            {task.subtasks.filter((subtask) => subtask.checked === true).length}{" "}
             of {task.subtasks.length} subtasks
           </p>
         </div>

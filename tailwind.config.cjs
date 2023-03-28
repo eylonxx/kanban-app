@@ -21,6 +21,7 @@ const config = {
       mediumGrey: "#828fa3",
       lightLines: "#e4ebfa",
       lightGrey: "#f4f7fd",
+      dropMenu: "#2A303C",
       white: "#fff",
       red: "#ea5555",
       redHover: "#ff9898",
