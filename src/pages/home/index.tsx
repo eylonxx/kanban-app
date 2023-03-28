@@ -86,6 +86,9 @@ const Home: React.FC = () => {
   const handleDeleteBoard = () => {
     if (selectedBoard) {
       deleteBoard.mutate({ id: selectedBoard.id });
+      if (boards?.length) {
+        setSelectedBoard(boards[0]);
+      }
     }
   };
 
