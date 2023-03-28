@@ -17,7 +17,7 @@ export function TaskCard({ task, setOpenTaskModal }: TaskCardProps) {
           if (!setOpenTaskModal) return;
           setOpenTaskModal(task, true);
         }}
-        className="flex h-24 w-64 flex-col justify-center gap-2 rounded-md bg-darkGrey px-4 font-bold shadow-taskCard"
+        className="flex min-h-[96px] w-64 flex-col justify-center gap-2 rounded-md bg-darkGrey p-4 font-bold shadow-taskCard"
       >
         <div>
           <p className="text-sm text-white">{task.title}</p>
