@@ -138,6 +138,7 @@ const Home: React.FC = () => {
         <Navbar
           handleDeleteBoard={handleDeleteBoard}
           open={open}
+          boardsLength={boards?.length}
           setOpenModal={setOpenNewTaskModal}
           setBoardEdit={handleOpenEditBoardModal}
         />
@@ -161,7 +162,7 @@ const Home: React.FC = () => {
           <ShowSidebar />
         </div>
         {isLoading ? (
-          <div className="flex grow items-center justify-center">
+          <div className="flex grow items-center justify-center bg-black/5 transition-colors ease-linear">
             <Oval
               height={80}
               width={80}
@@ -188,7 +189,7 @@ const Home: React.FC = () => {
           </div>
         ) : (
           selectedBoard && (
-            <main className="grow bg-veryDarkGrey">
+            <main className="flex grow transition-all">
               <NewAndEditTaskModal
                 isEdit={false}
                 setOpen={setOpenNewTaskModal}

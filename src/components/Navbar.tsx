@@ -8,6 +8,7 @@ interface NavbarProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   setBoardEdit: (val: boolean) => void;
   handleDeleteBoard: () => void;
+  boardsLength: number | undefined;
 }
 
 const Navbar = ({
@@ -15,6 +16,7 @@ const Navbar = ({
   setOpenModal,
   setBoardEdit,
   handleDeleteBoard,
+  boardsLength,
 }: NavbarProps) => {
   return (
     <div className="flex h-24 w-screen items-center bg-darkGrey  shadow-lg">
@@ -43,23 +45,27 @@ const Navbar = ({
             className="dropdown-content menu rounded-box mt-6 w-52 bg-base-100 p-2 shadow"
           >
             <li>
-              <a
+              <button
+                type="button"
+                disabled={boardsLength === 0}
                 onClick={() => {
                   setBoardEdit(true);
                 }}
               >
                 Edit Board
-              </a>
+              </button>
             </li>
             <li>
-              <a
+              <button
+                type="button"
+                disabled={boardsLength === 0}
                 onClick={() => {
                   handleDeleteBoard();
                 }}
-                className="text-red"
+                className="text-red disabled:text-darkLines disabled:hover:bg-dropMenu"
               >
                 Delete Board
-              </a>
+              </button>
             </li>
             <li>
               <a
