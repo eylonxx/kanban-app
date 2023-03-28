@@ -30,8 +30,9 @@ const Navbar = ({
       </div>
       <div className="flex h-24 flex-1 items-center justify-end border-b-2 border-b-darkLines">
         <button
-          className="w-56 rounded-full bg-mainPurple px-10 py-3 font-semibold text-white no-underline transition "
+          className="w-56 rounded-full bg-mainPurple px-10 py-3 font-semibold text-white no-underline disabled:bg-mainPurple/30 disabled:text-white/30 "
           onClick={() => setOpenModal(true)}
+          disabled={boardsLength === 0}
         >
           + Add New Task
         </button>
