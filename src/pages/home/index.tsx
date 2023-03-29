@@ -23,7 +23,6 @@ const Home: React.FC = () => {
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
   const [columns] = useAtom(columnsAtom);
   const [boardNames, setBoardNames] = useState<string[]>([]);
-  const ctx = api.useContext();
 
   const {
     data: boards,
@@ -37,21 +36,6 @@ const Home: React.FC = () => {
     },
   });
 
-  const createBoard = api.board.create.useMutation({
-    onSuccess: (data: Board) => {
-      setSelectedBoard(data);
-      void refetchBoards();
-    },
-  });
-
-  const updateBoard = api.board.update.useMutation({
-    onSuccess: (data) => {
-      void ctx.board.getAll.invalidate();
-      void ctx.column.getAll.invalidate();
-      setSelectedBoard(data[0]);
-    },
-  });
-
   const deleteBoard = api.board.deleteBoard.useMutation({
     onSuccess: () => {
       void refetchBoards();
@@ -62,11 +46,16 @@ const Home: React.FC = () => {
     return columns.filter((col) => col.boardId === boardId);
   };
 
+  //todo:change title to id
   const handleSelectedBoard = (boardTitle: string) => {
     const newBoard = boards?.filter(
       (board: Board) => boardTitle === board.title
     )[0];
     setSelectedBoard(newBoard ? newBoard : null);
+  };
+
+  const handleSetSelectedBoard = (val: Board) => {
+    setSelectedBoard(val);
   };
 
   const handleSetOpen = (val: boolean) => {
@@ -86,51 +75,21 @@ const Home: React.FC = () => {
     }
   };
 
-  const handleBoardModalOnSubmit = (
-    isEdit: boolean,
-    data: BoardModalFormValues
-  ) => {
-    const currentColumnsIds = columns
-      .filter((col: Column) => col.boardId === selectedBoard!.id)
-      .map((col: Column) => col.id);
-
-    const columnsToCreate = data.columns.filter((col) => !col.boardId);
-    const columnsToUpdate = data.columns.filter((col) => col.boardId && col.id);
-    const columnsToDelete = currentColumnsIds.filter(
-      (id) => data.columns.find((col) => col.id === id) === undefined
-    );
-
-    if (isEdit) {
-      updateBoard.mutate({
-        boardId: selectedBoard!.id,
-        boardName: data.boardName,
-        toCreate: columnsToCreate,
-        toUpdate: columnsToUpdate,
-        toDelete: columnsToDelete,
-      });
-    } else {
-      createBoard.mutate({
-        title: data.boardName,
-        columns: data.columns.map((col) => col.title),
-      });
-    }
-  };
-
   return (
     <div className="flex min-h-screen flex-col bg-veryDarkGrey">
       <BoardModal
+        handleSetSelectedBoard={handleSetSelectedBoard}
         setOpen={setOpenNewBoardModal}
         open={openNewBoardModal}
         isEdit={false}
         selectedBoard={selectedBoard}
-        handleBoardModalOnSubmit={handleBoardModalOnSubmit}
       />
       <BoardModal
+        handleSetSelectedBoard={handleSetSelectedBoard}
         setOpen={setOpenEditBoardModal}
         open={openEditBoardModal}
         isEdit={true}
         selectedBoard={selectedBoard}
-        handleBoardModalOnSubmit={handleBoardModalOnSubmit}
       />
       <div className=" flex items-center justify-between ">
         <Navbar
