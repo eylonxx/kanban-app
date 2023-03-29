@@ -3,7 +3,7 @@
 import ShowSidebar from "../../assets/icon-show-sidebar.svg";
 import { type Column, type Board } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { api } from "~/utils/api";
 import TasksBoard from "~/components/TasksBoard";
 import Sidebar from "~/components/Sidebar";
@@ -11,8 +11,6 @@ import BoardModal, { type BoardModalFormValues } from "~/components/BoardModal";
 import NewAndEditTaskModal from "~/components/NewAndEditTaskModal";
 import { useAtom } from "jotai";
 import { columnsAtom } from "~/utils/jotai";
-import { useQueryClient } from "@tanstack/react-query";
-import { getQueryKey } from "@trpc/react-query";
 import { Oval } from "react-loader-spinner";
 import Navbar from "~/components/Navbar";
 
@@ -24,7 +22,8 @@ const Home: React.FC = () => {
   const [openNewTaskModal, setOpenNewTaskModal] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
   const [columns] = useAtom(columnsAtom);
-  const queryClient = useQueryClient();
+  const [boardNames, setBoardNames] = useState<string[]>([]);
+  const ctx = api.useContext();
 
   const {
     data: boards,
@@ -33,6 +32,7 @@ const Home: React.FC = () => {
   } = api.board.getAll.useQuery(undefined, {
     enabled: sessionData?.user !== undefined,
     onSuccess: (data: Board[]) => {
+      setBoardNames(data.map((board) => board.title));
       setSelectedBoard(selectedBoard ?? data[0] ?? null);
     },
   });
@@ -45,11 +45,10 @@ const Home: React.FC = () => {
   });
 
   const updateBoard = api.board.update.useMutation({
-    onSuccess: async () => {
-      await queryClient.refetchQueries({
-        queryKey: [...getQueryKey(api.column.getAll)],
-        type: "active",
-      });
+    onSuccess: (data) => {
+      void ctx.board.getAll.invalidate();
+      void ctx.column.getAll.invalidate();
+      setSelectedBoard(data[0]);
     },
   });
 
@@ -58,11 +57,6 @@ const Home: React.FC = () => {
       void refetchBoards();
     },
   });
-
-  const boardNames = useMemo(() => {
-    return boards?.map((board: Board) => board.title) || [];
-  }, [boards]);
-  //
 
   const getBoardColumns = (boardId: string) => {
     return columns.filter((col) => col.boardId === boardId);
@@ -109,6 +103,7 @@ const Home: React.FC = () => {
     if (isEdit) {
       updateBoard.mutate({
         boardId: selectedBoard!.id,
+        boardName: data.boardName,
         toCreate: columnsToCreate,
         toUpdate: columnsToUpdate,
         toDelete: columnsToDelete,

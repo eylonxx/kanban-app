@@ -14,7 +14,8 @@ import { api } from "~/utils/api";
 import { LexoRank } from "lexorank";
 import SelectWithListbox from "./SelectWithListbox";
 import { type Prisma, type Column } from "@prisma/client";
-
+import { Oval } from "react-loader-spinner";
+import { toast } from "react-hot-toast";
 type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 
 interface NewAndEditTaskModalProps {
@@ -80,7 +81,7 @@ export default function NewAndEditTaskModal({
   }, [boardColumns, open]);
 
   useEffect(() => {
-    if (isEdit && task) {
+    if (isEdit && task && open === true) {
       setValue("taskName", task.title);
       setValue("description", task.description);
       setValue(
@@ -94,6 +95,10 @@ export default function NewAndEditTaskModal({
   const createTask = api.task.create.useMutation({
     onSuccess: (data: Task) => {
       setTasks([...tasks, data]);
+      // void ctx.task.getAll.invalidate();
+    },
+    onError: () => {
+      toast.error("Create failed, please try again later.");
     },
   });
 
@@ -104,6 +109,9 @@ export default function NewAndEditTaskModal({
         prev[editedIndex] = { ...data };
         return [...prev];
       });
+    },
+    onError: () => {
+      toast.error("Update failed, please try again later.");
     },
   });
 
@@ -169,8 +177,13 @@ export default function NewAndEditTaskModal({
         subtasks: subtaskTitle,
       });
     }
-    setOpen(false);
   };
+
+  useEffect(() => {
+    if (updateTaskAndSubtasks.isSuccess || createTask.isSuccess) {
+      setOpen(false);
+    }
+  }, [updateTaskAndSubtasks.isSuccess, createTask.isSuccess]);
 
   return (
     <Transition.Root show={open} as={Fragment} afterLeave={reset}>
@@ -339,9 +352,28 @@ export default function NewAndEditTaskModal({
 
                       <button
                         type="submit"
-                        className="h-10 w-full rounded-full bg-mainPurple text-sm font-bold text-white"
+                        className="h-10 w-full rounded-full bg-mainPurple text-sm font-bold text-white disabled:bg-mainPurple/30 disabled:text-white/30"
+                        disabled={updateTaskAndSubtasks.isLoading}
                       >
-                        {isEdit ? "Save Changes" : "Create New Task"}
+                        {updateTaskAndSubtasks.isLoading ||
+                        createTask.isLoading ? (
+                          <div className="flex items-center justify-center">
+                            <Oval
+                              height={25}
+                              width={25}
+                              color="#635FC7"
+                              visible={true}
+                              ariaLabel="oval-loading"
+                              secondaryColor="#828fa3"
+                              strokeWidth={4}
+                              strokeWidthSecondary={4}
+                            />
+                          </div>
+                        ) : isEdit ? (
+                          "Save Changes"
+                        ) : (
+                          "Create New Task"
+                        )}
                       </button>
                     </div>
                   </form>

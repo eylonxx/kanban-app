@@ -6,8 +6,9 @@ export const boardRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.board.findMany({
       where: {
-        OR: [{ userId: ctx.session.user.id }],
+        userId: ctx.session.user.id,
       },
+      orderBy: { createdAt: "asc" },
     });
   }),
   create: protectedProcedure
@@ -35,6 +36,7 @@ export const boardRouter = createTRPCRouter({
     .input(
       z.object({
         boardId: z.string(),
+        boardName: z.string(),
         toCreate: z.array(
           z.object({
             title: z.string(),
@@ -54,6 +56,12 @@ export const boardRouter = createTRPCRouter({
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.$transaction([
+        ctx.prisma.board.update({
+          where: { id: input.boardId },
+          data: {
+            title: input.boardName,
+          },
+        }),
         ...input.toCreate.map((col) =>
           ctx.prisma.column.create({
             data: {
