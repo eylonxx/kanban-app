@@ -6,7 +6,7 @@ import {
 } from "@dnd-kit/sortable";
 
 import SortableItem from "./SortableItem";
-import { type Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 

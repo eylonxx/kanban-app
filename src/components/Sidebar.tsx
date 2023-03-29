@@ -3,7 +3,7 @@ import IconBoardPurple from "../assets/icon-board-purple.svg";
 import HideSidebar from "../assets/icon-hide-sidebar.svg";
 import React from "react";
 import { Oval } from "react-loader-spinner";
-import { type Board } from "@prisma/client";
+import type { Board } from "@prisma/client";
 
 interface SidebarProps {
   open: boolean;

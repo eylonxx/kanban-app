@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import ShowSidebar from "../../assets/icon-show-sidebar.svg";
-import { type Column, type Board } from "@prisma/client";
+import type { Board } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import TasksBoard from "~/components/TasksBoard";
 import Sidebar from "~/components/Sidebar";
-import BoardModal, { type BoardModalFormValues } from "~/components/BoardModal";
+import BoardModal from "~/components/BoardModal";
 import NewAndEditTaskModal from "~/components/NewAndEditTaskModal";
 import { useAtom } from "jotai";
 import { columnsAtom } from "~/utils/jotai";

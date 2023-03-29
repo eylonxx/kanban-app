@@ -10,12 +10,7 @@ import {
   closestCenter,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import {
-  type Subtask,
-  type Board,
-  type Prisma,
-  type Column as ColumnP,
-} from "@prisma/client";
+import type { Subtask, Board, Prisma, Column as ColumnP } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
 import { useAtom } from "jotai";

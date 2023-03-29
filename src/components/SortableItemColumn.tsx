@@ -1,11 +1,11 @@
 import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { type BoardModalFormValues } from "./BoardModal";
-import {
-  type FieldErrors,
-  type UseFieldArrayRemove,
-  type UseFormRegister,
+import type { BoardModalFormValues } from "./BoardModal";
+import type {
+  FieldErrors,
+  UseFieldArrayRemove,
+  UseFormRegister,
 } from "react-hook-form";
 import IconCross from "../assets/icon-cross.svg";
 import IconMenu from "../assets/icon-menu.svg";

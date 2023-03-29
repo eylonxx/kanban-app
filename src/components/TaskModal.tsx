@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { type Subtask, type Prisma } from "@prisma/client";
+import type { Subtask, Prisma } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import IconCross from "../assets/icon-cross.svg";
 import { api } from "~/utils/api";
