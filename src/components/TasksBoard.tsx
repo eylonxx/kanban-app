@@ -10,7 +10,12 @@ import {
   closestCenter,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import type { Subtask, Board, Prisma, Column as ColumnP } from "@prisma/client";
+import type {
+  Subtask,
+  Board,
+  Prisma,
+  Column as TypeColumn,
+} from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
 import { useAtom } from "jotai";
@@ -62,7 +67,7 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
     { boardId: selectedBoard.id },
     {
       enabled: sessionData?.user !== undefined,
-      onSuccess: (data: ColumnP[]) => {
+      onSuccess: (data: TypeColumn[]) => {
         setColumns(data);
       },
     }

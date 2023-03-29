@@ -95,7 +95,6 @@ export default function NewAndEditTaskModal({
   const createTask = api.task.create.useMutation({
     onSuccess: (data: Task) => {
       setTasks([...tasks, data]);
-      // void ctx.task.getAll.invalidate();
     },
     onError: () => {
       toast.error("Create failed, please try again later.");
