@@ -22,7 +22,9 @@ const Home: React.FC = () => {
   const [openNewTaskModal, setOpenNewTaskModal] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
   const [columns] = useAtom(columnsAtom);
-  const [boardNames, setBoardNames] = useState<string[]>([]);
+  const [boardNames, setBoardNames] = useState<{ title: string; id: string }[]>(
+    []
+  );
 
   const {
     data: boards,
@@ -31,7 +33,9 @@ const Home: React.FC = () => {
   } = api.board.getAll.useQuery(undefined, {
     enabled: sessionData?.user !== undefined,
     onSuccess: (data: Board[]) => {
-      setBoardNames(data.map((board) => board.title));
+      setBoardNames(
+        data.map((board) => ({ title: board.title, id: board.id }))
+      );
       setSelectedBoard(selectedBoard ?? data[0] ?? null);
     },
   });
@@ -46,11 +50,8 @@ const Home: React.FC = () => {
     return columns.filter((col) => col.boardId === boardId);
   };
 
-  //todo:change title to id
-  const handleSelectedBoard = (boardTitle: string) => {
-    const newBoard = boards?.filter(
-      (board: Board) => boardTitle === board.title
-    )[0];
+  const handleSelectedBoard = (boardId: string) => {
+    const newBoard = boards?.find((board: Board) => boardId === board.id);
     setSelectedBoard(newBoard ? newBoard : null);
   };
 
@@ -107,7 +108,7 @@ const Home: React.FC = () => {
           handleSelectedBoard={handleSelectedBoard}
           boardNames={boardNames}
           handleSetOpen={handleSetOpen}
-          selectedBoard={selectedBoard?.title || ""}
+          selectedBoard={selectedBoard}
           setOpenModal={setOpenNewBoardModal}
         />
         <div

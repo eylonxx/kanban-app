@@ -3,13 +3,14 @@ import IconBoardPurple from "../assets/icon-board-purple.svg";
 import HideSidebar from "../assets/icon-hide-sidebar.svg";
 import React from "react";
 import { Oval } from "react-loader-spinner";
+import { type Board } from "@prisma/client";
 
 interface SidebarProps {
   open: boolean;
   handleSelectedBoard: (boardTitle: string) => void;
   handleSetOpen: (val: boolean) => void;
-  boardNames: string[];
-  selectedBoard: string;
+  boardNames: { title: string; id: string }[];
+  selectedBoard: Board | null;
   setOpenModal: (val: boolean) => void;
   isLoadingBoards: boolean;
 }
@@ -54,13 +55,13 @@ const Sidebar = ({
             return (
               <div
                 onClick={() => {
-                  handleSelectedBoard(board);
+                  handleSelectedBoard(board.id);
                 }}
                 key={i}
                 className={`
                   flex h-12 cursor-pointer items-center gap-4 pl-8
                   ${
-                    selectedBoard === board
+                    selectedBoard?.id === board.id
                       ? "rounded-r-full bg-mainPurple text-white transition-all"
                       : "rounded-r-full text-mediumGrey transition-all hover:bg-white hover:text-mainPurple "
                   }`}
@@ -68,14 +69,16 @@ const Sidebar = ({
                 <div
                   className={`flex-shrink-0 
                 ${
-                  selectedBoard === board
+                  selectedBoard?.id === board.id
                     ? "text-white transition-all "
                     : " transition-all  hover:text-mainPurple"
                 }`}
                 >
                   <IconBoard />
                 </div>
-                <p className="flex-shrink-0 font-bold tracking-wide">{board}</p>
+                <p className="flex-shrink-0 font-bold tracking-wide">
+                  {board.title}
+                </p>
               </div>
             );
           })}
