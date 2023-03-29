@@ -137,11 +137,16 @@ export default function NewAndEditTaskModal({
         const lastTaskInNewColumn = tasks
           .filter((task) => task.columnId === data.columnId)
           .sort((a, b) => a.rank.localeCompare(b.rank));
-        newRank = LexoRank.parse(
-          lastTaskInNewColumn[lastTaskInNewColumn.length - 1].rank
-        )
-          .genNext()
-          .toString();
+        console.log(lastTaskInNewColumn);
+        if (!lastTaskInNewColumn.length) {
+          newRank = LexoRank.middle().toString();
+        } else {
+          newRank = LexoRank.parse(
+            lastTaskInNewColumn[lastTaskInNewColumn.length - 1].rank
+          )
+            .genNext()
+            .toString();
+        }
       }
 
       updateTaskAndSubtasks.mutate({
