@@ -5,7 +5,7 @@ import type { Subtask, Prisma } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import IconCross from "../assets/icon-cross.svg";
 import { api } from "~/utils/api";
-import VerticalEllipsis from "../assets/icon-vertical-ellipsis.svg";
+import HorizontalEllipsis from "../assets/icon-horizontal-ellipsis.svg";
 type Task = Prisma.TaskGetPayload<{ include: { subtasks: true } }>;
 
 interface TaskModalProps {
@@ -108,7 +108,7 @@ export default function TaskModal({
                           tabIndex={0}
                           className="cursor-pointer text-center"
                         >
-                          <VerticalEllipsis />
+                          <HorizontalEllipsis />
                         </label>
                         <ul
                           tabIndex={0}

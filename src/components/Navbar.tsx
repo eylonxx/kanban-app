@@ -1,7 +1,7 @@
 import { signOut } from "next-auth/react";
 import React from "react";
 import LogoLight from "../assets/logo-light.svg";
-import VerticalEllipsis from "../assets/icon-vertical-ellipsis.svg";
+import HorizontalEllipsis from "../assets/icon-horizontal-ellipsis.svg";
 
 interface NavbarProps {
   open: boolean;
@@ -39,7 +39,7 @@ const Navbar = ({
 
         <div className="dropdown-end dropdown mx-3 cursor-pointer ">
           <label tabIndex={0} className="cursor-pointer text-center">
-            <VerticalEllipsis />
+            <HorizontalEllipsis />
           </label>
           <ul
             tabIndex={0}
