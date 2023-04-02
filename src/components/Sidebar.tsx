@@ -7,7 +7,7 @@ import type { Board } from "@prisma/client";
 
 interface SidebarProps {
   open: boolean;
-  handleSelectedBoard: (boardTitle: string) => void;
+  handleSelectedBoard: (boardId: string) => void;
   handleSetOpen: (val: boolean) => void;
   boardNames: { title: string; id: string }[];
   selectedBoard: Board | null;

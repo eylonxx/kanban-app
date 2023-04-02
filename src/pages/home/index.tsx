@@ -99,6 +99,9 @@ const Home: React.FC = () => {
           boardsLength={boards?.length}
           setOpenModal={setOpenNewTaskModal}
           setBoardEdit={handleOpenEditBoardModal}
+          boardNames={boardNames}
+          handleSelectedBoard={handleSelectedBoard}
+          selectedBoard={selectedBoard}
         />
       </div>
       <div className="relative flex grow ">
