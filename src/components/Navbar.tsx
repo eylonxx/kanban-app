@@ -30,7 +30,7 @@ const Navbar = ({
       </div>
       <div className="flex h-24 flex-1 items-center justify-end border-b-2 border-b-darkLines">
         <button
-          className="w-56 rounded-full bg-mainPurple px-10 py-3 font-semibold text-white no-underline disabled:bg-mainPurple/30 disabled:text-white/30 "
+          className="hidden w-56 rounded-full bg-mainPurple px-10 py-3 font-semibold text-white no-underline disabled:bg-mainPurple/30 disabled:text-white/30 sm:block "
           onClick={() => setOpenModal(true)}
           disabled={boardsLength === 0}
         >
@@ -46,6 +46,16 @@ const Navbar = ({
             className="dropdown-content menu rounded-box mt-6 w-52 bg-base-100 p-2 shadow"
           >
             <li>
+              <button
+                className="sm:hidden"
+                type="button"
+                disabled={boardsLength === 0}
+                onClick={() => {
+                  setOpenModal(true);
+                }}
+              >
+                Add New Task
+              </button>
               <button
                 type="button"
                 disabled={boardsLength === 0}
