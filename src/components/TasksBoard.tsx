@@ -227,7 +227,7 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
   }
 
   return (
-    <div className="flex grow flex-row transition-all">
+    <div className="flex grow flex-row overflow-x-scroll transition-all">
       <TaskModal
         handleDeleteTask={handleDeleteTask}
         handleUpdateSubtask={handleUpdateSubtask}

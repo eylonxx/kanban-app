@@ -77,7 +77,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-veryDarkGrey">
+    <div className="flex min-h-screen w-full flex-col overflow-y-hidden bg-veryDarkGrey">
       <BoardModal
         handleSetSelectedBoard={handleSetSelectedBoard}
         setOpen={setOpenNewBoardModal}
@@ -92,7 +92,7 @@ const Home: React.FC = () => {
         isEdit={true}
         selectedBoard={selectedBoard}
       />
-      <div className=" flex items-center justify-between ">
+      <div className="flex w-full items-center justify-between ">
         <Navbar
           handleDeleteBoard={handleDeleteBoard}
           open={open}
@@ -101,7 +101,7 @@ const Home: React.FC = () => {
           setBoardEdit={handleOpenEditBoardModal}
         />
       </div>
-      <div className="relative flex flex-grow">
+      <div className="relative flex grow ">
         <Sidebar
           isLoadingBoards={isLoading}
           open={open}
@@ -113,8 +113,8 @@ const Home: React.FC = () => {
         />
         <div
           className={`
-          absolute bottom-10 flex h-12 cursor-pointer items-center rounded-r-full bg-mainPurple py-4 px-5 text-white transition-all hover:bg-mainPurpleHover 
-          ${open ? "hidden" : ""}`}
+          absolute bottom-10  hidden h-12 cursor-pointer items-center rounded-r-full bg-mainPurple py-4 px-5 text-white transition-all hover:bg-mainPurpleHover 
+          ${open ? "hidden" : "md:flex"}`}
           onClick={() => setOpen(true)}
         >
           <ShowSidebar />
@@ -147,7 +147,7 @@ const Home: React.FC = () => {
           </div>
         ) : (
           selectedBoard && (
-            <main className="flex grow transition-all">
+            <main className="flex w-3/5 grow transition-all">
               <NewAndEditTaskModal
                 isEdit={false}
                 setOpen={setOpenNewTaskModal}

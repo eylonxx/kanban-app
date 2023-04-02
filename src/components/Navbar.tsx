@@ -19,7 +19,7 @@ const Navbar = ({
   boardsLength,
 }: NavbarProps) => {
   return (
-    <div className="flex h-24 w-screen items-center bg-darkGrey  shadow-lg">
+    <div className="flex h-24 w-screen items-center bg-darkGrey shadow-lg">
       <div
         className={`rounded-non box-border flex h-full w-72 items-center justify-center border-r-2  border-b-darkLines border-r-darkLines
          ${open ? "border-b-0" : "border-b-2"}`}
@@ -30,7 +30,7 @@ const Navbar = ({
       </div>
       <div className="flex h-24 flex-1 items-center justify-end border-b-2 border-b-darkLines">
         <button
-          className="hidden w-56 rounded-full bg-mainPurple px-10 py-3 font-semibold text-white no-underline disabled:bg-mainPurple/30 disabled:text-white/30 sm:block "
+          className="hidden w-56 rounded-full bg-mainPurple px-10 py-3 font-semibold text-white no-underline disabled:bg-mainPurple/30 disabled:text-white/30 md:flex "
           onClick={() => setOpenModal(true)}
           disabled={boardsLength === 0}
         >
@@ -47,7 +47,7 @@ const Navbar = ({
           >
             <li>
               <button
-                className="sm:hidden"
+                className="md:hidden"
                 type="button"
                 disabled={boardsLength === 0}
                 onClick={() => {

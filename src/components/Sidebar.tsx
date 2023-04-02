@@ -26,8 +26,12 @@ const Sidebar = ({
 }: SidebarProps) => {
   return (
     <aside
-      className={`flex flex-col overflow-hidden border-r-darkLines bg-darkGrey transition-all duration-500
-      ${open ? "border-r-2 pr-8 sm:w-72" : "w-0 border-r-0 pr-0"}`}
+      className={`flex flex-col overflow-hidden border-r-darkLines bg-darkGrey 
+      ${
+        open
+          ? "hidden  border-r-2 transition-all  md:flex md:w-72"
+          : "w-0 border-r-0 pr-0 transition-all"
+      }`}
     >
       <div className="my-5 flex flex-shrink-0 pl-8">
         <p className="m-0 flex-shrink-0 p-0 text-xs font-bold uppercase tracking-widest text-mediumGrey">
@@ -59,7 +63,7 @@ const Sidebar = ({
                 }}
                 key={i}
                 className={`
-                  flex h-12 cursor-pointer items-center gap-4 pl-8
+                  flex h-12 flex-shrink-0 cursor-pointer items-center gap-4 pl-8 
                   ${
                     selectedBoard?.id === board.id
                       ? "rounded-r-full bg-mainPurple text-white transition-all"
