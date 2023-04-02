@@ -53,7 +53,7 @@ export default function BoardModal({
       boardName: "",
       columns: [{ title: "", index: 0 }],
     },
-    mode: "onBlur",
+    mode: "onTouched",
   });
 
   const { fields, append, remove, swap } = useFieldArray({

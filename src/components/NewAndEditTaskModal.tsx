@@ -60,7 +60,7 @@ export default function NewAndEditTaskModal({
       taskName: "",
       subtasks: [{ title: "" }],
     },
-    mode: "onBlur",
+    mode: "onTouched",
   });
 
   const { fields, append, remove } = useFieldArray({
