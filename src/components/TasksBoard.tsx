@@ -283,12 +283,14 @@ const TasksBoard = ({ selectedBoard, setOpen }: TasksBoardProps) => {
                     );
                   })}
                 <div
-                  className="mt-12 flex h-[580px]  w-72 cursor-pointer flex-col items-center justify-center rounded-lg bg-[#22232F]"
+                  className="mt-12 flex h-[580px] w-72 cursor-pointer flex-col items-center justify-center"
                   onClick={() => setOpen(true)}
                 >
-                  <p className="text-2xl font-bold text-mediumGrey">
-                    + New Column
-                  </p>
+                  <div className=" flex h-full w-64 items-center justify-center rounded-lg bg-[#22232F] p-6">
+                    <p className="text-2xl font-bold text-mediumGrey">
+                      + New Column
+                    </p>
+                  </div>
                 </div>
               </div>
             </SortableContext>
