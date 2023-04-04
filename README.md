@@ -1,5 +1,5 @@
 
-# Twitterish
+# Kanban
 ### A Kanban application to manage your tasks!
 ### Made using the T3 stack.
 
