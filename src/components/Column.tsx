@@ -40,16 +40,18 @@ export default function Column({
         <p className="self-start pl-6 text-xs font-bold uppercase tracking-[.25em] text-mediumGrey">
           {columnTitle} ({items.length})
         </p>
-        {items.length
-          ? items.map((item, idx) => (
-              <SortableItem
-                setOpenTaskModal={setOpenTaskModal}
-                key={`${item.id}-${idx}`}
-                task={item}
-                id={item.id}
-              />
-            ))
-          : "loading"}
+        {items.length ? (
+          items.map((item, idx) => (
+            <SortableItem
+              setOpenTaskModal={setOpenTaskModal}
+              key={`${item.id}-${idx}`}
+              task={item}
+              id={item.id}
+            />
+          ))
+        ) : (
+          <p className="font-bold">No tasks</p>
+        )}
         {}
       </div>
     </SortableContext>
