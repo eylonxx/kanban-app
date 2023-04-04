@@ -3,6 +3,7 @@ import Head from "next/head";
 import { signIn, useSession } from "next-auth/react";
 import { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
+import LogoLight from "../assets/logo-light-lg.svg";
 
 const Main: NextPage = () => {
   return (
@@ -41,9 +42,9 @@ const AuthShowcase: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-      </p>
+      <div className="mb-10">
+        <LogoLight />
+      </div>
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
         onClick={() => {
@@ -52,7 +53,7 @@ const AuthShowcase: React.FC = () => {
           });
         }}
       >
-        Login
+        Login using Discord
       </button>
     </div>
   );
