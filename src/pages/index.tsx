@@ -3,7 +3,7 @@ import Head from "next/head";
 import { signIn, useSession } from "next-auth/react";
 import { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
-import LogoLight from "../assets/logo-light-lg.svg";
+import LogoLight from "../assets/logo-light.svg";
 
 const Main: NextPage = () => {
   return (
@@ -41,8 +41,8 @@ const AuthShowcase: React.FC = () => {
   }, [sessionData]);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <div className="mb-10">
+    <div className="flex w-full flex-col items-center justify-center gap-4">
+      <div className="mb-10 flex w-full items-center justify-center">
         <LogoLight />
       </div>
       <button
