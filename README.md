@@ -6,6 +6,8 @@
 ## Live demo
 ### https://eylon-kanban.vercel.app/
 
+![image](https://user-images.githubusercontent.com/94967564/233029539-f43a4fff-152d-4ff6-86c3-854d46a4fa30.png)
+
 ## Installation
 Please run
 ``` npm install ```
